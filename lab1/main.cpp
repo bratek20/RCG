@@ -1,10 +1,13 @@
 #include "Window.h"
 #include "Input.h"
 #include "Globals.h"
-#include "Mesh.h"
+#include "MyMesh.h"
 #include "Scene.h"
 #include "Color.h"
 #include "Assets.h"
+
+#include "Model.h"
+#include "Shader.h"
 
 #include <iostream>
 #include <algorithm>
@@ -13,7 +16,7 @@ using namespace std;
 
 ScenePtr createScene(){
 	auto scene = Scene::create();
-	auto a1 = Actor::create(Mesh::create(Assets::CUBE));
+	auto a1 = Actor::create(MyMesh::create(Assets::CUBE));
 	a1->move({0, 0, 3});
 	scene->addChild(a1);
 	return scene;
@@ -25,11 +28,13 @@ int main(){
     }
 	Input::init();
 	Assets::init();
-    Mesh::init();
+    MyMesh::init();
 
 	Globals::init();
 	ScenePtr scene = createScene();
 
+	Model ourModel("assets/nanosuit/nanosuit.obj");
+	Program3D prog("Program3D.vs", "Program3D.fs");
 	while(!Window::shouldClose()){
 		Input::handle();
 
@@ -37,12 +42,13 @@ int main(){
 
         Window::clear();
 		scene->render();
+		ourModel.Draw(prog);
 		Window::swapBuffers();
 
 		Globals::updateTime();
 	}
 
-    Mesh::clear();
+    MyMesh::clear();
 	Assets::clear();
 	Window::close();
 	return 0;

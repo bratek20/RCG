@@ -1,19 +1,23 @@
-#include "ShaderProgram.h"
+#include "Shader.h"
 
 #include <common/shader.hpp>
 #include <iostream>
 
 using namespace std;
 
-ShaderProgram::ShaderProgram(string vsName, string fsName){
+Shader::Shader(string vsName, string fsName){
     id = LoadShaders(vsName.c_str(), fsName.c_str());
     use();
 }
 
-void ShaderProgram::clear(){
+void Shader::clear(){
     glDeleteProgram(id);
 }
 
-void ShaderProgram::use(){
+void Shader::use(){
     glUseProgram(id);
+}
+
+GLuint Shader::getId() const{
+    return id;
 }

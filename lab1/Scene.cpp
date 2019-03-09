@@ -15,10 +15,10 @@ ScenePtr Scene::create(){
 }
 
 void Scene::render(){
-    Mesh::setViewMat(camera->getViewMat());
-    Mesh::setProjectionMat(camera->getProjectionMat());
-    Mesh::applyLights();
-    Mesh::applyPlayerPosition(camera->getWorldPosition());
+    MyMesh::setViewMat(camera->getViewMat());
+    MyMesh::setProjectionMat(camera->getProjectionMat());
+    MyMesh::applyLights();
+    MyMesh::applyPlayerPosition(camera->getWorldPosition());
     Actor::render(glm::mat4(1.0f));
 }
 

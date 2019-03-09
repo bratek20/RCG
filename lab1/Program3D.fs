@@ -22,7 +22,7 @@ uniform sampler2D TextureSampler;
 void main(){
 	// Material properties
 	vec3 textureColor = texture( TextureSampler, UV ).rgb; 
-	vec3 MaterialDiffuseColor = 0.33f + VertexColor * textureColor;
+	vec3 MaterialDiffuseColor = 0.33f + VertexColor;// * textureColor;
 	vec3 MaterialAmbientColor = vec3(0.01,0.01,0.01) * MaterialDiffuseColor;
 	vec3 MaterialSpecularColor = vec3(0.3,0.3,0.3);
 

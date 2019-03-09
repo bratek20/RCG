@@ -6,7 +6,7 @@
 
 const int Program3D::MAX_LIGHTS = 10;
 
-Program3D::Program3D(std::string vsName, std::string fsName) : ShaderProgram(vsName, fsName) {
+Program3D::Program3D(std::string vsName, std::string fsName) : Shader(vsName, fsName) {
     MVPId = glGetUniformLocation(id, "MVP");
     viewMatId = glGetUniformLocation(id, "V");
 	worldMatId = glGetUniformLocation(id, "M");

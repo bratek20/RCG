@@ -8,10 +8,10 @@
 
 using namespace std;
 
-Actor::Actor(MeshPtr mesh) : position(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rotation(0.0f), mesh(mesh) {
+Actor::Actor(MyMeshPtr mesh) : position(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rotation(0.0f), mesh(mesh) {
 }
 
-ActorPtr Actor::create(MeshPtr mesh){
+ActorPtr Actor::create(MyMeshPtr mesh){
     auto actor = ActorPtr(new Actor(mesh));
     return actor;
 }
@@ -86,7 +86,7 @@ void Actor::rotate(glm::vec3 dRot){
     rotation += dRot;
 }
 
-MeshPtr Actor::getMesh() const{
+MyMeshPtr Actor::getMyMesh() const{
     return mesh;
 }
 

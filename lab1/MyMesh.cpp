@@ -1,4 +1,4 @@
-#include "Mesh.h"
+#include "MyMesh.h"
 #include "Light.h"
 #include "Assets.h"
 
@@ -8,10 +8,10 @@
 
 using namespace std;
 
-Program3D Mesh::program;
+Program3D MyMesh::program;
 
-MeshPtr Mesh::create(ShapePtr shape, Color color, GLuint texture, GLuint renderType){
-    auto mesh = MeshPtr(new Mesh());
+MyMeshPtr MyMesh::create(ShapePtr shape, Color color, GLuint texture, GLuint renderType){
+    auto mesh = MyMeshPtr(new MyMesh());
     mesh->shape = shape;
     mesh->color = color;
     mesh->texture = texture;
@@ -19,7 +19,7 @@ MeshPtr Mesh::create(ShapePtr shape, Color color, GLuint texture, GLuint renderT
     return mesh;
 }
 
-void Mesh::init(){
+void MyMesh::init(){
     glEnable(GL_DEPTH_TEST);
 
     program = Program3D("Program3D.vs", "Program3D.fs");
@@ -27,31 +27,31 @@ void Mesh::init(){
     setViewMat(glm::mat4(1.0f));
 }
 
-void Mesh::clear(){
+void MyMesh::clear(){
 	program.clear();
 }
 
-void Mesh::setProjectionMat(const glm::mat4& mat){
+void MyMesh::setProjectionMat(const glm::mat4& mat){
     program.setProjectionMat(mat);
 }
 
-void Mesh::setViewMat(const glm::mat4& mat){
+void MyMesh::setViewMat(const glm::mat4& mat){
     program.setViewMat(mat);
 }
 
-void Mesh::addLight(LightPtr light){
+void MyMesh::addLight(LightPtr light){
     program.addLight(light);
 }
 
-void Mesh::applyLights(){
+void MyMesh::applyLights(){
     program.applyLights();
 }
 
-void Mesh::applyPlayerPosition(glm::vec3 worldPlayerPos){
+void MyMesh::applyPlayerPosition(glm::vec3 worldPlayerPos){
     program.applyPlayerPosition(worldPlayerPos);
 }
 
-void Mesh::render(const glm::mat4& worldMat){
+void MyMesh::render(const glm::mat4& worldMat){
     applyCommonUniforms(worldMat);
     program.applyColor(color);
     program.applyTexture(texture);
@@ -60,15 +60,15 @@ void Mesh::render(const glm::mat4& worldMat){
     glDrawArrays(renderType, 0, shape->verticesNum());
 }
 
-void Mesh::applyCommonUniforms(const glm::mat4& worldMat){
+void MyMesh::applyCommonUniforms(const glm::mat4& worldMat){
     program.applyWorldMat(worldMat);
 }
 
-const std::vector<glm::vec3>& Mesh::getLocalCoords() const{
+const std::vector<glm::vec3>& MyMesh::getLocalCoords() const{
     return shape->getVertices();
 }
 
-std::vector<glm::vec3> Mesh::getWorldCoords(const glm::mat4& worldMat) const{
+std::vector<glm::vec3> MyMesh::getWorldCoords(const glm::mat4& worldMat) const{
     std::vector<glm::vec3> globalCoords;
     for(auto& localCoord : getLocalCoords()){
         globalCoords.push_back(static_cast<glm::vec3>(worldMat * glm::vec4(localCoord, 1.0f)));
@@ -76,6 +76,6 @@ std::vector<glm::vec3> Mesh::getWorldCoords(const glm::mat4& worldMat) const{
     return globalCoords;
 }
 
-Color Mesh::getColor() const{
+Color MyMesh::getColor() const{
     return color;
 }

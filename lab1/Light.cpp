@@ -8,7 +8,7 @@ LightPtr Light::create(float power, Color color, glm::vec3 coefficients){
     light->power = power;
     light->color = color;
     light->coefficients = coefficients;
-    Mesh::addLight(light);
+    MyMesh::addLight(light);
 
     return light;
 }

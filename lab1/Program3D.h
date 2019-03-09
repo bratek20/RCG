@@ -1,7 +1,7 @@
 #ifndef COMMON_PROGRAM_H
 #define COMMON_PROGRAM_H
 
-#include "ShaderProgram.h"
+#include "Shader.h"
 #include "Color.h"
 
 #include <glm/glm.hpp>
@@ -12,7 +12,7 @@ class Light;
 using LightPtr = std::shared_ptr<Light>;
 using WeakLightPtr = std::weak_ptr<Light>;
 
-class Program3D : public ShaderProgram {
+class Program3D : public Shader {
     GLuint MVPId;
     GLuint viewMatId;
     GLuint worldMatId;
