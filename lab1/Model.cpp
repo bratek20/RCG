@@ -16,7 +16,7 @@ Model::Model(string const &path, bool gamma) : gammaCorrection(gamma)
 void Model::draw(Shader shader)
 {
     for (unsigned int i = 0; i < meshes.size(); i++)
-        meshes[i].Draw(shader);
+        meshes[i].draw(shader);
 }
 
 bool Model::loadModel(string const &path)
@@ -60,6 +60,14 @@ void Model::processNode(aiNode *node, const aiScene *scene)
 
 Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 {
+    const aiMaterial *mtl = scene->mMaterials[mesh->mMaterialIndex];
+
+    Color color = Colors::WHITE;
+    aiColor4D diffuse;
+    if (AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &diffuse)){
+        color = Color(diffuse.r, diffuse.g, diffuse.b);
+    }
+
     // data to fill
     vector<Vertex> vertices;
     vector<unsigned int> indices;
@@ -69,8 +77,9 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         Vertex vertex;
-        vertex.Position = tryConvert(mesh->mVertices, i);
-        vertex.Normal = tryConvert(mesh->mNormals, i);
+        vertex.position = tryConvert(mesh->mVertices, i);
+        vertex.normal = tryConvert(mesh->mNormals, i);
+        vertex.color = color;
         // texture coordinates
         if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
         {
@@ -79,14 +88,14 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
             // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
-            vertex.TexCoords = vec;
+            vertex.texCoords = vec;
         }
         else
         {
-            vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+            vertex.texCoords = glm::vec2(0.0f, 0.0f);
         }
-        vertex.Tangent = tryConvert(mesh->mTangents, i);
-        vertex.Bitangent = tryConvert(mesh->mBitangents, i);
+        //vertex.Tangent = tryConvert(mesh->mTangents, i);
+        //vertex.Bitangent = tryConvert(mesh->mBitangents, i);
         vertices.push_back(vertex);
     }
     // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.

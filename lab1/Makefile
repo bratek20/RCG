@@ -7,7 +7,7 @@ CPPFLAGS := -std=c++14 -Wall -Wextra -g
 INCLUDES := -I../include/
 GCC := g++
 
-aquarium.out: $(OBJ_FILES)
+lab1.out: $(OBJ_FILES)
 	$(GCC) -o $@ $^ $(LDFLAGS) 
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp

@@ -5,9 +5,6 @@
 #include "Scene.h"
 #include "Color.h"
 #include "Assets.h"
-
-#include "Model.h"
-#include "Shader.h"
 #include "Config.h"
 
 #include <iostream>
@@ -30,7 +27,8 @@ int main(int argc, char* argv[]){
 
 	Globals::init();
 	ScenePtr scene = Scene::create(c);
-	scene->addChild(Actor::create(MyMesh::create(Assets::CUBE)));
+	Input::onKeyPressed(GLFW_KEY_P, bind(&Scene::takePhoto, scene, std::ref(c)));
+
 	while(!Window::shouldClose()){
 		Input::handle();
 

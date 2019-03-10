@@ -14,8 +14,8 @@ bool Config::load(const string& path)
     }
 
     getline(file, comment);
-    getline(file, objPath);
-    getline(file, pngPath);
+    getline(file, loadScenePath);
+    getline(file, saveImagePath);
     file >> k;
     file >> xRes >> yRes;
     viewPoint = readVec3(file);

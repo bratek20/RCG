@@ -19,6 +19,7 @@ public:
     void render();
 
     CameraPtr getCamera() const;
+    void takePhoto(const Config& c);
 
 protected:
     Scene();

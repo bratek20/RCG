@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Shader.h"
+#include "Color.h"
 
 #include <string>
 #include <fstream>
@@ -16,22 +17,27 @@
 using namespace std;
 
 struct Vertex {
-    // position
-    glm::vec3 Position;
-    // normal
-    glm::vec3 Normal;
-    // texCoords
-    glm::vec2 TexCoords;
-    // tangent
-    glm::vec3 Tangent;
-    // bitangent
-    glm::vec3 Bitangent;
+    glm::vec3 position;
+    glm::vec3 normal;
+    Color color;
+    glm::vec2 texCoords;
+    //glm::vec3 tangent;
+    //glm::vec3 bitangent;
 };
 
 struct Texture {
     unsigned int id;
     string type;
     string path;
+};
+
+struct Triangle {
+    Vertex& v1;
+    Vertex& v2;
+    Vertex& v3;
+
+    Triangle(Vertex& v1, Vertex& v2, Vertex& v3):
+        v1(v1), v2(v2), v3(v3) {}
 };
 
 class Mesh {
@@ -55,7 +61,7 @@ public:
     }
 
     // render the mesh
-    void Draw(Shader& shader) 
+    void draw(Shader& shader) 
     {
         // bind appropriate textures
         unsigned int diffuseNr  = 1;
@@ -122,16 +128,19 @@ private:
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
         // vertex normals
         glEnableVertexAttribArray(1);	
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-        // vertex texture coords
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+
         glEnableVertexAttribArray(2);	
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-        // vertex tangent
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
-        // vertex bitangent
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+        // vertex texture coords
+        glEnableVertexAttribArray(3);	
+        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+        // // vertex tangent
+        // glEnableVertexAttribArray(3);
+        // glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+        // // vertex bitangent
+        // glEnableVertexAttribArray(4);
+        // glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 
         glBindVertexArray(0);
     }

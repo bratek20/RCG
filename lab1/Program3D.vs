@@ -2,7 +2,8 @@
 
 layout(location = 0) in vec3 vertexPosition_modelspace;
 layout(location = 1) in vec3 vertexNormal_modelspace;
-layout(location = 2) in vec2 vertexUV;
+layout(location = 2) in vec3 vertexColor;
+layout(location = 3) in vec2 vertexUV;
 
 out vec3 Position_modelspace;
 out vec3 Position_worldspace;
@@ -17,11 +18,10 @@ uniform mat4 V;
 uniform mat4 M;
 uniform int LightsNum;
 uniform vec3 LightPosition_worldspace[10];
-uniform vec3 MeshColor;
 
 void main(){
 	vec3 vertexPosition = vertexPosition_modelspace;
-	VertexColor = MeshColor;
+	VertexColor = vertexColor;
 
 	gl_Position =  MVP * vec4(vertexPosition, 1);
 	// Position of the vertex, in worldspace : M * position

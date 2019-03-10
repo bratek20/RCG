@@ -7,8 +7,8 @@
 
 struct Config{
     std::string comment;
-    std::string objPath;
-    std::string pngPath;
+    std::string loadScenePath;
+    std::string saveImagePath;
     int k;
     int xRes, yRes;
     glm::vec3 viewPoint;
