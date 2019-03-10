@@ -4,8 +4,8 @@
 Scene::Scene() : Actor(nullptr) {
     camera = Camera::create();
 
-    light = Light::create(0.3f, Colors::WHITE, {0, 0, 1});
-    light->move({10, 100, 20});
+    light = Light::create(3.0f, Colors::WHITE, {0, 0, 1});
+    light->move({100, 1000, 200});
 }
 
 ScenePtr Scene::create(){

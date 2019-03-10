@@ -18,11 +18,12 @@ uniform float LightPower[10];
 uniform vec3 LightDistanceCoefficients[10];
 uniform vec3 PlayerPosition_worldspace;
 uniform sampler2D TextureSampler;
+uniform sampler2D texture_diffuse1;
 
 void main(){
 	// Material properties
-	vec3 textureColor = texture( TextureSampler, UV ).rgb; 
-	vec3 MaterialDiffuseColor = 0.33f + VertexColor;// * textureColor;
+	vec3 textureColor = texture( texture_diffuse1, UV ).rgb; 
+	vec3 MaterialDiffuseColor = textureColor;
 	vec3 MaterialAmbientColor = vec3(0.01,0.01,0.01) * MaterialDiffuseColor;
 	vec3 MaterialSpecularColor = vec3(0.3,0.3,0.3);
 
@@ -65,8 +66,5 @@ void main(){
 			// Specular : reflective highlight, like a mirror
 			+ MaterialSpecularColor * LightColor[i] * LightPower[i] * pow(cosAlpha,5) / distanceLoss;
 	}
-
-	float distToPlayer = length( PlayerPosition_worldspace - Position_worldspace );
-	color = color + vec3(0,0, 1 - pow(2.71, -0.01*distToPlayer));
-	color = color * pow(2.71, -0.02*distToPlayer);
+	color = textureColor;
 }
