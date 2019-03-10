@@ -213,3 +213,13 @@ glm::vec3 Model::tryConvert(aiVector3D *vectors, int idx, glm::vec3 defaultVal)
     }
     return glm::vec3(vectors[idx].x, vectors[idx].y, vectors[idx].z); 
 }
+
+vector<Triangle> Model::getTriangles(){
+    vector<Triangle> triangles;
+    for(auto& mesh : meshes)
+    {
+        auto mTris = mesh.getTriangles();
+        triangles.insert(triangles.end(), mTris.begin(), mTris.end());
+    }
+    return triangles;
+}

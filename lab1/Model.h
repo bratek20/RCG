@@ -33,6 +33,7 @@ public:
     Model(const string& path, bool gamma = false);
 
     void draw(Shader shader);
+    vector<Triangle> getTriangles();
     
 private:
     bool loadModel(const string& path);
