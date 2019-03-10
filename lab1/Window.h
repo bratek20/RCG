@@ -10,7 +10,7 @@ class Window{
     static float ratio;
 
 public:
-    static bool open(const std::string& name);
+    static bool open(const std::string& name, int width, int height);
     static void clear();
     static void swapBuffers();
     static bool shouldClose();

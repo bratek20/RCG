@@ -22,14 +22,13 @@ using LightPtr = std::shared_ptr<Light>;
 using WeakLightPtr = std::weak_ptr<Light>;
 
 class MyMesh {   
-    static Program3D program;
-
     ShapePtr shape;
     Color color;
     GLuint texture;
     GLuint renderType;
 
 public:
+    static Program3D program;
     static MyMeshPtr create(ShapePtr shape, Color color = Colors::WHITE, GLuint texture = Assets::WHITE_TEXTURE, GLuint renderType = GL_TRIANGLES);
 
     static void init(); 

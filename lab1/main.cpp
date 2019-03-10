@@ -8,22 +8,20 @@
 
 #include "Model.h"
 #include "Shader.h"
+#include "Config.h"
 
 #include <iostream>
 #include <algorithm>
 
 using namespace std;
 
-ScenePtr createScene(){
-	auto scene = Scene::create();
-	auto a1 = Actor::create(MyMesh::create(Assets::CUBE));
-	a1->move({0, 0, 3});
-	scene->addChild(a1);
-	return scene;
-}	
-
-int main(){
-    if(!Window::open("Lab1")){
+int main(int argc, char* argv[]){
+	Config c;
+	if(argc < 2 || !c.load(argv[1])){
+		cerr << "Bad config!" << endl;
+		return -1;
+	}
+    if(!Window::open("Lab1", c.xRes, c.yRes)){
         return -1;
     }
 	Input::init();
@@ -31,10 +29,8 @@ int main(){
     MyMesh::init();
 
 	Globals::init();
-	ScenePtr scene = createScene();
-
-	Model ourModel("assets/nanosuit/nanosuit.obj");
-	Program3D prog("Program3D.vs", "Program3D.fs");
+	ScenePtr scene = Scene::create(c);
+	scene->addChild(Actor::create(MyMesh::create(Assets::CUBE)));
 	while(!Window::shouldClose()){
 		Input::handle();
 
@@ -42,7 +38,6 @@ int main(){
 
         Window::clear();
 		scene->render();
-		ourModel.Draw(prog);
 		Window::swapBuffers();
 
 		Globals::updateTime();

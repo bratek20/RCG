@@ -2,15 +2,13 @@
 #include "Color.h"
 
 Scene::Scene() : Actor(nullptr) {
-    camera = Camera::create();
-
-    light = Light::create(3.0f, Colors::WHITE, {0, 0, 1});
-    light->move({100, 1000, 200});
 }
 
-ScenePtr Scene::create(){
+ScenePtr Scene::create(const Config& c){
     ScenePtr scene = ScenePtr(new Scene());
-    scene->addChilds({scene->camera, scene->light});
+    scene->camera = Camera::create(c);
+    scene->addChild(scene->camera);
+    scene->model = Model(c.objPath);
     return scene; 
 }
 
@@ -20,6 +18,8 @@ void Scene::render(){
     MyMesh::applyLights();
     MyMesh::applyPlayerPosition(camera->getWorldPosition());
     Actor::render(glm::mat4(1.0f));
+    MyMesh::program.applyWorldMat(glm::mat4(1.0f));
+    model.draw(MyMesh::program);
 }
 
 CameraPtr Scene::getCamera() const{

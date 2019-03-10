@@ -4,7 +4,7 @@
 GLFWwindow* Window::window;
 float Window::ratio;
 
-bool Window::open(const std::string& name) {
+bool Window::open(const std::string& name, int width, int height) {
         // Initialise GLFW
 	if( !glfwInit() )
 	{
@@ -20,8 +20,6 @@ bool Window::open(const std::string& name) {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 
 	// Open a window and create its OpenGL context
-	int width = 1024;
-	int height = 768;
 	window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
 	if( window == NULL ){
 		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
