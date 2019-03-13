@@ -72,7 +72,7 @@ GLFWwindow* Window::getPtr(){
 }
 
 void Window::setRatio(int width, int height){
-	ratio = static_cast<float>(height) / width;
+	ratio = static_cast<float>(width) / height;
 	printf("Ratio: %f\n", ratio);
 }
 
