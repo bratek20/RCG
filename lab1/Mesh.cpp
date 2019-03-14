@@ -2,6 +2,12 @@
 
 #include "Mesh.h"
 
+Triangle::Triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3) : v1(v1), v2(v2), v3(v3)
+{
+    //glm::normalize(glm::cross(v3.position - v1.position, v3.position - v2.position));
+    normal = glm::normalize((v1.normal + v2.normal + v3.normal) / 3.0f);
+}
+
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {
     this->vertices = vertices;
@@ -95,7 +101,7 @@ vector<Triangle> Mesh::getTriangles()
     vector<Triangle> triangles;
     for (int i = 0; i < indices.size(); i += 3)
     {
-        triangles.push_back(Triangle(vertices[indices[i]], vertices[indices[i+1]], vertices[indices[i+2]]));
+        triangles.push_back(Triangle(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]]));
     }
     return triangles;
 }

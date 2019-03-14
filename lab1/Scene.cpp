@@ -62,7 +62,7 @@ void Scene::takePhoto(const Config &c)
             float yShift = static_cast<float>(y) / c.yRes;
             glm::vec3 pos = -leftTop + glm::mix(leftTop, rightTop, xShift) + glm::mix(leftTop, leftBottom, yShift); 
             glm::vec3 direction = glm::normalize(pos - origin);
-            Color color = RayTracer::cast(origin, direction, triangles);
+            Color color = RayTracer::cast(c.k, origin, direction, triangles, Light::getLights()).second;
             photo.set_pixel(x, y, color.r * 255, color.g * 255, color.b * 255);
         }
     }

@@ -35,9 +35,9 @@ struct Triangle {
     Vertex v1;
     Vertex v2;
     Vertex v3;
+    glm::vec3 normal;
 
-    Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3):
-        v1(v1), v2(v2), v3(v3) {}
+    Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3);
 };
 
 class Mesh {

@@ -11,7 +11,7 @@ struct Color
     float b;
 
     Color(float r, float g, float b):
-        r(r), g(g), b(b) {}    
+        r(fix(r)), g(fix(g)), b(fix(b)) {}    
 
     Color() : 
         Color(0, 0, 0) {}
@@ -24,11 +24,38 @@ struct Color
         return r == other.r && g == other.g && b == other.b;
     }
     
+    Color operator+(Color c){
+        return Color(r + c.r, g + c.g, b + c.b);
+    }
+
+    Color operator+=(Color c){
+        *this = *this + c;
+        return *this;
+    }
+
+    Color operator*(Color c){
+        return Color(r * c.r, g * c.g, b * c.b);
+    }
+
+    Color operator*(float a){
+        return Color(r * a, g * a, b * a);
+    }
+
+    Color operator/(float a){
+        return *this * (1/a);
+    }
+
     operator glm::vec3() const {
         return {r, g, b};
     }
 
     static Color random();
+
+private:
+    
+    float fix(float x){
+        return glm::clamp(x, 0.0f, 1.0f);
+    }
 };
 
 namespace Colors{
