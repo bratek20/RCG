@@ -8,10 +8,6 @@
 #include <memory>
 #include <vector>
 
-class Light;
-using LightPtr = std::shared_ptr<Light>;
-using WeakLightPtr = std::weak_ptr<Light>;
-
 class Program3D : public Shader {
     GLuint MVPId;
     GLuint viewMatId;
@@ -19,17 +15,10 @@ class Program3D : public Shader {
     GLuint meshColorId;
 
     GLuint playerPositionId;
-    GLuint lightsNumId;
-    GLuint lightPosId;
-    GLuint lightPowerId;
-    GLuint lightColorId;
-    GLuint lightCoefficientsId;
-
     GLuint textureId;
 
     glm::mat4 projectionMat;
     glm::mat4 viewMat;
-    std::vector<WeakLightPtr> lights;
 
 public:
     static const int MAX_LIGHTS;
@@ -39,8 +28,6 @@ public:
 
     void setProjectionMat(const glm::mat4& mat);
     void setViewMat(const glm::mat4& mat);
-    void addLight(LightPtr light);
-    void applyLights();
     void applyPlayerPosition(glm::vec3 worldPlayerPos);
     void applyWorldMat(const glm::mat4& worldMat);
     void applyColor(const Color& c); 

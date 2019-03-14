@@ -77,8 +77,8 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         Vertex vertex;
-        vertex.position = tryConvert(mesh->mVertices, i);
-        vertex.normal = tryConvert(mesh->mNormals, i);
+        vertex.position = tryConvert(mesh->mVertices, i, "position");
+        vertex.normal = tryConvert(mesh->mNormals, i, "normal");
         vertex.color = color;
         // texture coordinates
         if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
@@ -205,11 +205,15 @@ unsigned int Model::textureFromFile(const char *path, const string &directory, b
     return textureID;
 }
 
-glm::vec3 Model::tryConvert(aiVector3D *vectors, int idx, glm::vec3 defaultVal)
+glm::vec3 Model::tryConvert(aiVector3D *vectors, int idx, string name)
 {
     if(vectors == NULL)
     {
-        return defaultVal;
+        if(name != "")
+        {
+            cerr << "Convert failed for: " << name << endl;
+        }
+        return glm::vec3();
     }
     return glm::vec3(vectors[idx].x, vectors[idx].y, vectors[idx].z); 
 }

@@ -16,6 +16,7 @@ ScenePtr Scene::create(const Config &c)
     //auto a = Actor::create(MyMesh::create(Assets::CUBE, Colors::BLACK));
     //scene->addChild(a);
     scene->model = Model(c.loadScenePath);
+    Light::loadLights(c);
     return scene;
 }
 
@@ -23,10 +24,10 @@ void Scene::render()
 {
     MyMesh::setViewMat(camera->getViewMat());
     MyMesh::setProjectionMat(camera->getProjectionMat());
-    MyMesh::applyLights();
     MyMesh::applyPlayerPosition(camera->getWorldPosition());
     Actor::render(glm::mat4(1.0f));
     MyMesh::program.applyWorldMat(glm::mat4(1.0f));
+    Light::applyLights(MyMesh::program);
     model.draw(MyMesh::program);
 }
 

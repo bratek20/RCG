@@ -39,14 +39,6 @@ void MyMesh::setViewMat(const glm::mat4& mat){
     program.setViewMat(mat);
 }
 
-void MyMesh::addLight(LightPtr light){
-    program.addLight(light);
-}
-
-void MyMesh::applyLights(){
-    program.applyLights();
-}
-
 void MyMesh::applyPlayerPosition(glm::vec3 worldPlayerPos){
     program.applyPlayerPosition(worldPlayerPos);
 }

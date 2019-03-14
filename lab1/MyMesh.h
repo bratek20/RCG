@@ -37,8 +37,6 @@ public:
     static void setProjectionMat(const glm::mat4& mat);
     static void setViewMat(const glm::mat4& mat);
     
-    static void addLight(LightPtr light);
-    static void applyLights();
     static void applyPlayerPosition(glm::vec3 worldPlayerPos);
 
     void render(const glm::mat4& worldMat);

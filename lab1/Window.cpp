@@ -41,7 +41,7 @@ bool Window::open(const std::string& name, int width, int height) {
 		return false;
 	}
 
-	glClearColor(0.52f, 0.80f, 0.92f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     return true;
 }
 

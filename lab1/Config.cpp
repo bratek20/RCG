@@ -23,6 +23,23 @@ bool Config::load(const string& path)
     up = readVec3(file);
     file >> yView;
 
+    string type;
+    while(file >> type)
+    {
+        if(type == "L")
+        {
+            LightConfig lc;
+            lc.position = readVec3(file);
+            lc.color = readColor(file);
+            file >> lc.intensity;
+            lights.push_back(lc);
+        }
+        else
+        {
+            cerr << "Type: " << type << " not supported!" << endl;
+        }
+        
+    }
     return true;
 }
 
@@ -31,4 +48,11 @@ glm::vec3 Config::readVec3(ifstream& file)
     float x, y, z;
     file >> x >> y >> z;
     return glm::vec3(x, y, z);
+}
+
+Color Config::readColor(std::ifstream& file)
+{
+    int r, g, b;
+    file >> r >> g >> b;
+    return Color(r, g, b);
 }

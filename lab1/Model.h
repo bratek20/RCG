@@ -43,7 +43,7 @@ private:
     vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
     unsigned int textureFromFile(const char *path, const string &directory, bool gamma = false);
 
-    glm::vec3 tryConvert(aiVector3D* vectors, int idx, glm::vec3 defaultVal = glm::vec3(1, 0, 0));
+    glm::vec3 tryConvert(aiVector3D* vectors, int idx, string name = "");
 
 };
 #endif
