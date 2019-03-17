@@ -4,28 +4,30 @@ in vec3 Position_modelspace;
 in vec3 Position_worldspace;
 in vec3 Normal_cameraspace;
 in vec2 UV;
-in vec3 VertexColor;
 in vec3 EyeDirection_cameraspace;
 in vec3 LightDirection_cameraspace[10];
 
-// Ouput data
-out vec3 color;
+uniform float NS;
+uniform vec3 AmbientColor;
+uniform vec3 DiffuseColor;
+uniform vec3 SpecularColor;
 
 uniform int LightsNum;
 uniform vec3 LightPosition_worldspace[10];
 uniform vec3 LightColor[10];
 uniform float LightPower[10];
 uniform vec3 LightDistanceCoefficients[10];
-uniform vec3 PlayerPosition_worldspace;
-uniform sampler2D TextureSampler;
+
 uniform sampler2D texture_diffuse1;
+
+out vec3 color;
 
 void main(){
 	// Material properties
 	vec3 textureColor = texture( texture_diffuse1, UV ).rgb; 
-	vec3 MaterialDiffuseColor = VertexColor;
-	vec3 MaterialAmbientColor = vec3(0.2,0.2,0.2) * MaterialDiffuseColor;
-	vec3 MaterialSpecularColor = vec3(0.1,0.1,0.1);
+	vec3 MaterialDiffuseColor = DiffuseColor;
+	vec3 MaterialAmbientColor = AmbientColor * MaterialDiffuseColor;
+	vec3 MaterialSpecularColor = SpecularColor;
 
 	color = vec3(0,0,0);
 	for(int i = 0; i < LightsNum; i++){
@@ -64,6 +66,6 @@ void main(){
 			// Diffuse : "color" of the object
 			+ MaterialDiffuseColor * LightColor[i] * LightPower[i] * cosTheta / distanceLoss
 			// Specular : reflective highlight, like a mirror
-			+ MaterialSpecularColor * LightColor[i] * LightPower[i] * pow(cosAlpha,255) / distanceLoss;
+			+ MaterialSpecularColor * LightColor[i] * LightPower[i] * pow(cosAlpha, NS) / distanceLoss;
 	}
 }

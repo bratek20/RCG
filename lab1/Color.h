@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <ostream>
 
 struct Color
 {
@@ -51,8 +52,9 @@ struct Color
 
     static Color random();
 
+    friend std::ostream& operator<<(std::ostream& out, const Color& c);
+
 private:
-    
     float fix(float x){
         return glm::clamp(x, 0.0f, 1.0f);
     }

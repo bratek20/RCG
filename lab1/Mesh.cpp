@@ -1,27 +1,104 @@
 
 
 #include "Mesh.h"
+#include <iostream>
+const glm::vec3 Vertex::NORMAL_NOT_SET = glm::vec3(0);
 
-Triangle::Triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3) : v1(v1), v2(v2), v3(v3)
+Material::Material(aiMaterial *mat, unsigned int id) : id(id)
 {
-    //glm::normalize(glm::cross(v3.position - v1.position, v3.position - v2.position));
-    normal = glm::normalize((v1.normal + v2.normal + v3.normal) / 3.0f);
+    ambient = getColor(mat, AI_MATKEY_COLOR_AMBIENT);
+    diffuse = getColor(mat, AI_MATKEY_COLOR_DIFFUSE);
+    specular = getColor(mat, AI_MATKEY_COLOR_SPECULAR);
+    ns = getFloat(mat, AI_MATKEY_SHININESS);
 }
 
-Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+Color Material::getColor(aiMaterial *mat, const char *pKey, unsigned int type, unsigned int index, Color defaultCol)
 {
-    this->vertices = vertices;
-    this->indices = indices;
-    this->textures = textures;
+    aiColor4D color;
+    if (AI_SUCCESS == aiGetMaterialColor(mat, pKey, type, index, &color))
+    {
+        return Color(color.r, color.g, color.b);
+    }
+    return defaultCol;
+}
 
+float Material::getFloat(aiMaterial* mat, const char* pKey, unsigned int type, unsigned int index, float defaultVal)
+{
+    ai_real value;
+    if (AI_SUCCESS == aiGetMaterialFloat(mat, pKey, type, index, &value))
+    {
+        return value;
+    }
+    return defaultVal;
+}
+
+void Material::apply(Shader& shader)
+{
+    shader.applyFloat("NS", ns);
+    shader.applyColor("AmbientColor", ambient);
+    shader.applyColor("DiffuseColor", diffuse);
+    shader.applyColor("SpecularColor", specular);
+}
+
+
+Vertex::Vertex(aiMesh *mesh, int idx)
+{
+    position = toVec3(mesh->mVertices, idx, glm::vec3(0));
+    normal = toVec3(mesh->mNormals, idx, NORMAL_NOT_SET);
+
+    if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+    {
+        glm::vec2 vec;
+        // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't
+        // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
+        vec.x = mesh->mTextureCoords[0][idx].x;
+        vec.y = mesh->mTextureCoords[0][idx].y;
+        texCoords = vec;
+    }
+    else
+    {
+        texCoords = glm::vec2(0.0f, 0.0f);
+    }
+}
+
+glm::vec3 Vertex::toVec3(aiVector3D *vectors, int idx, glm::vec3 defaultVec)
+{
+    if (vectors != NULL)
+    {
+        return glm::vec3(vectors[idx].x, vectors[idx].y, vectors[idx].z);
+    }
+    return defaultVec;
+}
+
+bool Vertex::hasNormal() const
+{
+    return normal != NORMAL_NOT_SET;
+}
+
+Triangle::Triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, Material& mat) : 
+    v1(v1), v2(v2), v3(v3), mat(mat)
+{
+    if (v1.hasNormal() && v2.hasNormal() && v3.hasNormal())
+    {
+        normal = glm::normalize((v1.normal + v2.normal + v3.normal) / 3.0f);
+    }
+    else
+    {
+        normal = glm::normalize(glm::cross(v3.position - v1.position, v3.position - v2.position));
+    }
+}
+
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, const Material& material) :
+    vertices(vertices), indices(indices), textures(textures), material(material)
+{
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();
 }
 
-// render the mesh
 void Mesh::draw(Shader &shader)
 {
-    // bind appropriate textures
+    material.apply(shader);
+
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     unsigned int normalNr = 1;
@@ -81,11 +158,9 @@ void Mesh::setupMesh()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
 
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
     // vertex texture coords
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, texCoords));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, texCoords));
     // // vertex tangent
     // glEnableVertexAttribArray(3);
     // glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
@@ -101,7 +176,7 @@ vector<Triangle> Mesh::getTriangles()
     vector<Triangle> triangles;
     for (int i = 0; i < indices.size(); i += 3)
     {
-        triangles.push_back(Triangle(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]]));
+        triangles.push_back(Triangle(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]], material));
     }
     return triangles;
 }

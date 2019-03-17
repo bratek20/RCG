@@ -2,14 +2,12 @@
 
 layout(location = 0) in vec3 vertexPosition_modelspace;
 layout(location = 1) in vec3 vertexNormal_modelspace;
-layout(location = 2) in vec3 vertexColor;
-layout(location = 3) in vec2 vertexUV;
+layout(location = 2) in vec2 vertexUV;
 
 out vec3 Position_modelspace;
 out vec3 Position_worldspace;
 out vec3 Normal_cameraspace;
 out vec2 UV;
-out vec3 VertexColor;
 out vec3 EyeDirection_cameraspace;
 out vec3 LightDirection_cameraspace[10];
 
@@ -21,7 +19,6 @@ uniform vec3 LightPosition_worldspace[10];
 
 void main(){
 	vec3 vertexPosition = vertexPosition_modelspace;
-	VertexColor = vertexColor;
 
 	gl_Position =  MVP * vec4(vertexPosition, 1);
 	// Position of the vertex, in worldspace : M * position

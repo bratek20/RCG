@@ -6,9 +6,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 #include "Mesh.h"
 #include "Shader.h"
@@ -23,7 +20,8 @@ using namespace std;
 
 class Model 
 {
-    vector<Texture> loadedTextures;
+    vector<Texture> textures;
+    vector<Material> materials;
     vector<Mesh> meshes;
     string directory;
     bool gammaCorrection;
@@ -42,9 +40,7 @@ private:
 
     vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
     unsigned int textureFromFile(const char *path, const string &directory, bool gamma = false);
-
-    glm::vec3 tryConvert(aiVector3D* vectors, int idx, string name = "");
-
+    Material getMaterial(const aiScene *scene, unsigned int idx);
 };
 #endif
 

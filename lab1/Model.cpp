@@ -60,14 +60,7 @@ void Model::processNode(aiNode *node, const aiScene *scene)
 
 Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 {
-    const aiMaterial *mtl = scene->mMaterials[mesh->mMaterialIndex];
-
-    Color color = Colors::WHITE;
-    aiColor4D diffuse;
-    if (AI_SUCCESS == aiGetMaterialColor(mtl, AI_MATKEY_COLOR_DIFFUSE, &diffuse)){
-        color = Color(diffuse.r, diffuse.g, diffuse.b);
-    }
-
+    Material mat = getMaterial(scene, mesh->mMaterialIndex);
     // data to fill
     vector<Vertex> vertices;
     vector<unsigned int> indices;
@@ -76,26 +69,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     // Walk through each of the mesh's vertices
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
-        Vertex vertex;
-        vertex.position = tryConvert(mesh->mVertices, i, "position");
-        vertex.normal = tryConvert(mesh->mNormals, i, "normal");
-        vertex.color = color;
-        // texture coordinates
-        if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
-        {
-            glm::vec2 vec;
-            // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't
-            // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
-            vec.x = mesh->mTextureCoords[0][i].x;
-            vec.y = mesh->mTextureCoords[0][i].y;
-            vertex.texCoords = vec;
-        }
-        else
-        {
-            vertex.texCoords = glm::vec2(0.0f, 0.0f);
-        }
-        //vertex.Tangent = tryConvert(mesh->mTangents, i);
-        //vertex.Bitangent = tryConvert(mesh->mBitangents, i);
+        Vertex vertex(mesh, i);
         vertices.push_back(vertex);
     }
     // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
@@ -129,7 +103,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
     // return a mesh object created from the extracted mesh data
-    return Mesh(vertices, indices, textures);
+    return Mesh(vertices, indices, textures, mat);
 }
 
 // checks all material textures of a given type and loads the textures if they're not loaded yet.
@@ -143,11 +117,11 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
         mat->GetTexture(type, i, &str);
         // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
         bool skip = false;
-        for (unsigned int j = 0; j < loadedTextures.size(); j++)
+        for (unsigned int j = 0; j < textures.size(); j++)
         {
-            if (std::strcmp(loadedTextures[j].path.data(), str.C_Str()) == 0)
+            if (std::strcmp(textures[j].path.data(), str.C_Str()) == 0)
             {
-                textures.push_back(loadedTextures[j]);
+                textures.push_back(textures[j]);
                 skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
                 break;
             }
@@ -159,7 +133,7 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
             texture.type = typeName;
             texture.path = str.C_Str();
             textures.push_back(texture);
-            loadedTextures.push_back(texture); // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+            textures.push_back(texture); // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
         }
     }
     return textures;
@@ -205,19 +179,6 @@ unsigned int Model::textureFromFile(const char *path, const string &directory, b
     return textureID;
 }
 
-glm::vec3 Model::tryConvert(aiVector3D *vectors, int idx, string name)
-{
-    if(vectors == NULL)
-    {
-        if(name != "")
-        {
-            cerr << "Convert failed for: " << name << endl;
-        }
-        return glm::vec3();
-    }
-    return glm::vec3(vectors[idx].x, vectors[idx].y, vectors[idx].z); 
-}
-
 vector<Triangle> Model::getTriangles(){
     vector<Triangle> triangles;
     for(auto& mesh : meshes)
@@ -226,4 +187,15 @@ vector<Triangle> Model::getTriangles(){
         triangles.insert(triangles.end(), mTris.begin(), mTris.end());
     }
     return triangles;
+}
+
+Material Model::getMaterial(const aiScene *scene, unsigned int idx)
+{
+    auto it = find_if(materials.begin(), materials.end(), [&](const Material& mat){ return mat.id == idx;});
+    if(it != materials.end())
+    {
+        return *it;
+    }
+    materials.emplace_back(scene->mMaterials[idx], idx);
+    return materials.back();
 }

@@ -30,23 +30,23 @@ std::pair<bool, Color> RayTracer::cast(int k, glm::vec3 origin, glm::vec3 direct
 
     if(k==0)
     {
-        return std::make_pair(true, ansTri->v1.color);
+        return std::make_pair(true, ansTri->mat.diffuse);
     }
     
     glm::vec3 intersec = origin + direction * ansDist;
     glm::vec3 reflectDir = glm::normalize(glm::reflect(glm::normalize(intersec), ansTri->normal));
     float reflectParam = 0.0f;
     pair<bool, Color> reflectCast = cast(k-1, intersec, reflectDir, triangles, lights); 
-    Color phongColor = phongShading(intersec, ansTri->normal, direction, ansTri->v1.color, triangles, lights); 
+    Color phongColor = phongShading(intersec, ansTri->normal, direction, ansTri->mat, triangles, lights); 
     return std::make_pair(true, phongColor + reflectCast.second * reflectParam);
 } 
 
-Color RayTracer::phongShading(glm::vec3 position, glm::vec3 normal, glm::vec3 rayDirection, Color vertexColor, const std::vector<Triangle> &triangles, const std::vector<LightPtr> &lights)
+Color RayTracer::phongShading(glm::vec3 position, glm::vec3 normal, glm::vec3 rayDirection, Material& material, const std::vector<Triangle> &triangles, const std::vector<LightPtr> &lights)
 {
     Color color = Colors::BLACK;
-    Color materialDiffuseColor = vertexColor;
-	Color materialAmbientColor = Color(0.2f,0.2f,0.2f) * materialDiffuseColor; 
-	Color materialSpecularColor = Color(0.005f,0.005f,0.005f);
+    Color materialDiffuseColor = material.diffuse;
+	Color materialAmbientColor = material.ambient * materialDiffuseColor; 
+	Color materialSpecularColor = material.specular;
 	for(auto& light : lights){
 		// Distance to the light
         glm::vec3 lightDir = light->getWorldPosition() - position;
@@ -82,7 +82,7 @@ Color RayTracer::phongShading(glm::vec3 position, glm::vec3 normal, glm::vec3 ra
 			// Diffuse : "color" of the object
 			+ materialDiffuseColor * light->getColor() * light->getPower() * cosTheta / distanceLoss
 			// Specular : reflective highlight, like a mirror
-			+ materialSpecularColor * light->getColor() * light->getPower() * pow(cosAlpha, 16) / distanceLoss;
+			+ materialSpecularColor * light->getColor() * light->getPower() * pow(cosAlpha, material.ns) / distanceLoss;
 	}
 
     return color;
