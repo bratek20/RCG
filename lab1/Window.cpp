@@ -4,7 +4,7 @@
 GLFWwindow* Window::window;
 float Window::ratio;
 
-bool Window::open(const std::string& name, int width, int height) {
+bool Window::open(const std::string& name, int width, int height, Color background) {
         // Initialise GLFW
 	if( !glfwInit() )
 	{
@@ -41,7 +41,7 @@ bool Window::open(const std::string& name, int width, int height) {
 		return false;
 	}
 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(background.r, background.g, background.b, 0.0f);
     return true;
 }
 

@@ -63,7 +63,7 @@ void main(){
 		color += 
 			// Ambient : simulates indirect lighting
 			MaterialAmbientColor
-			// Diffuse : "color" of the object
+			// Diffuse : "color" of the object  
 			+ MaterialDiffuseColor * LightColor[i] * LightPower[i] * cosTheta / distanceLoss
 			// Specular : reflective highlight, like a mirror
 			+ MaterialSpecularColor * LightColor[i] * LightPower[i] * pow(cosAlpha, NS) / distanceLoss;

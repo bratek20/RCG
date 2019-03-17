@@ -6,6 +6,9 @@ std::ostream& operator<<(std::ostream& out, const Color& c){
     return out;
 }
 
+float Color::getAverage() const{
+    return (r + g + b) / 3;
+}
 Color Color::random(){
     return {Globals::random(), Globals::random(), Globals::random()};
 }

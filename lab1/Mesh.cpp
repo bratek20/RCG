@@ -51,8 +51,8 @@ Vertex::Vertex(aiMesh *mesh, int idx)
         glm::vec2 vec;
         // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't
         // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
-        vec.x = mesh->mTextureCoords[0][idx].x;
-        vec.y = mesh->mTextureCoords[0][idx].y;
+        //vec.x = mesh->mTextureCoords[0][idx].x;
+        //vec.y = mesh->mTextureCoords[0][idx].y;
         texCoords = vec;
     }
     else
@@ -75,16 +75,21 @@ bool Vertex::hasNormal() const
     return normal != NORMAL_NOT_SET;
 }
 
-Triangle::Triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, Material& mat) : 
+Triangle::Triangle(const Vertex &v1, const Vertex &v2, const Vertex &v3, const Material& mat) : 
     v1(v1), v2(v2), v3(v3), mat(mat)
+{
+    
+}
+
+glm::vec3 Triangle::getNormal(glm::vec2 baryPos) const
 {
     if (v1.hasNormal() && v2.hasNormal() && v3.hasNormal())
     {
-        normal = glm::normalize((v1.normal + v2.normal + v3.normal) / 3.0f);
+        return (1 - baryPos.x - baryPos.y) * v1.normal + baryPos.x * v2.normal + baryPos.y * v3.normal;
     }
     else
     {
-        normal = glm::normalize(glm::cross(v3.position - v1.position, v3.position - v2.position));
+        return glm::normalize(glm::cross(v3.position - v1.position, v3.position - v2.position));
     }
 }
 
@@ -176,7 +181,7 @@ vector<Triangle> Mesh::getTriangles()
     vector<Triangle> triangles;
     for (int i = 0; i < indices.size(); i += 3)
     {
-        triangles.push_back(Triangle(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]], material));
+        triangles.emplace_back(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]], material);
     }
     return triangles;
 }

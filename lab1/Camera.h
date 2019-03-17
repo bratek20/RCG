@@ -8,8 +8,16 @@ class Camera;
 using CameraPtr = std::shared_ptr<Camera>;
 
 class Camera : public Actor {
+    ActorPtr lookPoint;
+    ActorPtr leftTop;
+    ActorPtr leftBottom;
+    ActorPtr rightTop;
+    ActorPtr rightBottom;
+    glm::vec3 up;
+    float velocity;
+
 public:
-    static CameraPtr create(const Config& c);
+    static CameraPtr create(const CameraConfig& c);
     
     glm::mat4 getViewMat();
     glm::mat4 getProjectionMat();
@@ -25,14 +33,8 @@ protected:
     void onUpdate() override;
 
 private:
-    void setCornerPoints(float xView, float yView);
+    void setCornerPoints(float xView, float yView, glm::vec3 lookDir, glm::vec3 up);
 
-    ActorPtr lookPoint;
-    ActorPtr leftTop;
-    ActorPtr leftBottom;
-    ActorPtr rightTop;
-    ActorPtr rightBottom;
-    glm::vec3 up;
 };
 
 #endif

@@ -18,10 +18,10 @@ bool Config::load(const string& path)
     getline(file, saveImagePath);
     file >> k;
     file >> xRes >> yRes;
-    viewPoint = readVec3(file);
-    lookAt = readVec3(file);
-    up = readVec3(file);
-    file >> yView;
+    camera.viewPoint = readVec3(file);
+    camera.lookAt = readVec3(file);
+    camera.up = readVec3(file);
+    file >> camera.yView;
 
     string type;
     while(file >> type)
@@ -33,6 +33,18 @@ bool Config::load(const string& path)
             lc.color = readColor(file);
             file >> lc.intensity;
             lights.push_back(lc);
+        }
+        else if(type == "LC")
+        {
+            lightCoef = readVec3(file);
+        }
+        else if(type == "CV")
+        {
+            file >> camera.velocity; 
+        }
+        else if(type == "BG")
+        {
+            background = readColor(file);
         }
         else
         {

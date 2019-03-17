@@ -27,6 +27,7 @@ struct Material {
     Color specular;
     float ns;
 
+    Material() = default;
     Material(aiMaterial* mat, unsigned int id);
     void apply(Shader& shader);
 
@@ -44,6 +45,7 @@ struct Vertex {
     //glm::vec3 tangent;
     //glm::vec3 bitangent;
 
+    Vertex() = default;
     Vertex(aiMesh *mesh, int idx);
 
     bool hasNormal() const;
@@ -62,10 +64,12 @@ struct Triangle {
     Vertex v1;
     Vertex v2;
     Vertex v3;
-    glm::vec3 normal;
-    Material& mat;
+    Material mat;
 
-    Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3, Material& mat);
+    Triangle() = default;
+    Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3, const Material& mat);
+
+    glm::vec3 getNormal(glm::vec2 baryPos) const;
 };
 
 class Mesh {

@@ -7,11 +7,23 @@
 #include <glm/glm.hpp>
 #include <fstream>
 #include <vector>
+#include <unordered_map>
+#include <functional>
+
+using namespace std;
 
 struct LightConfig {
     glm::vec3 position;
     Color color;
     float intensity;
+};
+
+struct CameraConfig {
+    glm::vec3 viewPoint;
+    glm::vec3 lookAt;
+    glm::vec3 up;
+    float yView;
+    float velocity = 1.0f;
 };
 
 struct Config {
@@ -20,10 +32,11 @@ struct Config {
     std::string saveImagePath;
     int k;
     int xRes, yRes;
-    glm::vec3 viewPoint;
-    glm::vec3 lookAt;
-    glm::vec3 up;
-    float yView;
+    Color background = Colors::BLACK;
+
+    CameraConfig camera;
+
+    glm::vec3 lightCoef = glm::vec3(1, 0, 0);
     std::vector<LightConfig> lights;
 
     bool load(const std::string& path);

@@ -11,7 +11,7 @@ Scene::Scene() : Actor(nullptr)
 ScenePtr Scene::create(const Config &c)
 {
     ScenePtr scene = ScenePtr(new Scene());
-    scene->camera = Camera::create(c);
+    scene->camera = Camera::create(c.camera);
     scene->addChild(scene->camera);
     //auto a = Actor::create(MyMesh::create(Assets::CUBE, Colors::BLACK));
     //scene->addChild(a);
@@ -42,15 +42,10 @@ void Scene::takePhoto(const Config &c)
     bitmap_image photo(c.xRes, c.yRes);
 
     glm::vec3 origin = camera->getWorldPosition();
+    cout << "Camera position: " << origin.x  << ", " << origin.y << ", " <<origin.z << endl;
     vector<Triangle> triangles = model.getTriangles();
-    auto printVec3 = [](glm::vec3 v, string what = ""){cout << what << "(" << v.x << ", " << v.y << ", " << v.z << ") \n";};
-    // auto printV = [&](Vertex v){printVec3(v.position);};
-    // for(auto& tri : triangles){
-    //     printV(tri.v1);
-    //     printV(tri.v2);
-    //     printV(tri.v3);
-    //     cout << endl;
-    // }
+    cout << "Triangles number: " << triangles.size() << endl;
+
     glm::vec3 leftTop = camera->getLeftTop();
     glm::vec3 leftBottom = camera->getLeftBottom();
     glm::vec3 rightTop = camera->getRightTop();
@@ -62,7 +57,8 @@ void Scene::takePhoto(const Config &c)
             float yShift = static_cast<float>(y) / c.yRes;
             glm::vec3 pos = -leftTop + glm::mix(leftTop, rightTop, xShift) + glm::mix(leftTop, leftBottom, yShift); 
             glm::vec3 direction = glm::normalize(pos - origin);
-            Color color = RayTracer::cast(c.k, origin, direction, triangles, Light::getLights()).second;
+            auto hit = RayTracer::cast(c.k, 0, origin, direction, triangles, Light::getLights());
+            Color color = hit.first ? hit.second : c.background;
             photo.set_pixel(x, y, color.r * 255, color.g * 255, color.b * 255);
         }
     }

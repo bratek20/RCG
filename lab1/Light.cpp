@@ -24,7 +24,7 @@ LightPtr Light::create(float power, Color color, glm::vec3 coefficients){
 
 void Light::loadLights(const Config& c){
     for(auto& lc : c.lights){
-        auto light = create(lc.intensity, lc.color);
+        auto light = create(lc.intensity, lc.color, c.lightCoef);
         light->setPosition(lc.position);
     }
 }

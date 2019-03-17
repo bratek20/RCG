@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
 		cerr << "Bad config!" << endl;
 		return -1;
 	}
-    if(!Window::open("Lab1", c.xRes, c.yRes)){
+    if(!Window::open("Lab1", c.xRes, c.yRes, c.background)){
         return -1;
     }
 	Input::init();

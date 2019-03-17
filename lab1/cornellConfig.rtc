@@ -1,0 +1,14 @@
+# Test view scene: in OBJ format coords righthanded, CCW faces
+assets/view_test/cornell_box.obj
+cornell_box.bmp
+1
+600 400
+0.0 0 0
+0.0 0 2
+0 1 0
+1
+L 0 0 0 255 255 255 1
+L 400 400 400 255 255 255 1
+LC 0 0 1
+BG 100 100 255
+CV 100

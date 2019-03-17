@@ -5,12 +5,14 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
+#include "Color.h"
+
 class Window{
     static GLFWwindow* window;
     static float ratio;
 
 public:
-    static bool open(const std::string& name, int width, int height);
+    static bool open(const std::string& name, int width, int height, Color background);
     static void clear();
     static void swapBuffers();
     static bool shouldClose();
