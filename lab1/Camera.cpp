@@ -80,7 +80,7 @@ glm::mat4 Camera::getProjectionMat() {
                             // familiar ?
         0.1f,  // Near clipping plane. Keep as big as possible, or you'll get
                // precision issues.
-        1000.0f // Far clipping plane. Keep as little as possible.
+        2000.0f // Far clipping plane. Keep as little as possible.
     );
 }
 

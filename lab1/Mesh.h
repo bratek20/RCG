@@ -42,6 +42,7 @@ struct Vertex {
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 texCoords;
+    vector<glm::vec3> normals;
     //glm::vec3 tangent;
     //glm::vec3 bitangent;
 
@@ -49,6 +50,8 @@ struct Vertex {
     Vertex(aiMesh *mesh, int idx);
 
     bool hasNormal() const;
+    void fixNormal(glm::vec3 normal);
+    void applyFix();
 
 private:
     glm::vec3 toVec3(aiVector3D* vectors, int idx, glm::vec3 defaultVec);
@@ -67,9 +70,10 @@ struct Triangle {
     Material mat;
 
     Triangle() = default;
-    Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3, const Material& mat);
+    Triangle(Vertex& v1, Vertex& v2, Vertex& v3, const Material& mat);
 
     glm::vec3 getNormal(glm::vec2 baryPos) const;
+    glm::vec3 getNormal() const;
 };
 
 class Mesh {
@@ -78,6 +82,7 @@ public:
     vector<Vertex> vertices;
     vector<unsigned int> indices;
     vector<Texture> textures;
+    vector<Triangle> triangles;
     Material material;
     unsigned int VAO;
 
@@ -87,7 +92,7 @@ public:
 
     // render the mesh
     void draw(Shader& shader);
-    vector<Triangle> getTriangles();
+    const vector<Triangle>& getTriangles() const;
 
 private:
     /*  Render data  */
