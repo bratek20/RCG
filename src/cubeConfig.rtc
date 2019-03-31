@@ -1,5 +1,5 @@
 # Test view scene: in OBJ format coords righthanded, CCW faces
-assets/cube/cube.obj
+cube/cube.obj
 cube.bmp
 1
 600 400

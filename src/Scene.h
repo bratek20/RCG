@@ -11,7 +11,6 @@ using ScenePtr = std::shared_ptr<Scene>;
 
 class Scene : public Actor {
     CameraPtr camera;
-    Model model;
     std::vector<LightPtr> lights;
 
 public:
@@ -22,6 +21,6 @@ public:
     void takePhoto(const Config& c);
 
 protected:
-    Scene();
+    Scene(ModelPtr sceneModel);
 };
 #endif

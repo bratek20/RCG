@@ -1,7 +1,6 @@
 #include "Window.h"
 #include "Input.h"
 #include "Globals.h"
-#include "MyMesh.h"
 #include "Scene.h"
 #include "Color.h"
 #include "Assets.h"
@@ -23,7 +22,6 @@ int main(int argc, char* argv[]){
     }
 	Input::init();
 	Assets::init();
-    MyMesh::init();
 
 	Globals::init();
 	ScenePtr scene = Scene::create(c);
@@ -41,7 +39,6 @@ int main(int argc, char* argv[]){
 		Globals::updateTime();
 	}
 
-    MyMesh::clear();
 	Assets::clear();
 	Window::close();
 	return 0;

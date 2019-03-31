@@ -2,17 +2,20 @@
 #include <algorithm>
 #include <iostream>
 #include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/quaternion.hpp>
 #include <glm/common.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "Assets.h"
+
 using namespace std;
 
-Actor::Actor(MyMeshPtr mesh) : position(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rotation(0.0f), mesh(mesh) {
+Actor::Actor(ModelPtr model) : position(0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), rotation(0.0f), model(model) {
 }
 
-ActorPtr Actor::create(MyMeshPtr mesh){
-    auto actor = ActorPtr(new Actor(mesh));
+ActorPtr Actor::create(ModelPtr model){
+    auto actor = ActorPtr(new Actor(model));
     return actor;
 }
 
@@ -34,8 +37,9 @@ void Actor::update(){
 
 void Actor::render(const glm::mat4& worldMat){
     auto myWorldMat = worldMat * getLocalMat();
-    if(mesh != nullptr && isVisible){
-        mesh->render(myWorldMat);
+    if(model != nullptr && isVisible){
+        Assets::program.applyWorldMat(myWorldMat);
+        model->draw(Assets::program);
     }
 
     for(auto& c : childs){
@@ -86,8 +90,8 @@ void Actor::rotate(glm::vec3 dRot){
     rotation += dRot;
 }
 
-MyMeshPtr Actor::getMyMesh() const{
-    return mesh;
+ModelPtr Actor::getModel() const{
+    return model;
 }
 
 glm::vec3 Actor::getLocalPosition() const{
@@ -96,13 +100,6 @@ glm::vec3 Actor::getLocalPosition() const{
 
 glm::vec3 Actor::getWorldPosition() const{
     return static_cast<glm::vec3>(getWorldMat() * glm::vec4(0, 0, 0, 1));
-}
-
-std::vector<glm::vec3> Actor::getWorldCoords() const{
-    if(mesh != nullptr){
-        return mesh->getWorldCoords(getWorldMat());
-    }
-    return {getWorldPosition()};
 }
 
 glm::vec3 Actor::getScale() const{

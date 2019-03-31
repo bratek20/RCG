@@ -16,7 +16,11 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <memory>
 using namespace std;
+
+class Model;
+using ModelPtr = std::shared_ptr<Model>;
 
 class Model 
 {
@@ -25,16 +29,15 @@ class Model
     vector<Mesh> meshes;
     vector<Triangle> triangles;
     string directory;
-    bool gammaCorrection;
 
 public:
-    Model(){}
-    Model(const string& path, bool gamma = false);
+    static ModelPtr create(const string& path);
 
     void draw(Shader shader);
     const vector<Triangle>& getTriangles() const;
     
 private:
+    Model(const string& path);
     bool loadModel(const string& path);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);

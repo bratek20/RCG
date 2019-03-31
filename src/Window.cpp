@@ -41,6 +41,7 @@ bool Window::open(const std::string& name, int width, int height, Color backgrou
 		return false;
 	}
 
+	glEnable(GL_DEPTH_TEST);
 	glClearColor(background.r, background.g, background.b, 0.0f);
     return true;
 }

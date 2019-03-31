@@ -2,10 +2,11 @@
 #define ACTOR_H
 
 #include <glm/glm.hpp>
-#include "MyMesh.h"
 #include <vector>
 #include <memory>
 #include <functional>
+
+#include "Model.h"
 
 class Actor;
 using ActorPtr = std::shared_ptr<Actor>;
@@ -17,7 +18,7 @@ class Actor : public std::enable_shared_from_this<Actor> {
     bool isVisible = true;
 
 public:
-    static ActorPtr create(MyMeshPtr mesh);
+    static ActorPtr create(ModelPtr model);
     virtual ~Actor(){}
 
     void destroy();
@@ -48,15 +49,15 @@ public:
 protected:
     glm::vec3 position;
     glm::vec3 scale;
-    glm::vec3 rotation;
-    MyMeshPtr mesh;   
+    glm::vec3 rotation; 
+    ModelPtr model;
     
     std::weak_ptr<Actor> parent; 
     std::vector<ActorPtr> childs;
-    Actor(MyMeshPtr mesh);
+    Actor(ModelPtr model);
     virtual void onUpdate() {};
 
-    MyMeshPtr getMyMesh() const;
+    ModelPtr getModel() const;
     glm::mat4 getWorldMat() const;
     glm::mat4 getLocalMat() const;
     glm::mat4 getPositionMat() const;

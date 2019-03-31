@@ -1,7 +1,10 @@
 #include "Model.h"
 
-Model::Model(string const &path, bool gamma) : gammaCorrection(gamma)
-{
+ModelPtr Model::create(const string& path){
+    return ModelPtr(new Model(path));
+}
+
+Model::Model(string const &path) {
     if(loadModel(path))
     {
         cout << "Model loaded!" << endl;

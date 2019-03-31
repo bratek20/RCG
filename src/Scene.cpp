@@ -1,34 +1,31 @@
 #include "Scene.h"
 #include "Color.h"
 #include "RayTracer.h"
+#include "Assets.h"
 
 #include <bitmap_image.h>
 
-Scene::Scene() : Actor(nullptr)
+Scene::Scene(ModelPtr sceneModel) : Actor(sceneModel)
 {
 }
 
 ScenePtr Scene::create(const Config &c)
 {
-    ScenePtr scene = ScenePtr(new Scene());
+    string fullScenePath = Assets::validPath(c.loadScenePath);
+    ScenePtr scene = ScenePtr(new Scene(Model::create(fullScenePath)));
     scene->camera = Camera::create(c.camera);
     scene->addChild(scene->camera);
-    //auto a = Actor::create(MyMesh::create(Assets::CUBE, Colors::BLACK));
-    //scene->addChild(a);
-    scene->model = Model(c.loadScenePath);
     Light::loadLights(c);
     return scene;
 }
 
 void Scene::render()
 {
-    MyMesh::setViewMat(camera->getViewMat());
-    MyMesh::setProjectionMat(camera->getProjectionMat());
-    MyMesh::applyPlayerPosition(camera->getWorldPosition());
-    Actor::render(glm::mat4(1.0f));
-    MyMesh::program.applyWorldMat(glm::mat4(1.0f));
-    Light::applyLights(MyMesh::program);
-    model.draw(MyMesh::program);
+    Assets::program.setViewMat(camera->getViewMat());
+    Assets::program.setProjectionMat(camera->getProjectionMat());
+
+    Light::applyLights(Assets::program);
+    Actor::render(glm::mat4(1.0f));   
 }
 
 CameraPtr Scene::getCamera() const
@@ -43,7 +40,7 @@ void Scene::takePhoto(const Config &c)
 
     glm::vec3 origin = camera->getWorldPosition();
     cout << "Camera position: " << origin.x  << ", " << origin.y << ", " <<origin.z << endl;
-    auto& triangles = model.getTriangles();
+    auto& triangles = getModel()->getTriangles();
     cout << "Triangles number: " << triangles.size() << endl;
 
     glm::vec3 leftTop = camera->getLeftTop();
