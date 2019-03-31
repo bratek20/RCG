@@ -82,7 +82,6 @@ public:
     vector<Vertex> vertices;
     vector<unsigned int> indices;
     vector<Texture> textures;
-    vector<Triangle> triangles;
     Material material;
     unsigned int VAO;
 
@@ -92,7 +91,7 @@ public:
 
     // render the mesh
     void draw(Shader& shader);
-    const vector<Triangle>& getTriangles() const;
+    vector<Triangle> getTriangles();
 
 private:
     /*  Render data  */

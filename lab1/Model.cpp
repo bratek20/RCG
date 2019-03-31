@@ -37,6 +37,14 @@ bool Model::loadModel(string const &path)
 
     // process ASSIMP's root node recursively
     processNode(scene->mRootNode, scene);
+
+    triangles.clear();
+    for(auto& mesh : meshes)
+    {
+        auto mTris = mesh.getTriangles();
+        triangles.insert(triangles.end(), mTris.begin(), mTris.end());
+    }
+    
     return true;
 }
 
@@ -179,16 +187,9 @@ unsigned int Model::textureFromFile(const char *path, const string &directory, b
     return textureID;
 }
 
-vector<Triangle> Model::getTriangles(){
-    vector<Triangle> triangles;
-    for(auto& mesh : meshes)
-    {
-        auto mTris = mesh.getTriangles();
-        triangles.insert(triangles.end(), mTris.begin(), mTris.end());
-    }
+const vector<Triangle>& Model::getTriangles() const{
     return triangles;
 }
-
 Material Model::getMaterial(const aiScene *scene, unsigned int idx)
 {
     auto it = find_if(materials.begin(), materials.end(), [&](const Material& mat){ return mat.id == idx;});

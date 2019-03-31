@@ -43,7 +43,7 @@ void Scene::takePhoto(const Config &c)
 
     glm::vec3 origin = camera->getWorldPosition();
     cout << "Camera position: " << origin.x  << ", " << origin.y << ", " <<origin.z << endl;
-    vector<Triangle> triangles = model.getTriangles();
+    auto& triangles = model.getTriangles();
     cout << "Triangles number: " << triangles.size() << endl;
 
     glm::vec3 leftTop = camera->getLeftTop();

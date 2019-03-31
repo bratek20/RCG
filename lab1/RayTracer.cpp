@@ -4,7 +4,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/intersect.hpp>
 
-const float RayTracer::EPSILON = 1;
+const float RayTracer::EPSILON = 1e-3;
 
 std::pair<bool, Color> RayTracer::cast(int k, float minDist, glm::vec3 origin,
                                        glm::vec3 direction,

@@ -23,6 +23,7 @@ class Model
     vector<Texture> textures;
     vector<Material> materials;
     vector<Mesh> meshes;
+    vector<Triangle> triangles;
     string directory;
     bool gammaCorrection;
 
@@ -31,7 +32,7 @@ public:
     Model(const string& path, bool gamma = false);
 
     void draw(Shader shader);
-    vector<Triangle> getTriangles();
+    const vector<Triangle>& getTriangles() const;
     
 private:
     bool loadModel(const string& path);

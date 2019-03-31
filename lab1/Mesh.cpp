@@ -96,7 +96,6 @@ void Vertex::applyFix()
         sum += n;
     }
     normal = glm::normalize(sum / static_cast<float>(normals.size()));
-    cout << "Size: " << normals.size() << endl;
     normals.clear();
 }
 
@@ -172,15 +171,6 @@ void Mesh::draw(Shader &shader)
 }
 void Mesh::setupMesh()
 {
-    triangles.clear();
-    for (int i = 0; i < indices.size(); i += 3)
-    {
-        triangles.emplace_back(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]], material);
-    }
-    for(auto& v : vertices)
-    {
-        v.applyFix();
-    }
     // create buffers/arrays
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -218,7 +208,16 @@ void Mesh::setupMesh()
     glBindVertexArray(0);
 }
 
-const vector<Triangle>& Mesh::getTriangles() const
+vector<Triangle> Mesh::getTriangles()
 {
+    vector<Triangle> triangles;
+    for (int i = 0; i < indices.size(); i += 3)
+    {
+        triangles.emplace_back(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]], material);
+    }
+    for(auto& v : vertices)
+    {
+        v.applyFix();
+    }
     return triangles;
 }

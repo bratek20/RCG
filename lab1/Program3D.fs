@@ -59,7 +59,6 @@ void main(){
 			distance * distance * LightDistanceCoefficients[i].x +
 			distance * LightDistanceCoefficients[i].y +
 			LightDistanceCoefficients[i].z;  
-		distanceLoss = 1;
 		color += 
 			// Ambient : simulates indirect lighting
 			MaterialAmbientColor
