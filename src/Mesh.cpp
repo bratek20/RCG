@@ -78,6 +78,8 @@ bool Vertex::hasNormal() const
 Triangle::Triangle(Vertex &v1, Vertex &v2, Vertex &v3, const Material& mat) : 
     v1(v1), v2(v2), v3(v3), mat(mat)
 {
+    static int nextId = 1;
+    id = nextId++;
 }
 
 glm::vec3 Triangle::getNormal(glm::vec2 baryPos) const
@@ -178,14 +180,15 @@ void Mesh::setupMesh()
     // glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 
     glBindVertexArray(0);
-}
 
-vector<Triangle> Mesh::getTriangles()
-{
-    vector<Triangle> triangles;
+    triangles.clear();
     for (int i = 0; i < indices.size(); i += 3)
     {
         triangles.emplace_back(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]], material);
     }
+}
+
+const vector<Triangle>& Mesh::getTriangles() const
+{
     return triangles;
 }

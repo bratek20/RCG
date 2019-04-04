@@ -18,6 +18,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+
 using namespace std;
 
 struct Material {
@@ -61,6 +62,7 @@ struct Texture {
 };
 
 struct Triangle {
+    int id;
     Vertex v1;
     Vertex v2;
     Vertex v3;
@@ -72,6 +74,7 @@ struct Triangle {
     glm::vec3 getNormal(glm::vec2 baryPos) const;
     glm::vec3 getNormal() const;
 };
+using TrianglePtr = const Triangle*;
 
 class Mesh {
 public:
@@ -79,6 +82,7 @@ public:
     vector<Vertex> vertices;
     vector<unsigned int> indices;
     vector<Texture> textures;
+    vector<Triangle> triangles;
     Material material;
     unsigned int VAO;
 
@@ -88,7 +92,7 @@ public:
 
     // render the mesh
     void draw(Shader& shader);
-    vector<Triangle> getTriangles();
+    const vector<Triangle>& getTriangles() const;
 
 private:
     /*  Render data  */

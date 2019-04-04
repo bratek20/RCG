@@ -1,55 +1,34 @@
 #include "RayTracer.h"
 
 #include <cstdio>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/intersect.hpp>
 
-const float RayTracer::EPSILON = 1e-3;
-
-std::pair<bool, Color> RayTracer::cast(int k, float minDist, glm::vec3 origin,
-                                       glm::vec3 direction,
-                                       const std::vector<Triangle> &triangles,
+std::pair<bool, Color> RayTracer::cast(int k, Ray r, AccStruct& accStruct,
                                        const std::vector<LightPtr> &lights) {
-    const Triangle *ansTri = NULL;
-    float ansDist = std::numeric_limits<float>::max();
-    glm::vec2 ansBaryPos;
-
-    for (auto &tri : triangles) {
-        glm::vec2 baryPos;
-        float distance;
-        bool intersetcs = glm::intersectRayTriangle(
-            origin, direction, tri.v1.position, tri.v2.position,
-            tri.v3.position, baryPos, distance);
-        if (intersetcs && distance < ansDist && distance > minDist) {
-            ansTri = &tri;
-            ansDist = distance;
-            ansBaryPos = baryPos;
-        }
-    }
-
-    if (ansTri == NULL) {
+    CastData ans = accStruct.cast(r);
+    if (!ans.intersects()) {
         return std::make_pair(false, Colors::BLACK);
     }
 
+    TrianglePtr ansTri = ans.triangle; 
     if (k == 0) {
         return std::make_pair(true, ansTri->mat.diffuse);
     }
 
-    glm::vec3 intersec = origin + direction * ansDist;
-    glm::vec3 normal = ansTri->getNormal(ansBaryPos);
+    glm::vec3 intersec = ans.pos;
+    glm::vec3 normal = ansTri->getNormal(ans.baryPos);
     glm::vec3 reflectDir =
         glm::normalize(glm::reflect(glm::normalize(intersec), normal));
     float reflectParam = ansTri->mat.specular.getAverage();
     pair<bool, Color> reflectCast =
-        cast(k - 1, EPSILON, intersec, reflectDir, triangles, lights);
-    Color phongColor = phongShading(intersec, normal, direction,
-                                    ansTri->mat, triangles, lights);
+        cast(k - 1, Ray(intersec, reflectDir, true), accStruct, lights);
+    Color phongColor = phongShading(intersec, normal, r.direction,
+                                    ansTri->mat, accStruct, lights);
     return std::make_pair(true, phongColor + reflectCast.second * reflectParam);
 }
 
 Color RayTracer::phongShading(glm::vec3 position, glm::vec3 normal,
                               glm::vec3 rayDirection, const Material &material,
-                              const std::vector<Triangle> &triangles,
+                              AccStruct& accStruct,
                               const std::vector<LightPtr> &lights) {
     Color color = Colors::BLACK;
     Color materialDiffuseColor = material.diffuse;
@@ -60,9 +39,8 @@ Color RayTracer::phongShading(glm::vec3 position, glm::vec3 normal,
         glm::vec3 lightDir = light->getWorldPosition() - position;
         float distance = length(lightDir);
         lightDir = glm::normalize(lightDir);
-        pair<bool, Color> hit =
-            cast(0, EPSILON, position, lightDir, triangles, lights);
-        if (hit.first) {
+        CastData hit = accStruct.cast(Ray(position, lightDir, true));
+        if (hit.intersects()) {
             continue;
         }
 

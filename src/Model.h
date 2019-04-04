@@ -27,14 +27,14 @@ class Model
     vector<Texture> textures;
     vector<Material> materials;
     vector<Mesh> meshes;
-    vector<Triangle> triangles;
+    vector<TrianglePtr> triangles;
     string directory;
 
 public:
     static ModelPtr create(const string& path);
 
     void draw(Shader shader);
-    const vector<Triangle>& getTriangles() const;
+    const vector<TrianglePtr>& getTriangles() const;
     
 private:
     Model(const string& path);

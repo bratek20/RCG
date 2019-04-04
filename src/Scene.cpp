@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Color.h"
+#include "SimpleAccStruct.h"
 #include "RayTracer.h"
 #include "Assets.h"
 
@@ -41,6 +42,7 @@ void Scene::takePhoto(const Config &c)
     glm::vec3 origin = camera->getWorldPosition();
     cout << "Camera position: " << origin.x  << ", " << origin.y << ", " <<origin.z << endl;
     auto& triangles = getModel()->getTriangles();
+    SimpleAccStruct accStruct(triangles);
     cout << "Triangles number: " << triangles.size() << endl;
 
     glm::vec3 leftTop = camera->getLeftTop();
@@ -54,7 +56,7 @@ void Scene::takePhoto(const Config &c)
             float yShift = static_cast<float>(y) / c.yRes;
             glm::vec3 pos = -leftTop + glm::mix(leftTop, rightTop, xShift) + glm::mix(leftTop, leftBottom, yShift); 
             glm::vec3 direction = glm::normalize(pos - origin);
-            auto hit = RayTracer::cast(c.k, 0, origin, direction, triangles, Light::getLights());
+            auto hit = RayTracer::cast(c.k, Ray(origin, direction), accStruct, Light::getLights());
             Color color = hit.first ? hit.second : c.background;
             photo.set_pixel(x, y, color.r * 255, color.g * 255, color.b * 255);
         }

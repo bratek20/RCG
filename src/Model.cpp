@@ -44,8 +44,11 @@ bool Model::loadModel(string const &path)
     triangles.clear();
     for(auto& mesh : meshes)
     {
-        auto mTris = mesh.getTriangles();
-        triangles.insert(triangles.end(), mTris.begin(), mTris.end());
+        auto& mTris = mesh.getTriangles();
+        for(auto& tri : mTris)
+        {
+            triangles.push_back(&tri);
+        }
     }
     
     return true;
@@ -190,7 +193,7 @@ unsigned int Model::textureFromFile(const char *path, const string &directory, b
     return textureID;
 }
 
-const vector<Triangle>& Model::getTriangles() const{
+const vector<TrianglePtr>& Model::getTriangles() const{
     return triangles;
 }
 Material Model::getMaterial(const aiScene *scene, unsigned int idx)
