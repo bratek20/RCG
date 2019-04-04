@@ -42,7 +42,6 @@ struct Vertex {
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 texCoords;
-    vector<glm::vec3> normals;
     //glm::vec3 tangent;
     //glm::vec3 bitangent;
 
@@ -50,8 +49,6 @@ struct Vertex {
     Vertex(aiMesh *mesh, int idx);
 
     bool hasNormal() const;
-    void fixNormal(glm::vec3 normal);
-    void applyFix();
 
 private:
     glm::vec3 toVec3(aiVector3D* vectors, int idx, glm::vec3 defaultVec);

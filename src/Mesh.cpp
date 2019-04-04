@@ -75,37 +75,9 @@ bool Vertex::hasNormal() const
     return normal != NORMAL_NOT_SET;
 }
 
-void Vertex::fixNormal(glm::vec3 normal)
-{
-    if(!hasNormal())
-    {
-        normals.push_back(normal);
-    }
-}
-
-void Vertex::applyFix()
-{
-    if(hasNormal())
-    {
-        return;
-    }
-
-    glm::vec3 sum = glm::vec3(0);
-    for(auto n : normals)
-    {
-        sum += n;
-    }
-    normal = glm::normalize(sum / static_cast<float>(normals.size()));
-    normals.clear();
-}
-
 Triangle::Triangle(Vertex &v1, Vertex &v2, Vertex &v3, const Material& mat) : 
     v1(v1), v2(v2), v3(v3), mat(mat)
 {
-    glm::vec3 normal = getNormal();
-    v1.fixNormal(normal);
-    v2.fixNormal(normal);
-    v3.fixNormal(normal);
 }
 
 glm::vec3 Triangle::getNormal(glm::vec2 baryPos) const
@@ -214,10 +186,6 @@ vector<Triangle> Mesh::getTriangles()
     for (int i = 0; i < indices.size(); i += 3)
     {
         triangles.emplace_back(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]], material);
-    }
-    for(auto& v : vertices)
-    {
-        v.applyFix();
     }
     return triangles;
 }
