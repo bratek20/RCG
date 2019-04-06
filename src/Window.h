@@ -6,13 +6,14 @@
 #include <string>
 
 #include "Color.h"
+#include "Config.h"
 
 class Window{
     static GLFWwindow* window;
     static float ratio;
 
 public:
-    static bool open(const std::string& name, int width, int height, Color background);
+    static bool open(const std::string& name, const Config& c);
     static void clear();
     static void swapBuffers();
     static bool shouldClose();

@@ -46,6 +46,10 @@ bool Config::load(const string& path)
         {
             background = readColor(file);
         }
+        else if(type == "DM")
+        {
+            file >> debugMode;
+        }
         else
         {
             cerr << "Type: " << type << " not supported!" << endl;

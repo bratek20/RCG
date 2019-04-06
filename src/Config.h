@@ -39,6 +39,8 @@ struct Config {
     glm::vec3 lightCoef = glm::vec3(1, 0, 0);
     std::vector<LightConfig> lights;
 
+    bool debugMode = false;
+
     bool load(const std::string& path);
 
 private:

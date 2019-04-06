@@ -73,6 +73,7 @@ struct Triangle {
 
     glm::vec3 getNormal(glm::vec2 baryPos) const;
     glm::vec3 getNormal() const;
+    vector<glm::vec3> getPositions() const;
 };
 using TrianglePtr = const Triangle*;
 

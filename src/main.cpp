@@ -17,26 +17,31 @@ int main(int argc, char* argv[]){
 		cerr << "Bad config!" << endl;
 		return -1;
 	}
-    if(!Window::open("Lab1", c.xRes, c.yRes, c.background)){
+    if(!Window::open("Lab1", c)){
         return -1;
     }
-	Input::init();
-	Assets::init();
 
 	Globals::init();
+	Assets::init();
 	ScenePtr scene = Scene::create(c);
-	Input::onKeyPressed(GLFW_KEY_P, bind(&Scene::takePhoto, scene, std::ref(c)));
+	
+	if(c.debugMode){	
+		Input::init();
+		Input::onKeyPressed(GLFW_KEY_P, bind(&Scene::takePhoto, scene, std::ref(c)));
+		while(!Window::shouldClose()){
+			Input::handle();
 
-	while(!Window::shouldClose()){
-		Input::handle();
+			scene->update();
 
-		scene->update();
+			Window::clear();
+			scene->render();
+			Window::swapBuffers();
 
-        Window::clear();
-		scene->render();
-		Window::swapBuffers();
-
-		Globals::updateTime();
+			Globals::updateTime();
+		}	
+	}
+	else{
+		scene->takePhoto(c);
 	}
 
 	Assets::clear();

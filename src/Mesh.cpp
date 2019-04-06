@@ -99,6 +99,10 @@ glm::vec3 Triangle::getNormal() const
     return glm::normalize(glm::cross(v2.position - v1.position, v3.position - v1.position));
 }
 
+vector<glm::vec3> Triangle::getPositions() const {
+    return {v1.position, v2.position, v3.position};
+}
+
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, const Material& material) :
     vertices(vertices), indices(indices), textures(textures), material(material)
 {

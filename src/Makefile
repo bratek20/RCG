@@ -7,7 +7,7 @@ CPPFLAGS := -std=c++14 -Wall -Wextra -g
 INCLUDES := -I../include/
 GCC := g++
 
-lab1.out: $(OBJ_FILES)
+main.out: $(OBJ_FILES)
 	$(GCC) -o $@ $^ $(LDFLAGS) 
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp

@@ -3,6 +3,7 @@
 
 #include "AccStruct.h"
 #include <memory>
+#include <functional>
 
 struct KDNode;
 using KDNodePtr = KDNode*;
@@ -40,10 +41,15 @@ class KDTree : public AccStruct {
 
 public:
     KDTree(const vector<TrianglePtr>& triangles);
-
+    CastData cast(Ray r) override;
+      
 private:
     KDNodePtr make(int depth, const vector<TrianglePtr>& triangles);  
     KDNode::Type calcNodeType(int depth, const vector<TrianglePtr>& triangles);  
-    SplitData splitTriangles(KDNode::Type splitType, const vector<TrianglePtr>& triangles); 
+    SplitData splitTriangles(KDNode::Type splitType, const vector<TrianglePtr>& triangles);
+
+    static float findBest(const vector<TrianglePtr>& triangles, float startValue, function<float(glm::vec3)> getter, function<float(float, float)> comparator); 
+    static vector<TrianglePtr> splitBy(float value, const vector<TrianglePtr>& triangles, function<float(glm::vec3)> getter, function<bool(float, float)> comparator);     
+    static function<float(glm::vec3)> getGetter(KDNode::Type splitType);
 };
 #endif

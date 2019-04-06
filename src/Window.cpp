@@ -4,15 +4,16 @@
 GLFWwindow* Window::window;
 float Window::ratio;
 
-bool Window::open(const std::string& name, int width, int height, Color background) {
-        // Initialise GLFW
+bool Window::open(const std::string& name, const Config& c) {
+	setRatio(c.xRes, c.yRes);
+
 	if( !glfwInit() )
 	{
 		fprintf( stderr, "Failed to initialize GLFW\n" );
 		getchar();
 		return false;
 	}
-
+	
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -20,7 +21,7 @@ bool Window::open(const std::string& name, int width, int height, Color backgrou
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+	window = glfwCreateWindow(c.xRes, c.yRes, name.c_str(), NULL, NULL);
 	if( window == NULL ){
 		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
 		getchar();
@@ -29,20 +30,18 @@ bool Window::open(const std::string& name, int width, int height, Color backgrou
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-	setRatio(width, height);
 
 	// Initialize GLEW
 	glewExperimental = true; // Needed for core profile
-
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
 		getchar();
 		glfwTerminate();
 		return false;
 	}
-
+	
 	glEnable(GL_DEPTH_TEST);
-	glClearColor(background.r, background.g, background.b, 0.0f);
+	glClearColor(c.background.r, c.background.g, c.background.b, 0.0f);
     return true;
 }
 
