@@ -3,11 +3,10 @@
 
 #include <memory>
 
-class Actor;
-using ActorPtr = std::shared_ptr<Actor>;
-
 class Globals{
 public:
+    static float INF;
+     
     static float previousFrameTime;
     static float currentFrameTime;
     static float deltaTime;
@@ -15,9 +14,7 @@ public:
     static void init();
     static void updateTime();
 
-    static float random(float a = 0.0f, float b = 1.0f);
-
-    static ActorPtr player;    
+    static float random(float a = 0.0f, float b = 1.0f);    
 };
 
 #endif

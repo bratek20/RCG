@@ -1,10 +1,11 @@
 #include "SimpleAccStruct.h"
+#include "Globals.h"
 
 SimpleAccStruct::SimpleAccStruct(const vector<TrianglePtr>& triangles) : AccStruct(triangles) {}
 
 CastData SimpleAccStruct::cast(Ray r){
     CastData ans;
-    ans.distance = numeric_limits<float>::max();
+    ans.distance = Globals::INF;
     
     for (auto tri : triangles) {
         CastData data = intersect(r, tri);

@@ -2,11 +2,12 @@
 
 #include <GLFW/glfw3.h>
 #include <cstdlib>
+#include <limits>
 
+float Globals::INF = std::numeric_limits<float>::max();
 float Globals::previousFrameTime;
 float Globals::currentFrameTime;
 float Globals::deltaTime;
-ActorPtr Globals::player;
 
 void Globals::init(){
     Globals::currentFrameTime = glfwGetTime();

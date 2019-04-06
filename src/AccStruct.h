@@ -31,7 +31,6 @@ public:
     AccStruct(const vector<TrianglePtr>& triangles);
     virtual CastData cast(Ray r) = 0;
 
-protected:
-    CastData intersect(Ray r, TrianglePtr tri);
+    static CastData intersect(Ray r, TrianglePtr tri);
 };
 #endif
