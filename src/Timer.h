@@ -6,9 +6,11 @@
 
 class Timer {
     static std::chrono::time_point<std::chrono::steady_clock> startPoint;
+    static std::string measureName;
+    
 public:
-    static void start();
-    static void stop(std::string msg);    
+    static void start(std::string name);
+    static void stop();    
 };
 
 #endif

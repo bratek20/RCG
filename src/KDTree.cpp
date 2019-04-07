@@ -86,7 +86,11 @@ CastData KDTree::cast(Ray r) {
 
 KDNode::Type KDTree::calcNodeType(int depth,
                                   const vector<TrianglePtr> &triangles) {
-    if (depth == stopDepth || triangles.size() <= stopTrianglesNum) {
+    int trianglesNum = triangles.size();
+    if (depth == stopDepth || trianglesNum <= stopTrianglesNum) {
+        if(depth == stopDepth && trianglesNum > 2 * stopTrianglesNum){
+            cout << "Triangles num in leaf is too big: " << trianglesNum << endl; 
+        }
         return KDNode::LEAF;
     }
     return static_cast<KDNode::Type>(depth % 3);
@@ -95,16 +99,40 @@ KDNode::Type KDTree::calcNodeType(int depth,
 KDTree::SplitData KDTree::splitTriangles(KDNode::Type splitType,
                                          const vector<TrianglePtr> &triangles) {
     auto getter = KDNode::getGetter(splitType);
+    SplitData data;
+    data.value = spatialMedian(splitType, triangles);
+    data.left = splitBy(data.value, triangles, getter, less<float>());
+    data.right = splitBy(data.value, triangles, getter, greater_equal<float>());
+    return data;
+}
+
+float KDTree::spatialMedian(KDNode::Type splitType, const vector<TrianglePtr>& triangles){
+    auto getter = KDNode::getGetter(splitType);
     float minVal = findBest(triangles, Globals::INF, getter,
                             less<float>());
     float maxVal = findBest(triangles, -Globals::INF, getter,
                             greater<float>());
+    return (minVal + maxVal) / 2;
+}
 
-    SplitData data;
-    data.value = (minVal + maxVal) / 2;
-    data.left = splitBy(data.value, triangles, getter, less<float>());
-    data.right = splitBy(data.value, triangles, getter, greater_equal<float>());
-    return data;
+float KDTree::objectMedian(KDNode::Type splitType, const vector<TrianglePtr>& triangles){
+    auto getter = KDNode::getGetter(splitType);
+    vector<float> centers;
+    for(auto& tri : triangles){
+        float center = 0;
+        for(glm::vec3 pos : tri->getPositions()){
+            center += getter(pos);
+        }
+        centers.push_back(center/3);
+    }
+
+    size_t n = centers.size() / 2;
+    nth_element(centers.begin(), centers.begin()+n, centers.end());
+    return centers[n];
+}
+
+float KDTree::SAH(KDNode::Type splitType, const vector<TrianglePtr>& triangles){
+    return 0;
 }
 
 vector<TrianglePtr> KDTree::splitBy(float value,

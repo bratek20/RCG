@@ -46,12 +46,12 @@ void Scene::takePhoto(const Config &c)
     auto& triangles = getModel()->getTriangles();
     cout << "Triangles number: " << triangles.size() << endl;
 
-    Timer::start();
+    Timer::start("Building accStruct");
     KDTree accStruct(triangles);
-    Timer::stop("Building accStruct");
+    Timer::stop();
     
 
-    Timer::start();
+    Timer::start("Raytracing");
     glm::vec3 leftTop = camera->getLeftTop();
     glm::vec3 leftBottom = camera->getLeftBottom();
     glm::vec3 rightTop = camera->getRightTop();
@@ -68,7 +68,7 @@ void Scene::takePhoto(const Config &c)
             photo.set_pixel(x, y, color.r * 255, color.g * 255, color.b * 255);
         }
     }
-    Timer::stop("Raytracing");
+    Timer::stop();
 
     string photoSavePath = Assets::photoSavePath(c.photoName); 
     photo.save_image(photoSavePath);

@@ -58,6 +58,10 @@ private:
     KDNodePtr make(int depth, const vector<TrianglePtr>& triangles);  
     KDNode::Type calcNodeType(int depth, const vector<TrianglePtr>& triangles);  
     SplitData splitTriangles(KDNode::Type splitType, const vector<TrianglePtr>& triangles);
+    
+    float spatialMedian(KDNode::Type splitType, const vector<TrianglePtr>& triangles);
+    float objectMedian(KDNode::Type splitType, const vector<TrianglePtr>& triangles);
+    float SAH(KDNode::Type splitType, const vector<TrianglePtr>& triangles);
 
     static float findBest(const vector<TrianglePtr>& triangles, float startValue, function<float(glm::vec3)> getter, function<float(float, float)> comparator); 
     static vector<TrianglePtr> splitBy(float value, const vector<TrianglePtr>& triangles, function<float(glm::vec3)> getter, function<bool(float, float)> comparator);     
