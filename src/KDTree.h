@@ -17,12 +17,10 @@ struct KDNode {
     };
 
     struct PlaneData {
-        float t;
         KDNodePtr near = nullptr;
         KDNodePtr far = nullptr;
-        bool intersetcs(){
-            return near != nullptr || far != nullptr;
-        }
+        float t;
+        bool intersects;
     };
 
     Type type;

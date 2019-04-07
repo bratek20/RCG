@@ -33,7 +33,7 @@ CastData KDNode::leafIntersect(Ray r, float tMin, float tMax){
     for (auto tri : triangles) {
         CastData data = AccStruct::intersect(r, tri);
         if (data.intersects() && data.distance < ans.distance &&
-            data.distance > tMin && data.distance < tMax) {
+            data.distance >= tMin && data.distance < tMax) {
             ans = data;
         }
     }
@@ -46,13 +46,16 @@ KDNode::PlaneData KDNode::planeIntersect(Ray r){
     float d = getter(r.direction);
     
     PlaneData ans;
-    if(d == 0){
-        return ans;
+    if(d != 0){
+        ans.intersects = true;
+        ans.t = (split - o)/d;
+        ans.near = d > 0 ? left : right;
+        ans.far = d > 0 ? right : left;
     }
-
-    ans.t = (split - o)/d;
-    ans.near = d > 0 ? left : right;
-    ans.far = d > 0 ? right : left;
+    else{
+        ans.intersects = false;
+        ans.near = o < split ? left : right;
+    }
     return ans;
 }
 
@@ -99,7 +102,7 @@ KDTree::SplitData KDTree::splitTriangles(KDNode::Type splitType,
 
     SplitData data;
     data.value = (minVal + maxVal) / 2;
-    data.left = splitBy(data.value, triangles, getter, less_equal<float>());
+    data.left = splitBy(data.value, triangles, getter, less<float>());
     data.right = splitBy(data.value, triangles, getter, greater_equal<float>());
     return data;
 }
@@ -141,12 +144,11 @@ CastData KDTree::traverse(KDNodePtr node, Ray r, float tMin, float tMax) {
     }
 
     KDNode::PlaneData data = node->planeIntersect(r);
-    
+    if(!data.intersects || data.t >= tMax){
+        return traverse(data.near, r, tMin, tMax);
+    }
     if(data.t <= tMin){
         return traverse(data.far, r, tMin, tMax);    
-    }
-    if(data.t >= tMax){
-        return traverse(data.near, r, tMin, tMax);
     }
 
     CastData ans = traverse(data.near, r, tMin, data.t);
