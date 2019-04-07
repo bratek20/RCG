@@ -29,7 +29,7 @@ struct CameraConfig {
 struct Config {
     std::string comment;
     std::string loadScenePath;
-    std::string saveImagePath;
+    std::string photoName;
     int k;
     int xRes, yRes;
     Color background = Colors::BLACK;

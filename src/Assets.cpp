@@ -34,6 +34,10 @@ string Assets::validPath(const string& path){
     return path;
 }
 
+string Assets::photoSavePath(const string& name){
+    return "../photos/" + name;
+}
+
 bool Assets::isValidPath(const string& path){
     ifstream f(path.c_str());
     return f.good();

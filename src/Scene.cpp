@@ -4,6 +4,7 @@
 #include "KDTree.h"
 #include "RayTracer.h"
 #include "Assets.h"
+#include "Timer.h"
 
 #include <bitmap_image.h>
 
@@ -43,9 +44,14 @@ void Scene::takePhoto(const Config &c)
     glm::vec3 origin = camera->getWorldPosition();
     cout << "Camera position: " << origin.x  << ", " << origin.y << ", " <<origin.z << endl;
     auto& triangles = getModel()->getTriangles();
-    KDTree accStruct(triangles);
     cout << "Triangles number: " << triangles.size() << endl;
 
+    Timer::start();
+    KDTree accStruct(triangles);
+    Timer::stop("Building accStruct");
+    
+
+    Timer::start();
     glm::vec3 leftTop = camera->getLeftTop();
     glm::vec3 leftBottom = camera->getLeftBottom();
     glm::vec3 rightTop = camera->getRightTop();
@@ -62,7 +68,9 @@ void Scene::takePhoto(const Config &c)
             photo.set_pixel(x, y, color.r * 255, color.g * 255, color.b * 255);
         }
     }
+    Timer::stop("Raytracing");
 
-    photo.save_image(c.saveImagePath);
-    cout << "Photo taken and saved to: " << c.saveImagePath << endl;
+    string photoSavePath = Assets::photoSavePath(c.photoName); 
+    photo.save_image(photoSavePath);
+    cout << "Photo taken and saved to: " << photoSavePath << endl;
 }

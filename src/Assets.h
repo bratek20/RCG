@@ -24,6 +24,7 @@ public:
     static void init(); 
     static void clear();
     static string validPath(const string& path);
+    static string photoSavePath(const string& name);
 
 private:
     static bool isValidPath(const string& path);
