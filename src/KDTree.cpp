@@ -1,5 +1,5 @@
 #include "KDTree.h"
-#include "Globals.h"
+#include "Utils.h"
 
 #include <algorithm>
 
@@ -10,17 +10,13 @@ KDNodePtr KDNode::create(Type type) {
 }
 
 function<float(glm::vec3)> KDNode::getGetter(Type splitType) {
-    static auto xGetter = [](glm::vec3 v) { return v.x; };
-    static auto yGetter = [](glm::vec3 v) { return v.y; };
-    static auto zGetter = [](glm::vec3 v) { return v.z; };
-
     switch (splitType) {
     case X_SPLIT:
-        return xGetter;
+        return Utils::axisGetter(Utils::Axis::X);
     case Y_SPLIT:
-        return yGetter;
+        return Utils::axisGetter(Utils::Axis::Y);
     case Z_SPLIT:
-        return zGetter;
+        return Utils::axisGetter(Utils::Axis::Z);
     default:
         throw runtime_error("node type not supported");
     }
@@ -28,7 +24,7 @@ function<float(glm::vec3)> KDNode::getGetter(Type splitType) {
 
 CastData KDNode::leafIntersect(Ray r, float tMin, float tMax){
     CastData ans;
-    ans.distance = Globals::INF;
+    ans.distance = Utils::INF;
 
     for (auto tri : triangles) {
         CastData data = AccStruct::intersect(r, tri);
@@ -62,10 +58,16 @@ KDNode::PlaneData KDNode::planeIntersect(Ray r){
 KDTree::KDTree(const vector<TrianglePtr> &triangles) : AccStruct(triangles) {
     stopDepth = 8 + 1.3 * log(triangles.size());
     stopTrianglesNum = 8;
-    root = make(0, triangles);
+    traversalCost = 80;
+    intersectionCost = 1;
+
+    for(auto& tri : triangles){
+        bounds.merge(tri->getBounds());
+    }
+    root = make(0, triangles, bounds);
 }
 
-KDNodePtr KDTree::make(int depth, const vector<TrianglePtr> &triangles) {
+KDNodePtr KDTree::make(int depth, const vector<TrianglePtr> &triangles, Bounds bounds) {
     KDNode::Type type = calcNodeType(depth, triangles);
     KDNodePtr node = KDNode::create(type);
     if (node->type == KDNode::LEAF) {
@@ -75,13 +77,19 @@ KDNodePtr KDTree::make(int depth, const vector<TrianglePtr> &triangles) {
 
     SplitData splitData = splitTriangles(type, triangles);
     node->split = splitData.value;
-    node->left = make(depth + 1, splitData.left);
-    node->right = make(depth + 1, splitData.right);
+    
+    Bounds leftBounds = bounds;
+    Bounds rightBounds = bounds;
+    leftBounds.pMax[type] = node->split;
+    rightBounds.pMin[type] = node->split;
+
+    node->left = make(depth + 1, splitData.left, leftBounds);
+    node->right = make(depth + 1, splitData.right, rightBounds);
     return node;
 }
 
 CastData KDTree::cast(Ray r) {
-    return traverse(root, r, 0, Globals::INF);
+    return traverse(root, r, 0, Utils::INF);
 }
 
 KDNode::Type KDTree::calcNodeType(int depth,
@@ -108,9 +116,9 @@ KDTree::SplitData KDTree::splitTriangles(KDNode::Type splitType,
 
 float KDTree::spatialMedian(KDNode::Type splitType, const vector<TrianglePtr>& triangles){
     auto getter = KDNode::getGetter(splitType);
-    float minVal = findBest(triangles, Globals::INF, getter,
+    float minVal = findBest(triangles, Utils::INF, getter,
                             less<float>());
-    float maxVal = findBest(triangles, -Globals::INF, getter,
+    float maxVal = findBest(triangles, -Utils::INF, getter,
                             greater<float>());
     return (minVal + maxVal) / 2;
 }

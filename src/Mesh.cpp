@@ -1,6 +1,8 @@
 
 
 #include "Mesh.h"
+#include "Utils.h"
+
 #include <iostream>
 const glm::vec3 Vertex::NORMAL_NOT_SET = glm::vec3(0);
 
@@ -75,6 +77,33 @@ bool Vertex::hasNormal() const
     return normal != NORMAL_NOT_SET;
 }
 
+Bounds::Bounds() :
+    pMin(Utils::INF, Utils::INF, Utils::INF),
+    pMax(-Utils::INF, -Utils::INF, -Utils::INF)
+{}
+
+Bounds::Bounds(const vector<glm::vec3>& poses){
+    for(auto axis : Utils::AXES){
+        float minVal = Utils::findBest(poses, axis, Utils::CmpType::MIN);
+        float maxVal = Utils::findBest(poses, axis, Utils::CmpType::MAX);
+        Utils::setOnAxis(pMin, minVal, axis);
+        Utils::setOnAxis(pMax, maxVal, axis);
+    }
+}
+
+Bounds Bounds::merge(const Bounds& other){
+    vector<glm::vec3> poses = {pMin, pMax, other.pMin, other.pMax};
+    return Bounds(poses);
+}
+
+float Bounds::surfaceArea() const{
+    glm::vec3 e;
+    for(int i=0;i<3;i++){
+        e[i] = pMax[i] - pMin[i];
+    }
+    return 2 * (e[0] * e[1] + e[0] * e[2] + e[1] * e[2]); 
+}
+
 Triangle::Triangle(Vertex &v1, Vertex &v2, Vertex &v3, const Material& mat) : 
     v1(v1), v2(v2), v3(v3), mat(mat)
 {
@@ -101,6 +130,11 @@ glm::vec3 Triangle::getNormal() const
 
 vector<glm::vec3> Triangle::getPositions() const {
     return {v1.position, v2.position, v3.position};
+}
+
+Bounds Triangle::getBounds() const{
+    auto poses = getPositions();
+    return Bounds(poses);
 }
 
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, const Material& material) :

@@ -61,6 +61,20 @@ struct Texture {
     string path;
 };
 
+struct Bounds {
+    glm::vec3 pMin;
+    glm::vec3 pMax;
+
+    Bounds();
+    Bounds(const vector<glm::vec3>& poses);
+    Bounds(glm::vec3 pMin, glm::vec3 pMax) :
+        pMin(pMin), pMax(pMax) {}
+
+    Bounds merge(const Bounds& other);
+
+    float surfaceArea() const;
+};
+
 struct Triangle {
     int id;
     Vertex v1;
@@ -74,6 +88,7 @@ struct Triangle {
     glm::vec3 getNormal(glm::vec2 baryPos) const;
     glm::vec3 getNormal() const;
     vector<glm::vec3> getPositions() const;
+    Bounds getBounds() const;
 };
 using TrianglePtr = const Triangle*;
 

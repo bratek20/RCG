@@ -2,6 +2,7 @@
 #define KD_TREE_H
 
 #include "AccStruct.h"
+
 #include <memory>
 #include <functional>
 
@@ -46,16 +47,19 @@ class KDTree : public AccStruct {
         Triangles right;
     };
 
+    Bounds bounds;
     KDNodePtr root;
     int stopDepth;
     int stopTrianglesNum;
+    int traversalCost;
+    int intersectionCost;
 
 public:
     KDTree(const vector<TrianglePtr>& triangles);
     CastData cast(Ray r) override;
 
 private:
-    KDNodePtr make(int depth, const vector<TrianglePtr>& triangles);  
+    KDNodePtr make(int depth, const vector<TrianglePtr>& triangles, Bounds bounds);  
     KDNode::Type calcNodeType(int depth, const vector<TrianglePtr>& triangles);  
     SplitData splitTriangles(KDNode::Type splitType, const vector<TrianglePtr>& triangles);
     
