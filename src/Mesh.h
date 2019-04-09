@@ -12,6 +12,7 @@
 
 #include "Shader.h"
 #include "Color.h"
+#include "Utils.h"
 
 #include <string>
 #include <fstream>
@@ -62,6 +63,9 @@ struct Texture {
 };
 
 struct Bounds {
+    static const glm::vec3 MIN_NOT_SET;
+    static const glm::vec3 MAX_NOT_SET;
+
     glm::vec3 pMin;
     glm::vec3 pMax;
 
@@ -72,7 +76,10 @@ struct Bounds {
 
     Bounds merge(const Bounds& other);
 
+    bool isValid() const;
+    glm::vec3 diagonal() const;
     float surfaceArea() const;
+    Utils::Axis maximumExtent() const;
 };
 
 struct Triangle {
@@ -81,6 +88,7 @@ struct Triangle {
     Vertex v2;
     Vertex v3;
     Material mat;
+    Bounds bounds;
 
     Triangle() = default;
     Triangle(Vertex& v1, Vertex& v2, Vertex& v3, const Material& mat);

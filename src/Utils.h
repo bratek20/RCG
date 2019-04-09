@@ -9,13 +9,11 @@ using namespace std;
 
 class Utils {
 public:
-    enum class Axis {
-        X,
-        Y,
-        Z
+    enum Axis {
+        X = 0,
+        Y = 1,
+        Z = 2
     };
-     
-    using AxisGetter = function<float(glm::vec3)>;
 
     enum class CmpType {
         MIN,
@@ -24,9 +22,8 @@ public:
 
     static const float INF;
     static const array<Axis, 3> AXES;
+    static Axis next(Axis axis, int step = 1);
 
-    static AxisGetter axisGetter(Axis axis); 
-    static void setOnAxis(glm::vec3& vec, float value, Axis axis);
     static float findBest(const vector<glm::vec3>& poses, Axis axis, CmpType cmpType); 
 };
 

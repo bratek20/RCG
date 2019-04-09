@@ -49,7 +49,6 @@ void Scene::takePhoto(const Config &c)
     Timer::start("Building accStruct");
     KDTree accStruct(triangles);
     Timer::stop();
-    
 
     Timer::start("Raytracing");
     glm::vec3 leftTop = camera->getLeftTop();
@@ -67,7 +66,11 @@ void Scene::takePhoto(const Config &c)
             Color color = hit.first ? hit.second : c.background;
             photo.set_pixel(x, y, color.r * 255, color.g * 255, color.b * 255);
         }
+
+        int progress = 100 * x / c.xRes;
+        cout << "\rProgress: " << progress << "%";
     }
+    cout << endl;
     Timer::stop();
 
     string photoSavePath = Assets::photoSavePath(c.photoName); 

@@ -2,6 +2,7 @@
 #define KD_TREE_H
 
 #include "AccStruct.h"
+#include "Utils.h"
 
 #include <memory>
 #include <functional>
@@ -11,9 +12,9 @@ using KDNodePtr = KDNode*;
 
 struct KDNode {
     enum Type {
-        X_SPLIT = 0,
-        Y_SPLIT = 1,
-        Z_SPLIT = 2,
+        X_SPLIT = Utils::X,
+        Y_SPLIT = Utils::Y,
+        Z_SPLIT = Utils::Z,
         LEAF = 3
     };
 
@@ -31,7 +32,6 @@ struct KDNode {
     vector<TrianglePtr> triangles;
 
     static KDNodePtr create(Type type);
-    static function<float(glm::vec3)> getGetter(Type splitType);
 
     CastData leafIntersect(Ray r, float tMin, float tMax);
     PlaneData planeIntersect(Ray r);
@@ -39,20 +39,10 @@ struct KDNode {
 
 
 class KDTree : public AccStruct {
-    struct SplitData {
-        using Triangles = vector<TrianglePtr>;
-        
-        float value;
-        Triangles left;
-        Triangles right;
-    };
-
     Bounds bounds;
     KDNodePtr root;
     int stopDepth;
     int stopTrianglesNum;
-    int traversalCost;
-    int intersectionCost;
 
 public:
     KDTree(const vector<TrianglePtr>& triangles);
@@ -60,15 +50,14 @@ public:
 
 private:
     KDNodePtr make(int depth, const vector<TrianglePtr>& triangles, Bounds bounds);  
-    KDNode::Type calcNodeType(int depth, const vector<TrianglePtr>& triangles);  
-    SplitData splitTriangles(KDNode::Type splitType, const vector<TrianglePtr>& triangles);
+    bool shouldBeLeaf(int depth, const vector<TrianglePtr>& triangles);
+    KDNodePtr makeLeaf(const vector<TrianglePtr>& triangles);  
     
-    float spatialMedian(KDNode::Type splitType, const vector<TrianglePtr>& triangles);
-    float objectMedian(KDNode::Type splitType, const vector<TrianglePtr>& triangles);
-    float SAH(KDNode::Type splitType, const vector<TrianglePtr>& triangles);
+    float spatialMedian(Utils::Axis axis, const vector<TrianglePtr>& triangles);
+    float objectMedian(Utils::Axis axis, const vector<TrianglePtr>& triangles);
 
-    static float findBest(const vector<TrianglePtr>& triangles, float startValue, function<float(glm::vec3)> getter, function<float(float, float)> comparator); 
-    static vector<TrianglePtr> splitBy(float value, const vector<TrianglePtr>& triangles, function<float(glm::vec3)> getter, function<bool(float, float)> comparator);     
+    static float findBest(const vector<TrianglePtr>& triangles, float startValue, Utils::Axis axis, function<float(float, float)> comparator); 
+    static vector<TrianglePtr> splitBy(float value, const vector<TrianglePtr>& triangles, Utils::Axis axis, function<bool(float, float)> comparator);     
 
     CastData traverse(KDNodePtr node, Ray r, float tMin, float tMax);
 };

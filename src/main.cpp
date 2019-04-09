@@ -43,7 +43,7 @@ int main(int argc, char* argv[]){
 	else{
 		scene->takePhoto(c);
 	}
-
+	
 	Assets::clear();
 	Window::close();
 	return 0;
