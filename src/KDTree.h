@@ -19,30 +19,42 @@ struct KDNode {
     };
 
     struct PlaneData {
-        KDNodePtr near = nullptr;
-        KDNodePtr far = nullptr;
+        int near;
+        int far;
         float t;
         bool intersects;
     };
 
-    Type type;
-    float split;
-    KDNodePtr left;
-    KDNodePtr right;
-    vector<TrianglePtr> triangles;
+    union { 
+        int indicesOffset; // Leaf
+        float split; // Interior 
+    }; 
+    
+    union { 
+        Type type; // Both
+        int trianglesNum; // Leaf 
+        int secondChildIdx; // Interior 
+    };
 
-    static KDNodePtr create(Type type);
+    void initLeaf(int indicesOffset, int trianglesNum);
+    void initInterior(Utils::Axis axis, float split, int secondChildIdx);
 
-    CastData leafIntersect(Ray r, float tMin, float tMax);
-    PlaneData planeIntersect(Ray r);
+    CastData leafIntersect(Ray r, float tMin, float tMax, const vector<TrianglePtr>& triangles, const vector<int>& triangleIndices);
+    PlaneData planeIntersect(Ray r, int myIdx);
+
+    Type getType();
+    int getTrianglesNum();
+    int getSecondChildIdx();
 };
 
 
 class KDTree : public AccStruct {
     Bounds bounds;
-    KDNodePtr root;
     int stopDepth;
     int stopTrianglesNum;
+
+    vector<KDNode> nodes;
+    vector<int> triangleIndices;
 
     struct SplitData{
         float value;
@@ -55,18 +67,17 @@ public:
     CastData cast(Ray r) override;
 
 private:
-    KDNodePtr make(int depth, const vector<TrianglePtr>& triangles, Bounds bounds);  
-    SplitData chooseSplit(int depth, const vector<TrianglePtr>& triangles, Bounds bounds);
+    void make(int depth, const vector<int>& triIndices, Bounds bounds);  
+    SplitData chooseSplit(int depth, const vector<int>& triIndices, Bounds bounds);
 
-    bool shouldBeLeaf(int depth, const vector<TrianglePtr>& triangles);
-    KDNodePtr makeLeaf(const vector<TrianglePtr>& triangles);  
+    bool shouldBeLeaf(int depth, const vector<int>& triIndices); 
     
-    float spatialMedian(Utils::Axis axis, const vector<TrianglePtr>& triangles);
-    float objectMedian(Utils::Axis axis, const vector<TrianglePtr>& triangles);
+    float spatialMedian(Utils::Axis axis, const vector<int>& triIndices);
+    float objectMedian(Utils::Axis axis, const vector<int>& triIndices);
 
-    static float findBest(const vector<TrianglePtr>& triangles, float startValue, Utils::Axis axis, function<float(float, float)> comparator); 
-    static vector<TrianglePtr> splitBy(float value, const vector<TrianglePtr>& triangles, Utils::Axis axis, function<bool(float, float)> comparator);     
+    float findBest(const vector<int>& triIndices, float startValue, Utils::Axis axis, function<float(float, float)> comparator); 
+    vector<int> splitBy(float value, const vector<int>& triIndices, Utils::Axis axis, function<bool(float, float)> comparator);     
 
-    CastData traverse(KDNodePtr node, Ray r, float tMin, float tMax);
+    CastData traverse(int nodeIdx, Ray r, float tMin, float tMax);
 };
 #endif

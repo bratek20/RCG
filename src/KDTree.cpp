@@ -5,17 +5,34 @@
 
 #define USE_SAH 1
 
-KDNodePtr KDNode::create(Type type) {
-    KDNodePtr node = new KDNode();
-    node->type = type;
-    return node;
+KDNode::Type KDNode::getType(){
+    return static_cast<KDNode::Type>(type & 3);
 }
 
-CastData KDNode::leafIntersect(Ray r, float tMin, float tMax) {
+int KDNode::getTrianglesNum(){
+    return trianglesNum >> 2;
+}
+
+int KDNode::getSecondChildIdx(){
+    return secondChildIdx >> 2;
+}
+
+void KDNode::initLeaf(int indicesOffset, int trianglesNum){
+    this->indicesOffset = indicesOffset;
+    this->trianglesNum = (trianglesNum << 2) | LEAF;
+}
+
+void KDNode::initInterior(Utils::Axis axis, float split, int secondChildIdx){
+    this->split = split;
+    this->secondChildIdx = (secondChildIdx << 2) | axis;
+}
+
+CastData KDNode::leafIntersect(Ray r, float tMin, float tMax, const vector<TrianglePtr>& triangles, const vector<int>& triangleIndices) {
     CastData ans;
     ans.distance = Utils::INF;
 
-    for (auto tri : triangles) {
+    for (int i = 0; i < getTrianglesNum(); i++) {
+        TrianglePtr tri = triangles[triangleIndices[indicesOffset + i]];
         CastData data = AccStruct::intersect(r, tri);
         if (data.intersects() && data.distance < ans.distance &&
             data.distance >= tMin && data.distance < tMax) {
@@ -25,10 +42,12 @@ CastData KDNode::leafIntersect(Ray r, float tMin, float tMax) {
     return ans;
 }
 
-KDNode::PlaneData KDNode::planeIntersect(Ray r) {
+KDNode::PlaneData KDNode::planeIntersect(Ray r, int myIdx) {
     float o = r.origin[type];
     float d = r.direction[type];
-
+    int left = myIdx+1;
+    int right = getSecondChildIdx();
+    
     PlaneData ans;
     if (d != 0) {
         ans.intersects = true;
@@ -56,38 +75,43 @@ KDTree::KDTree(const vector<TrianglePtr> &triangles) : AccStruct(triangles) {
         }
     }
     
+    vector<int> triIndices(trianglesNum);
+    for(int i=0;i<trianglesNum;i++){
+        triIndices[i] = i;
+    }
     bounds = Bounds(poses);
-    root = make(0, triangles, bounds);
+    make(0, triIndices, bounds);
 }
 
-KDNodePtr KDTree::make(int depth, const vector<TrianglePtr> &triangles,
+void KDTree::make(int depth, const vector<int>& triIndices,
                        Bounds bounds) {
-    SplitData data = chooseSplit(depth, triangles, bounds);
+    nodes.push_back(KDNode());
+    KDNodePtr node = &nodes.back();
+
+    SplitData data = chooseSplit(depth, triIndices, bounds);
     if(data.isLeaf){
-        return makeLeaf(triangles);
+        node->initLeaf(triangleIndices.size(), triIndices.size());
+        Utils::addRange(triangleIndices, triIndices);
+        return;
     }
 
     Utils::Axis axis = data.axis;
-    KDNode::Type type = static_cast<KDNode::Type>(axis);
-    KDNodePtr node = KDNode::create(type);
-    node->split = data.value; 
-
     auto newBounds = bounds.split(axis, data.value);
-    auto left = splitBy(data.value, triangles, axis, less<float>());
-    auto right = splitBy(data.value, triangles, axis, greater_equal<float>());
+    auto left = splitBy(data.value, triIndices, axis, less<float>());
+    auto right = splitBy(data.value, triIndices, axis, greater_equal<float>());
 
-    node->left = make(depth + 1, left, newBounds.first);
-    node->right = make(depth + 1, right, newBounds.second);
-    return node;
+    make(depth + 1, left, newBounds.first);
+    node->initInterior(axis, data.value, nodes.size());
+    make(depth + 1, right, newBounds.second);
 }
 
-KDTree::SplitData KDTree::chooseSplit(int depth, const vector<TrianglePtr>& triangles, Bounds bounds){
+KDTree::SplitData KDTree::chooseSplit(int depth, const vector<int>& triIndices, Bounds bounds){
     SplitData ans;
 #if USE_SAH == 1    
-    SAH::SplitData data = SAH::bestSplit(bounds, triangles);
+    SAH::SplitData data = SAH::bestSplit(bounds, triangles, triIndices);
     ans.value = data.value;
     ans.axis = data.axis;
-    ans.isLeaf = data.failed() || shouldBeLeaf(depth, triangles);
+    ans.isLeaf = data.failed() || shouldBeLeaf(depth, triIndices);
 #else
     ans.axis = static_cast<Utils::Axis>(depth % 3);
     ans.value = spatialMedian(ans.axis, triangles);
@@ -96,31 +120,25 @@ KDTree::SplitData KDTree::chooseSplit(int depth, const vector<TrianglePtr>& tria
     return ans;
 }
 
-CastData KDTree::cast(Ray r) { return traverse(root, r, 0, Utils::INF); }
+CastData KDTree::cast(Ray r) { return traverse(0, r, 0, Utils::INF); }
 
-bool KDTree::shouldBeLeaf(int depth, const vector<TrianglePtr> &triangles) {
-    return depth == stopDepth || triangles.size() <= stopTrianglesNum;
-}
-
-KDNodePtr KDTree::makeLeaf(const vector<TrianglePtr> &triangles) {
-    KDNodePtr node = KDNode::create(KDNode::LEAF);
-    node->triangles = triangles;
-    return node;
+bool KDTree::shouldBeLeaf(int depth, const vector<int>& triIndices) {
+    return depth == stopDepth || triIndices.size() <= stopTrianglesNum;
 }
 
 float KDTree::spatialMedian(Utils::Axis axis,
-                            const vector<TrianglePtr> &triangles) {
-    float minVal = findBest(triangles, Utils::INF, axis, less<float>());
-    float maxVal = findBest(triangles, -Utils::INF, axis, greater<float>());
+                            const vector<int>& triIndices) {
+    float minVal = findBest(triIndices, Utils::INF, axis, less<float>());
+    float maxVal = findBest(triIndices, -Utils::INF, axis, greater<float>());
     return (minVal + maxVal) / 2;
 }
 
 float KDTree::objectMedian(Utils::Axis axis,
-                           const vector<TrianglePtr> &triangles) {
+                           const vector<int>& triIndices) {
     vector<float> centers;
-    for (auto &tri : triangles) {
+    for (int idx : triIndices) {
         float center = 0;
-        for (glm::vec3 pos : tri->getPositions()) {
+        for (glm::vec3 pos : triangles[idx]->getPositions()) {
             center += pos[axis];
         }
         centers.push_back(center / 3);
@@ -131,15 +149,15 @@ float KDTree::objectMedian(Utils::Axis axis,
     return centers[n];
 }
 
-vector<TrianglePtr> KDTree::splitBy(float value,
-                                    const vector<TrianglePtr> &triangles,
+vector<int> KDTree::splitBy(float value,
+                                    const vector<int>& triIndices,
                                     Utils::Axis axis,
                                     function<bool(float, float)> comparator) {
-    vector<TrianglePtr> ans;
-    for (auto tri : triangles) {
-        for (glm::vec3 pos : tri->getPositions()) {
+    vector<int> ans;
+    for (int idx : triIndices) {
+        for (glm::vec3 pos : triangles[idx]->getPositions()) {
             if (comparator(pos[axis], value)) {
-                ans.push_back(tri);
+                ans.push_back(idx);
                 break;
             }
         }
@@ -147,27 +165,29 @@ vector<TrianglePtr> KDTree::splitBy(float value,
     return ans;
 }
 
-float KDTree::findBest(const vector<TrianglePtr> &triangles, float startValue,
+float KDTree::findBest(const vector<int>& triIndices, float startValue,
                        Utils::Axis axis,
                        function<float(float, float)> comparator) {
     float ans = startValue;
-    for (auto tri : triangles) {
-        for (glm::vec3 pos : tri->getPositions()) {
+    for (int idx : triIndices) {
+        for (glm::vec3 pos : triangles[idx]->getPositions()) {
             ans = min(ans, pos[axis], comparator);
         }
     }
     return ans;
 }
 
-CastData KDTree::traverse(KDNodePtr node, Ray r, float tMin, float tMax) {
-    if (node == nullptr) {
+CastData KDTree::traverse(int nodeIdx, Ray r, float tMin, float tMax) {
+    KDNodePtr node = &nodes[nodeIdx];
+    if(node->getType() == KDNode::LEAF){
         return CastData();
     }
+
     if (node->type == KDNode::LEAF) {
-        return node->leafIntersect(r, tMin, tMax);
+        return node->leafIntersect(r, tMin, tMax, triangles, triangleIndices);
     }
 
-    KDNode::PlaneData data = node->planeIntersect(r);
+    KDNode::PlaneData data = node->planeIntersect(r, nodeIdx);
     if (!data.intersects || data.t >= tMax) {
         return traverse(data.near, r, tMin, tMax);
     }
