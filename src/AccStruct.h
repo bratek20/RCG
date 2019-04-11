@@ -29,7 +29,7 @@ protected:
 
 public:
     AccStruct(const vector<TrianglePtr>& triangles);
-    virtual CastData cast(Ray r) = 0;
+    virtual CastData cast(Ray r, float maxDistance = Utils::INF) = 0;
 
     static CastData intersect(Ray r, TrianglePtr tri);
 };

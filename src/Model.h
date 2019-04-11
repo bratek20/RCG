@@ -29,15 +29,16 @@ class Model
     vector<Mesh> meshes;
     vector<TrianglePtr> triangles;
     string directory;
+    bool debug;
 
 public:
-    static ModelPtr create(const string& path);
+    static ModelPtr create(const string& path, bool debug);
 
     void draw(Shader shader);
     const vector<TrianglePtr>& getTriangles() const;
     
 private:
-    Model(const string& path);
+    Model(const string& path, bool debug);
     bool loadModel(const string& path);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);

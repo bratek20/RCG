@@ -96,7 +96,7 @@ KDTree::SplitData KDTree::chooseSplit(int depth, const vector<TrianglePtr>& tria
     return ans;
 }
 
-CastData KDTree::cast(Ray r) { return traverse(root, r, 0, Utils::INF); }
+CastData KDTree::cast(Ray r, float maxDistance) { return traverse(root, r, 0, maxDistance); }
 
 bool KDTree::shouldBeLeaf(int depth, const vector<TrianglePtr> &triangles) {
     return depth == stopDepth || triangles.size() <= stopTrianglesNum;
