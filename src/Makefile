@@ -3,9 +3,9 @@ OBJ_DIR := ./obj
 SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 LDFLAGS := -lGLEW -lGL -lglfw  -L../lib/ -lcommon -lassimp
-CPPFLAGS := -std=c++14 -Wall -Wextra -g
+CPPFLAGS := -O3 -std=c++14 -Wall -Wextra -g
 INCLUDES := -I../include/
-GCC := g++
+GCC := g++ 
 
 main.out: $(OBJ_FILES)
 	$(GCC) -o $@ $^ $(LDFLAGS) 

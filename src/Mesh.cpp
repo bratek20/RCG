@@ -157,9 +157,9 @@ Bounds Triangle::getBounds() const {
 }
 
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices,
-           vector<Texture> textures, const Material &material)
+           vector<Texture> textures, const Material &material, bool debug)
     : vertices(vertices), indices(indices), textures(textures),
-      material(material) {
+      material(material), debug(debug) {
     // now that we have all the required data, set the vertex buffers and its
     // attribute pointers.
     setupMesh();
@@ -206,6 +206,15 @@ void Mesh::draw(Shader &shader) {
     glActiveTexture(GL_TEXTURE0);
 }
 void Mesh::setupMesh() {
+    triangles.clear();
+    for (int i = 0; i < indices.size(); i += 3) {
+        triangles.emplace_back(vertices[indices[i]], vertices[indices[i + 1]],
+                               vertices[indices[i + 2]], material);
+    }
+
+    if(!debug){
+        return;
+    }
     // create buffers/arrays
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -248,12 +257,6 @@ void Mesh::setupMesh() {
     // (void*)offsetof(Vertex, bitangent));
 
     glBindVertexArray(0);
-
-    triangles.clear();
-    for (int i = 0; i < indices.size(); i += 3) {
-        triangles.emplace_back(vertices[indices[i]], vertices[indices[i + 1]],
-                               vertices[indices[i + 2]], material);
-    }
 }
 
 const vector<Triangle> &Mesh::getTriangles() const { return triangles; }

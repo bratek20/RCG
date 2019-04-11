@@ -64,7 +64,7 @@ class KDTree : public AccStruct {
 
 public:
     KDTree(const vector<TrianglePtr>& triangles);
-    CastData cast(Ray r) override;
+    CastData cast(Ray r, float maxDistance) override;
 
 private:
     void make(int depth, const vector<int>& triIndices, Bounds bounds);  

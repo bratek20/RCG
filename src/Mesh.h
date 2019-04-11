@@ -110,10 +110,10 @@ public:
     vector<Triangle> triangles;
     Material material;
     unsigned int VAO;
-
+    bool debug;
     /*  Functions  */
     // constructor
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, const Material& material);
+    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, const Material& material, bool debug);
 
     // render the mesh
     void draw(Shader& shader);

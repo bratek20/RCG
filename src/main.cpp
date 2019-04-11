@@ -22,10 +22,11 @@ int main(int argc, char* argv[]){
     }
 
 	Globals::init();
-	Assets::init();
+
 	ScenePtr scene = Scene::create(c);
 	
 	if(c.debugMode){	
+		Assets::init();
 		Input::init();
 		Input::onKeyPressed(GLFW_KEY_P, bind(&Scene::takePhoto, scene, std::ref(c)));
 		while(!Window::shouldClose()){
@@ -39,12 +40,13 @@ int main(int argc, char* argv[]){
 
 			Globals::updateTime();
 		}	
+		Assets::clear();
 	}
 	else{
 		scene->takePhoto(c);
 	}
 	
-	Assets::clear();
+	
 	Window::close();
 	return 0;
 }

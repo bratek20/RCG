@@ -39,7 +39,7 @@ Color RayTracer::phongShading(glm::vec3 position, glm::vec3 normal,
         glm::vec3 lightDir = light->getWorldPosition() - position;
         float distance = length(lightDir);
         lightDir = glm::normalize(lightDir);
-        CastData hit = accStruct.cast(Ray(position, lightDir, true));
+        CastData hit = accStruct.cast(Ray(position, lightDir, true), distance);
         if (hit.intersects()) {
             continue;
         }

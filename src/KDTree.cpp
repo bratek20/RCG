@@ -120,7 +120,7 @@ KDTree::SplitData KDTree::chooseSplit(int depth, const vector<int>& triIndices, 
     return ans;
 }
 
-CastData KDTree::cast(Ray r) { return traverse(0, r, 0, Utils::INF); }
+CastData KDTree::cast(Ray r, float maxDistance) { return traverse(0, r, 0, maxDistance); }
 
 bool KDTree::shouldBeLeaf(int depth, const vector<int>& triIndices) {
     return depth == stopDepth || triIndices.size() <= stopTrianglesNum;
