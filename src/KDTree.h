@@ -55,8 +55,8 @@ public:
     CastData cast(Ray r, float maxDistance) override;
 
 private:
-    KDNodePtr make(int depth, const vector<TrianglePtr>& triangles, Bounds bounds);  
-    SplitData chooseSplit(int depth, const vector<TrianglePtr>& triangles, Bounds bounds);
+    KDNodePtr make(int depth, const vector<TrianglePtr>& triangles, const Bounds& bounds);  
+    SplitData chooseSplit(int depth, const vector<TrianglePtr>& triangles, const Bounds& bounds);
 
     bool shouldBeLeaf(int depth, const vector<TrianglePtr>& triangles);
     KDNodePtr makeLeaf(const vector<TrianglePtr>& triangles);  

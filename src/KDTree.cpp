@@ -61,7 +61,7 @@ KDTree::KDTree(const vector<TrianglePtr> &triangles) : AccStruct(triangles) {
 }
 
 KDNodePtr KDTree::make(int depth, const vector<TrianglePtr> &triangles,
-                       Bounds bounds) {
+                       const Bounds& bounds) {
     SplitData data = chooseSplit(depth, triangles, bounds);
     if(data.isLeaf){
         return makeLeaf(triangles);
@@ -81,7 +81,7 @@ KDNodePtr KDTree::make(int depth, const vector<TrianglePtr> &triangles,
     return node;
 }
 
-KDTree::SplitData KDTree::chooseSplit(int depth, const vector<TrianglePtr>& triangles, Bounds bounds){
+KDTree::SplitData KDTree::chooseSplit(int depth, const vector<TrianglePtr>& triangles, const Bounds& bounds){
     SplitData ans;
 #if USE_SAH == 1    
     SAH::SplitData data = SAH::bestSplit(bounds, triangles);

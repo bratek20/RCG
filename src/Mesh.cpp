@@ -81,7 +81,7 @@ Bounds::Bounds(const vector<glm::vec3> &poses) {
     }
 }
 
-Bounds Bounds::merge(const Bounds &other) {
+Bounds Bounds::merge(const Bounds &other) const {
     vector<glm::vec3> poses;
     if(this->isValid()){
         poses.push_back(pMin);
@@ -94,7 +94,7 @@ Bounds Bounds::merge(const Bounds &other) {
     return Bounds(poses);
 }
 
-pair<Bounds, Bounds> Bounds::split(Utils::Axis axis, float value){
+pair<Bounds, Bounds> Bounds::split(Utils::Axis axis, float value) const {
     pair<Bounds, Bounds> ans = {*this, *this};
     ans.first.pMax[axis] = ans.second.pMin[axis] = value;
     return ans; 

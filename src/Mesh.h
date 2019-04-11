@@ -74,8 +74,8 @@ struct Bounds {
     Bounds(glm::vec3 pMin, glm::vec3 pMax) :
         pMin(pMin), pMax(pMax) {}
 
-    Bounds merge(const Bounds& other);
-    pair<Bounds, Bounds> split(Utils::Axis axis, float value);
+    Bounds merge(const Bounds& other) const;
+    pair<Bounds, Bounds> split(Utils::Axis axis, float value) const;
 
     bool isValid() const;
     glm::vec3 diagonal() const;
