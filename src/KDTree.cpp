@@ -3,6 +3,8 @@
 
 #include <algorithm>
 
+#define USE_SAH 1
+
 KDNodePtr KDNode::create(Type type) {
     KDNodePtr node = new KDNode();
     node->type = type;
@@ -60,8 +62,8 @@ KDTree::KDTree(const vector<TrianglePtr> &triangles) : AccStruct(triangles) {
 
 KDNodePtr KDTree::make(int depth, const vector<TrianglePtr> &triangles,
                        Bounds bounds) {
-    SAH::SplitData data = SAH::bestSplit(bounds, triangles);
-    if (data.failed() || shouldBeLeaf(depth, triangles)) {
+    SplitData data = chooseSplit(depth, triangles, bounds);
+    if(data.isLeaf){
         return makeLeaf(triangles);
     }
 
@@ -70,17 +72,28 @@ KDNodePtr KDTree::make(int depth, const vector<TrianglePtr> &triangles,
     KDNodePtr node = KDNode::create(type);
     node->split = data.value; 
 
-    Bounds leftBounds = bounds;
-    Bounds rightBounds = bounds;
-    leftBounds.pMax[type] = node->split;
-    rightBounds.pMin[type] = node->split;
-
+    auto newBounds = bounds.split(axis, data.value);
     auto left = splitBy(data.value, triangles, axis, less<float>());
     auto right = splitBy(data.value, triangles, axis, greater_equal<float>());
 
-    node->left = make(depth + 1, left, leftBounds);
-    node->right = make(depth + 1, right, rightBounds);
+    node->left = make(depth + 1, left, newBounds.first);
+    node->right = make(depth + 1, right, newBounds.second);
     return node;
+}
+
+KDTree::SplitData KDTree::chooseSplit(int depth, const vector<TrianglePtr>& triangles, Bounds bounds){
+    SplitData ans;
+#if USE_SAH == 1    
+    SAH::SplitData data = SAH::bestSplit(bounds, triangles);
+    ans.value = data.value;
+    ans.axis = data.axis;
+    ans.isLeaf = data.failed() || shouldBeLeaf(depth, triangles);
+#else
+    ans.axis = static_cast<Utils::Axis>(depth % 3);
+    ans.value = spatialMedian(ans.axis, triangles);
+    ans.isLeaf = shouldBeLeaf(depth, triangles);
+#endif
+    return ans;
 }
 
 CastData KDTree::cast(Ray r) { return traverse(root, r, 0, Utils::INF); }

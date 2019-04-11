@@ -94,6 +94,12 @@ Bounds Bounds::merge(const Bounds &other) {
     return Bounds(poses);
 }
 
+pair<Bounds, Bounds> Bounds::split(Utils::Axis axis, float value){
+    pair<Bounds, Bounds> ans = {*this, *this};
+    ans.first.pMax[axis] = ans.second.pMin[axis] = value;
+    return ans; 
+}
+
 bool Bounds::isValid() const {
     return pMin != MIN_NOT_SET && pMax != MAX_NOT_SET;
 }

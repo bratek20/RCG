@@ -44,12 +44,20 @@ class KDTree : public AccStruct {
     int stopDepth;
     int stopTrianglesNum;
 
+    struct SplitData{
+        float value;
+        Utils::Axis axis;
+        bool isLeaf;
+    };
+
 public:
     KDTree(const vector<TrianglePtr>& triangles);
     CastData cast(Ray r) override;
 
 private:
     KDNodePtr make(int depth, const vector<TrianglePtr>& triangles, Bounds bounds);  
+    SplitData chooseSplit(int depth, const vector<TrianglePtr>& triangles, Bounds bounds);
+
     bool shouldBeLeaf(int depth, const vector<TrianglePtr>& triangles);
     KDNodePtr makeLeaf(const vector<TrianglePtr>& triangles);  
     

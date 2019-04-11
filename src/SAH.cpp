@@ -43,7 +43,6 @@ SAH::SplitData SAH::bestSplitFor(Utils::Axis axis, Bounds bounds,
                  return e0.t < e1.t;
          });
 
-    glm::vec3 d = bounds.diagonal();
     float totalSA = bounds.surfaceArea();
     float invTotalSA = 1 / totalSA;
 
@@ -57,13 +56,9 @@ SAH::SplitData SAH::bestSplitFor(Utils::Axis axis, Bounds bounds,
 
         float edgeT = edges[i].t;
         if (edgeT > bounds.pMin[axis] && edgeT < bounds.pMax[axis]) {
-            Utils::Axis otherAxis0 = Utils::next(axis), otherAxis1 = Utils::next(axis, 2);
-            float belowSA = 2 * (d[otherAxis0] * d[otherAxis1] +
-                                 (edgeT - bounds.pMin[axis]) *
-                                     (d[otherAxis0] + d[otherAxis1]));
-            float aboveSA = 2 * (d[otherAxis0] * d[otherAxis1] +
-                                 (bounds.pMax[axis] - edgeT) *
-                                     (d[otherAxis0] + d[otherAxis1]));
+            auto splits = bounds.split(axis, edgeT);
+            float belowSA = splits.first.surfaceArea();
+            float aboveSA = splits.second.surfaceArea();
 
             float pBelow = belowSA * invTotalSA;
             float pAbove = aboveSA * invTotalSA;
