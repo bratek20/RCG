@@ -90,7 +90,7 @@ KDTree::SplitData KDTree::chooseSplit(int depth, const vector<TrianglePtr>& tria
     ans.isLeaf = data.failed() || shouldBeLeaf(depth, triangles);
 #else
     ans.axis = static_cast<Utils::Axis>(depth % 3);
-    ans.value = spatialMedian(ans.axis, triangles);
+    ans.value = bounds.diagonal()[ans.axis] / 2;
     ans.isLeaf = shouldBeLeaf(depth, triangles);
 #endif
     return ans;
@@ -106,13 +106,6 @@ KDNodePtr KDTree::makeLeaf(const vector<TrianglePtr> &triangles) {
     KDNodePtr node = KDNode::create(KDNode::LEAF);
     node->triangles = triangles;
     return node;
-}
-
-float KDTree::spatialMedian(Utils::Axis axis,
-                            const vector<TrianglePtr> &triangles) {
-    float minVal = findBest(triangles, Utils::INF, axis, less<float>());
-    float maxVal = findBest(triangles, -Utils::INF, axis, greater<float>());
-    return (minVal + maxVal) / 2;
 }
 
 float KDTree::objectMedian(Utils::Axis axis,

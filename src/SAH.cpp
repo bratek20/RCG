@@ -18,7 +18,7 @@ SAH::SplitData SAH::bestSplit(Bounds bounds,
         SplitData data = bestSplitFor(axis, bounds, triangles);
         if (data.cost < ans.cost) {
             ans = data;
-            break;
+            //break;
         }
     }
 
@@ -49,7 +49,7 @@ SAH::SplitData SAH::bestSplitFor(Utils::Axis axis, Bounds bounds,
     int nBelow = 0, nAbove = trianglesNum;
     SplitData ans;
     ans.axis = axis;
-    for (unsigned i = 0; i < 2 * trianglesNum; i++) {
+    for (int i = 0; i < 2 * trianglesNum; i++) {
         if (edges[i].end) {
             nAbove--;
         }

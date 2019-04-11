@@ -60,8 +60,7 @@ private:
 
     bool shouldBeLeaf(int depth, const vector<TrianglePtr>& triangles);
     KDNodePtr makeLeaf(const vector<TrianglePtr>& triangles);  
-    
-    float spatialMedian(Utils::Axis axis, const vector<TrianglePtr>& triangles);
+
     float objectMedian(Utils::Axis axis, const vector<TrianglePtr>& triangles);
 
     static float findBest(const vector<TrianglePtr>& triangles, float startValue, Utils::Axis axis, function<float(float, float)> comparator); 
