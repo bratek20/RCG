@@ -73,7 +73,7 @@ KDNodePtr KDTree::make(int depth, const vector<TrianglePtr> &triangles,
     node->split = data.value; 
 
     auto newBounds = bounds.split(axis, data.value);
-    auto left = splitBy(data.value, triangles, axis, less<float>());
+    auto left = splitBy(data.value, triangles, axis, less_equal<float>());
     auto right = splitBy(data.value, triangles, axis, greater_equal<float>());
 
     node->left = make(depth + 1, left, newBounds.first);
