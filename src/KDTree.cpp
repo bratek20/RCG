@@ -43,8 +43,8 @@ CastData KDNode::leafIntersect(Ray r, float tMin, float tMax, const vector<Trian
 }
 
 KDNode::PlaneData KDNode::planeIntersect(Ray r, int myIdx) {
-    float o = r.origin[type];
-    float d = r.direction[type];
+    float o = r.origin[getType()];
+    float d = r.direction[getType()];
     int left = myIdx+1;
     int right = getSecondChildIdx();
     
@@ -83,14 +83,14 @@ KDTree::KDTree(const vector<TrianglePtr> &triangles) : AccStruct(triangles) {
     make(0, triIndices, bounds);
 }
 
-void KDTree::make(int depth, const vector<int>& triIndices,
+void KDTree::make(int depth, vector<int>& triIndices,
                        Bounds bounds) {
+    int nodeIdx = nodes.size();
     nodes.push_back(KDNode());
-    KDNodePtr node = &nodes.back();
 
     SplitData data = chooseSplit(depth, triIndices, bounds);
     if(data.isLeaf){
-        node->initLeaf(triangleIndices.size(), triIndices.size());
+        nodes[nodeIdx].initLeaf(triangleIndices.size(), triIndices.size());
         Utils::addRange(triangleIndices, triIndices);
         return;
     }
@@ -101,7 +101,7 @@ void KDTree::make(int depth, const vector<int>& triIndices,
     auto right = splitBy(data.value, triIndices, axis, greater_equal<float>());
 
     make(depth + 1, left, newBounds.first);
-    node->initInterior(axis, data.value, nodes.size());
+    nodes[nodeIdx].initInterior(axis, data.value, nodes.size());
     make(depth + 1, right, newBounds.second);
 }
 
@@ -178,16 +178,12 @@ float KDTree::findBest(const vector<int>& triIndices, float startValue,
 }
 
 CastData KDTree::traverse(int nodeIdx, Ray r, float tMin, float tMax) {
-    KDNodePtr node = &nodes[nodeIdx];
-    if(node->getType() == KDNode::LEAF){
-        return CastData();
+    KDNode& node = nodes[nodeIdx];
+    if (node.getType() == KDNode::LEAF) {
+        return node.leafIntersect(r, tMin, tMax, triangles, triangleIndices);
     }
 
-    if (node->type == KDNode::LEAF) {
-        return node->leafIntersect(r, tMin, tMax, triangles, triangleIndices);
-    }
-
-    KDNode::PlaneData data = node->planeIntersect(r, nodeIdx);
+    KDNode::PlaneData data = node.planeIntersect(r, nodeIdx);
     if (!data.intersects || data.t >= tMax) {
         return traverse(data.near, r, tMin, tMax);
     }

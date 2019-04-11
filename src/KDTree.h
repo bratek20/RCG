@@ -7,9 +7,6 @@
 #include <memory>
 #include <functional>
 
-struct KDNode;
-using KDNodePtr = KDNode*;
-
 struct KDNode {
     enum Type {
         X_SPLIT = Utils::X,
@@ -30,12 +27,14 @@ struct KDNode {
         float split; // Interior 
     }; 
     
+private:
     union { 
         Type type; // Both
         int trianglesNum; // Leaf 
         int secondChildIdx; // Interior 
     };
 
+public:
     void initLeaf(int indicesOffset, int trianglesNum);
     void initInterior(Utils::Axis axis, float split, int secondChildIdx);
 
@@ -67,7 +66,7 @@ public:
     CastData cast(Ray r, float maxDistance) override;
 
 private:
-    void make(int depth, const vector<int>& triIndices, Bounds bounds);  
+    void make(int depth, vector<int>& triIndices, Bounds bounds);  
     SplitData chooseSplit(int depth, const vector<int>& triIndices, Bounds bounds);
 
     bool shouldBeLeaf(int depth, const vector<int>& triIndices); 
