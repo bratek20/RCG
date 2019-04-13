@@ -14,6 +14,7 @@ Ray::Ray(glm::vec3 origin, glm::vec3 direction, bool moveByEpsilon) :
 
 void Ray::setEpsilon(float eps){
     epsilon = eps;
+    cout << "Ray epsilon set to: " << eps << endl;
 }
 
 AccStruct::AccStruct(const vector<TrianglePtr>& triangles) : triangles(triangles) {}

@@ -123,9 +123,9 @@ void Camera::allignToVector(glm::vec3 initDir, glm::vec3 allignDir){
     initDir = glm::normalize(initDir);
     allignDir = glm::normalize(allignDir);
 
-    glm::vec2 initDir2d = Utils::toVec2(initDir, Utils::Axis::Y);
-    glm::vec2 allignDir2d = Utils::toVec2(allignDir, Utils::Axis::Y);
-    float yRot = glm::degrees(glm::orientedAngle(initDir2d, allignDir2d)); 
+    glm::vec2 initDir2d = glm::normalize(Utils::toVec2(initDir, Utils::Axis::Y));
+    glm::vec2 allignDir2d = glm::normalize(Utils::toVec2(allignDir, Utils::Axis::Y));
+    float yRot = -glm::degrees(glm::orientedAngle(initDir2d, allignDir2d)); 
     float xRot = -glm::degrees(glm::asin(allignDir.y));
     
     glm::vec3 rotation = glm::vec3(xRot, yRot, 0);

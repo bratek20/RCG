@@ -19,7 +19,7 @@ void printCameraPosition(){
 int main(int argc, char* argv[]){
 	Config c;
 	if(argc < 2 || !c.load(argv[1])){
-		cerr << "Bad config!" << endl;
+		cerr << "Bad config! Specify it as first argument." << endl;
 		return -1;
 	}
     if(!Window::open("Lab1", c)){
