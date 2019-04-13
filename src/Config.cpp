@@ -56,6 +56,10 @@ bool Config::load(const string& path)
         }
         
     }
+
+    for(auto& lc : lights){
+        lc.coefficients = lightCoef;
+    }
     return true;
 }
 

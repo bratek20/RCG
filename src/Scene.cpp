@@ -19,7 +19,8 @@ ScenePtr Scene::create(const Config &c)
     ScenePtr scene = ScenePtr(new Scene(Model::create(fullScenePath, c.debugMode)));
     scene->camera = Camera::create(c.camera);
     scene->addChild(scene->camera);
-    Light::loadLights(c);
+    Light::loadLights(c.lights);
+    Light::loadLights(scene->getModel()->getLights());
     Timer::stop();
     return scene;
 }

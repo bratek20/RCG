@@ -16,6 +16,7 @@ struct LightConfig {
     glm::vec3 position;
     Color color;
     float intensity;
+    glm::vec3 coefficients;
 };
 
 struct CameraConfig {
