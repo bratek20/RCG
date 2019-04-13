@@ -6,7 +6,7 @@ void SAH::init(int maxTrianglesNum){
     edges.resize(maxTrianglesNum * 2);
 }
 
-SAH::SplitData SAH::bestSplit(Bounds bounds,
+SAH::SplitData SAH::bestSplit(const Bounds& bounds,
                               const vector<TrianglePtr> &triangles, const vector<int>& triIndices) {
     Utils::Axis firstAxis = bounds.maximumExtent();
     Utils::Axis axes[] = {firstAxis, Utils::next(firstAxis),
@@ -18,7 +18,7 @@ SAH::SplitData SAH::bestSplit(Bounds bounds,
         SplitData data = bestSplitFor(axis, bounds, triangles, triIndices);
         if (data.cost < ans.cost) {
             ans = data;
-            break;
+            //break;
         }
     }
 
@@ -26,7 +26,7 @@ SAH::SplitData SAH::bestSplit(Bounds bounds,
     return ans;
 }
 
-SAH::SplitData SAH::bestSplitFor(Utils::Axis axis, Bounds bounds,
+SAH::SplitData SAH::bestSplitFor(Utils::Axis axis, const Bounds& bounds,
                                  const vector<TrianglePtr> &triangles, const vector<int>& triIndices) {
     int trianglesNum = triIndices.size();
     for (int i=0;i<trianglesNum;i++) {

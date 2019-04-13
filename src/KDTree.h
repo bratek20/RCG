@@ -66,12 +66,11 @@ public:
     CastData cast(Ray r, float maxDistance) override;
 
 private:
-    void make(int depth, vector<int>& triIndices, Bounds bounds);  
-    SplitData chooseSplit(int depth, const vector<int>& triIndices, Bounds bounds);
+    void make(int depth, vector<int>& triIndices, const Bounds& bounds);  
+    SplitData chooseSplit(int depth, const vector<int>& triIndices, const Bounds& bounds);
 
     bool shouldBeLeaf(int depth, const vector<int>& triIndices); 
     
-    float spatialMedian(Utils::Axis axis, const vector<int>& triIndices);
     float objectMedian(Utils::Axis axis, const vector<int>& triIndices);
 
     float findBest(const vector<int>& triIndices, float startValue, Utils::Axis axis, function<float(float, float)> comparator); 

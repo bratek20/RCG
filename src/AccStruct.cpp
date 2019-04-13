@@ -3,7 +3,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/intersect.hpp>
 
-float Ray::EPSILON = 10;
+float Ray::EPSILON = 1;
 
 Ray::Ray(glm::vec3 origin, glm::vec3 direction, bool moveByEpsilon) : 
         origin(origin), direction(glm::normalize(direction)) {

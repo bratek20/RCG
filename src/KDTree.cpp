@@ -84,7 +84,7 @@ KDTree::KDTree(const vector<TrianglePtr> &triangles) : AccStruct(triangles) {
 }
 
 void KDTree::make(int depth, vector<int>& triIndices,
-                       Bounds bounds) {
+                       const Bounds& bounds) {
     int nodeIdx = nodes.size();
     nodes.push_back(KDNode());
 
@@ -105,7 +105,7 @@ void KDTree::make(int depth, vector<int>& triIndices,
     make(depth + 1, right, newBounds.second);
 }
 
-KDTree::SplitData KDTree::chooseSplit(int depth, const vector<int>& triIndices, Bounds bounds){
+KDTree::SplitData KDTree::chooseSplit(int depth, const vector<int>& triIndices, const Bounds& bounds){
     SplitData ans;
 #if USE_SAH == 1    
     SAH::SplitData data = SAH::bestSplit(bounds, triangles, triIndices);
@@ -114,7 +114,7 @@ KDTree::SplitData KDTree::chooseSplit(int depth, const vector<int>& triIndices, 
     ans.isLeaf = data.failed() || shouldBeLeaf(depth, triIndices);
 #else
     ans.axis = static_cast<Utils::Axis>(depth % 3);
-    ans.value = spatialMedian(ans.axis, triangles);
+    ans.value = bounds.diagonal()[ans.axis] / 2;
     ans.isLeaf = shouldBeLeaf(depth, triangles);
 #endif
     return ans;
@@ -124,13 +124,6 @@ CastData KDTree::cast(Ray r, float maxDistance) { return traverse(0, r, 0, maxDi
 
 bool KDTree::shouldBeLeaf(int depth, const vector<int>& triIndices) {
     return depth == stopDepth || triIndices.size() <= stopTrianglesNum;
-}
-
-float KDTree::spatialMedian(Utils::Axis axis,
-                            const vector<int>& triIndices) {
-    float minVal = findBest(triIndices, Utils::INF, axis, less<float>());
-    float maxVal = findBest(triIndices, -Utils::INF, axis, greater<float>());
-    return (minVal + maxVal) / 2;
 }
 
 float KDTree::objectMedian(Utils::Axis axis,

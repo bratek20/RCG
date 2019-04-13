@@ -34,10 +34,10 @@ public:
     };
 
     static void init(int maxTrianglesNum);
-    static SplitData bestSplit(Bounds bounds, const vector<TrianglePtr>& triangles, const vector<int>& triIndices);
+    static SplitData bestSplit(const Bounds& bounds, const vector<TrianglePtr>& triangles, const vector<int>& triIndices);
 
 private:
-    static SplitData bestSplitFor(Utils::Axis axis, Bounds bounds, const vector<TrianglePtr>& triangles, const vector<int>& triIndices);
+    static SplitData bestSplitFor(Utils::Axis axis, const Bounds& bounds, const vector<TrianglePtr>& triangles, const vector<int>& triIndices);
 };
 
 #endif
