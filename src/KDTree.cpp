@@ -97,7 +97,7 @@ void KDTree::make(int depth, vector<int>& triIndices,
 
     Utils::Axis axis = data.axis;
     auto newBounds = bounds.split(axis, data.value);
-    auto left = splitBy(data.value, triIndices, axis, less<float>());
+    auto left = splitBy(data.value, triIndices, axis, less_equal<float>());
     auto right = splitBy(data.value, triIndices, axis, greater_equal<float>());
 
     make(depth + 1, left, newBounds.first);
