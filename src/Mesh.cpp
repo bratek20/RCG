@@ -207,7 +207,7 @@ void Mesh::draw(Shader &shader) {
 }
 void Mesh::setupMesh() {
     triangles.clear();
-    for (int i = 0; i < indices.size(); i += 3) {
+    for (unsigned i = 0; i < indices.size(); i += 3) {
         triangles.emplace_back(vertices[indices[i]], vertices[indices[i + 1]],
                                vertices[indices[i + 2]], material);
     }

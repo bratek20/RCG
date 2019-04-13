@@ -50,6 +50,10 @@ bool Config::load(const string& path)
         {
             file >> debugMode;
         }
+        else if(type == "RE")
+        {
+            file >> rayEpsilon;
+        }
         else
         {
             cerr << "Type: " << type << " not supported!" << endl;

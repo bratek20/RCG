@@ -1,0 +1,13 @@
+# Test view scene: in OBJ format coords righthanded, CCW faces
+view_test/view_test.obj
+view_test.bmp
+1
+600 400
+0.0 0 2.0
+0.0 0.0 0.0
+0 1 0
+1
+L 0.5 0.5 0.5 255 255 250 32
+LC 1 0 0
+BG 100 255 100
+DM 0

@@ -1,0 +1,14 @@
+# Test view scene: in OBJ format coords righthanded, CCW faces
+ReceptionTable/ReceptionTable.obj
+receptionTable.bmp
+1
+600 400
+7 9 -12
+3 4 0
+0 1 0
+1
+L 0 30 -10 255 255 255 1
+LC 0 0 1
+BG 100 100 255
+CV 20
+DM 1

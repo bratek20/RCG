@@ -2,6 +2,8 @@
 #include "Globals.h"
 #include "Input.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/vector_angle.hpp>
 #include <algorithm>
 
 using namespace std;
@@ -15,13 +17,17 @@ Camera::Camera() : Actor(nullptr) {
 }
 
 CameraPtr Camera::create(const CameraConfig &c) {
+    static const glm::vec3 INIT_DIR = glm::vec3(0, 0, 1);
+
     CameraPtr camera = CameraPtr(new Camera());
     camera->addChilds({camera->lookPoint, camera->leftTop, camera->leftBottom,
                        camera->rightTop, camera->rightBottom});
     camera->setPosition(c.viewPoint);
 
     float xView = Window::getRatio() * c.yView;
-    camera->lookPoint->setPosition(c.lookAt - c.viewPoint);
+    camera->lookPoint->setPosition(INIT_DIR);
+    glm::vec3 lookDir = c.lookAt - c.viewPoint;
+    camera->allignToVector(INIT_DIR, lookDir);
     camera->up = c.up;
     camera->setCornerPoints(xView, c.yView,
                             camera->lookPoint->getLocalPosition(), camera->up);
@@ -48,7 +54,7 @@ void Camera::onUpdate() {
     }
 
     auto newRot = getRotation() +
-                  glm::vec3(Input::getMouseOffset().y * Globals::deltaTime,
+                  glm::vec3(-Input::getMouseOffset().y * Globals::deltaTime,
                             -Input::getMouseOffset().x * Globals::deltaTime, 0);
     static const float MAX_X_DEG = 66;
     newRot.x = min(newRot.x, MAX_X_DEG);
@@ -111,4 +117,17 @@ glm::vec3 Camera::getRightTop() const { return rightTop->getWorldPosition(); }
 
 glm::vec3 Camera::getRightBottom() const {
     return rightBottom->getWorldPosition();
+}
+
+void Camera::allignToVector(glm::vec3 initDir, glm::vec3 allignDir){
+    initDir = glm::normalize(initDir);
+    allignDir = glm::normalize(allignDir);
+
+    glm::vec2 initDir2d = Utils::toVec2(initDir, Utils::Axis::Y);
+    glm::vec2 allignDir2d = Utils::toVec2(allignDir, Utils::Axis::Y);
+    float yRot = glm::degrees(glm::orientedAngle(initDir2d, allignDir2d)); 
+    float xRot = -glm::degrees(glm::asin(allignDir.y));
+    
+    glm::vec3 rotation = glm::vec3(xRot, yRot, 0);
+    setRotation(rotation);
 }

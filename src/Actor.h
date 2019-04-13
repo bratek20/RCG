@@ -46,6 +46,13 @@ public:
     glm::vec3 getRotation() const;
     bool isDestroyed() const;
     
+    ModelPtr getModel() const;
+    glm::mat4 getWorldMat() const;
+    glm::mat4 getLocalMat() const;
+    glm::mat4 getPositionMat() const;
+    glm::mat4 getScaleMat() const;
+    glm::mat4 getRotationMat() const;
+
 protected:
     glm::vec3 position;
     glm::vec3 scale;
@@ -56,13 +63,6 @@ protected:
     std::vector<ActorPtr> childs;
     Actor(ModelPtr model);
     virtual void onUpdate() {};
-
-    ModelPtr getModel() const;
-    glm::mat4 getWorldMat() const;
-    glm::mat4 getLocalMat() const;
-    glm::mat4 getPositionMat() const;
-    glm::mat4 getScaleMat() const;
-    glm::mat4 getRotationMat() const;
 };
 
 #endif

@@ -10,6 +10,8 @@
 
 using namespace std;
 
+ostream& operator<<(ostream& out, const glm::vec3& v);
+
 class Utils {
 public:
     enum Axis {
@@ -31,6 +33,7 @@ public:
 
     static glm::vec3 toVec(const aiVector3D& vec);
     static Color toColor(const aiColor3D& col);
+    static glm::vec2 toVec2(const glm::vec3& v, Axis toOmit);
 };
 
 #endif

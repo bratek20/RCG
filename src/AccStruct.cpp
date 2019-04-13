@@ -3,13 +3,17 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/intersect.hpp>
 
-float Ray::EPSILON = 1;
+float Ray::epsilon = 1e-3;
 
 Ray::Ray(glm::vec3 origin, glm::vec3 direction, bool moveByEpsilon) : 
         origin(origin), direction(glm::normalize(direction)) {
     if(moveByEpsilon){
-        this->origin += this->direction * EPSILON;
+        this->origin += this->direction * epsilon;
     }
+}
+
+void Ray::setEpsilon(float eps){
+    epsilon = eps;
 }
 
 AccStruct::AccStruct(const vector<TrianglePtr>& triangles) : triangles(triangles) {}

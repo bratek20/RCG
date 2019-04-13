@@ -41,6 +41,8 @@ CameraPtr Scene::getCamera() const
 
 void Scene::takePhoto(const Config &c)
 {
+    Ray::setEpsilon(c.rayEpsilon);
+    
     cout << "Taking photo..." << endl;
     bitmap_image photo(c.xRes, c.yRes);
 
