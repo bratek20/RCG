@@ -122,12 +122,8 @@ KDTree::SplitData KDTree::chooseSplit(int depth, const vector<int>& triIndices, 
 
 CastData KDTree::cast(Ray r, float maxDistance) { return traverse(0, r, 0, maxDistance); }
 
-bool KDTree::shouldBeLeaf(int depth, const vector<TrianglePtr> &triangles) {
-    return depth == stopDepth || static_cast<int>(triangles.size()) <= stopTrianglesNum;
-}
-
-bool KDTree::shouldBeLeaf(int depth, const vector<int>& triIndices) {
-    return depth == stopDepth || triIndices.size() <= stopTrianglesNum;
+bool KDTree::shouldBeLeaf(int depth, const vector<int> &triIndices) {
+    return depth == stopDepth || static_cast<int>(triIndices.size()) <= stopTrianglesNum;
 }
 
 float KDTree::objectMedian(Utils::Axis axis,
