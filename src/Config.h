@@ -16,6 +16,7 @@ struct LightConfig {
     glm::vec3 position;
     Color color;
     float intensity;
+    glm::vec3 coefficients;
 };
 
 struct CameraConfig {
@@ -40,7 +41,8 @@ struct Config {
     std::vector<LightConfig> lights;
 
     bool debugMode = false;
-
+    float rayEpsilon = 1e-3;
+    
     bool load(const std::string& path);
 
 private:

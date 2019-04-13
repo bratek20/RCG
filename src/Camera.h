@@ -34,7 +34,7 @@ protected:
 
 private:
     void setCornerPoints(float xView, float yView, glm::vec3 lookDir, glm::vec3 up);
-
+    void allignToVector(glm::vec3 initDir, glm::vec3 allignDir);
 };
 
 #endif

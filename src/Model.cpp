@@ -19,6 +19,7 @@ void Model::draw(Shader shader) {
 }
 
 bool Model::loadModel(const string &path) {
+    directory = path.substr(0, path.find_last_of('/'));
     // read file via ASSIMP
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(
@@ -33,12 +34,33 @@ bool Model::loadModel(const string &path) {
         cerr << "Given path: " << path << endl;
         return false;
     }
-    // retrieve the directory path of the filepath
-    directory = path.substr(0, path.find_last_of('/'));
 
     // process ASSIMP's root node recursively
     processNode(scene->mRootNode, scene);
+    processLights(scene);
+    createTriangles();
+    return true;
+}
 
+void Model::processLights(const aiScene *scene) {
+    cout << "Model lights num: " << scene->mNumLights << endl; 
+    for (unsigned i = 0; i < scene->mNumLights; i++) {
+        processLight(scene->mLights[i]);
+    }
+}
+
+void Model::processLight(const aiLight *light) {
+    LightConfig lc;
+    lc.position = Utils::toVec(light->mPosition);
+    lc.color = Utils::toColor(light->mColorAmbient);
+    lc.intensity = 1;
+    lc.coefficients =
+        glm::vec3(light->mAttenuationQuadratic, light->mAttenuationLinear,
+                  light->mAttenuationConstant);
+    lights.push_back(lc);
+}
+
+void Model::createTriangles() {
     triangles.clear();
     for (auto &mesh : meshes) {
         auto &mTris = mesh.getTriangles();
@@ -46,8 +68,6 @@ bool Model::loadModel(const string &path) {
             triangles.push_back(&tri);
         }
     }
-
-    return true;
 }
 
 // processes a node in a recursive fashion. Processes each individual mesh
@@ -197,6 +217,7 @@ unsigned int Model::textureFromFile(const char *path, const string &directory,
 }
 
 const vector<TrianglePtr> &Model::getTriangles() const { return triangles; }
+const vector<LightConfig> &Model::getLights() const { return lights; }
 Material Model::getMaterial(const aiScene *scene, unsigned int idx) {
     auto it = find_if(materials.begin(), materials.end(),
                       [&](const Material &mat) { return mat.id == idx; });

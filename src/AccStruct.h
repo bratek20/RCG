@@ -4,12 +4,13 @@
 #include "Mesh.h"
 
 struct Ray {
-    static float EPSILON;
+    static float epsilon;
 
     glm::vec3 origin;
     glm::vec3 direction;
 
     Ray(glm::vec3 origin, glm::vec3 direction, bool moveByEpsilon = false);
+    static void setEpsilon(float epsilon);
 };
 
 struct CastData {

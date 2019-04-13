@@ -1,0 +1,15 @@
+# Test view scene: in OBJ format coords righthanded, CCW faces
+nanosuit/nanosuit.obj
+nanosuit.bmp
+1
+1920 1080
+13 13 22
+0 7 1
+0 1 0
+1
+L -10 30 30 255 255 255 1
+LC 0 0 1
+BG 100 100 255
+CV 20
+DM 0
+RE 0.01

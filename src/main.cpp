@@ -11,10 +11,15 @@
 
 using namespace std;
 
+ScenePtr scene;
+void printCameraPosition(){
+	cout << "Camera pos: " << scene->getCamera()->getWorldPosition() << endl;
+}
+
 int main(int argc, char* argv[]){
 	Config c;
 	if(argc < 2 || !c.load(argv[1])){
-		cerr << "Bad config!" << endl;
+		cerr << "Bad config! Specify it as first argument." << endl;
 		return -1;
 	}
     if(!Window::open("Lab1", c)){
@@ -23,12 +28,13 @@ int main(int argc, char* argv[]){
 
 	Globals::init();
 
-	ScenePtr scene = Scene::create(c);
+	scene = Scene::create(c);
 	
 	if(c.debugMode){	
 		Assets::init();
 		Input::init();
 		Input::onKeyPressed(GLFW_KEY_P, bind(&Scene::takePhoto, scene, std::ref(c)));
+		Input::onKeyPressed(GLFW_KEY_M, printCameraPosition);
 		while(!Window::shouldClose()){
 			Input::handle();
 

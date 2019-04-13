@@ -21,3 +21,27 @@ float Utils::findBest(const vector<glm::vec3>& poses, Axis axis, CmpType cmpType
     }
     return ans;
 }
+
+glm::vec3 Utils::toVec(const aiVector3D& vec){
+    return glm::vec3(vec.x, vec.y, vec.z);
+}
+
+Color Utils::toColor(const aiColor3D& col){
+    return Color(col.r, col.g, col.b);
+}
+
+glm::vec2 Utils::toVec2(const glm::vec3& v, Axis toOmit){
+    glm::vec2 ans;
+    int i=0;
+    for(Axis a : AXES){
+        if(a != toOmit){
+            ans[i++] = v[a];
+        }
+    }
+    return ans;
+}
+
+ostream& operator<<(ostream& out, const glm::vec3& v){
+    out << "{" <<v.x << "," << v.y << "," << v.z << "}";
+    return out;
+}
