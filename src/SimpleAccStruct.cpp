@@ -1,6 +1,8 @@
 #include "SimpleAccStruct.h"
 #include "Globals.h"
 
+using namespace std;
+
 SimpleAccStruct::SimpleAccStruct(const vector<TrianglePtr>& triangles) : AccStruct(triangles) {}
 
 CastData SimpleAccStruct::cast(Ray r, float maxDistance){

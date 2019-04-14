@@ -5,6 +5,8 @@
 
 #define USE_SAH 1
 
+using namespace std;
+
 KDNodePtr KDNode::create(Type type) {
     KDNodePtr node = new KDNode();
     node->type = type;

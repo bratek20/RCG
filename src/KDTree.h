@@ -29,7 +29,7 @@ struct KDNode {
     float split;
     KDNodePtr left;
     KDNodePtr right;
-    vector<TrianglePtr> triangles;
+    std::vector<TrianglePtr> triangles;
 
     static KDNodePtr create(Type type);
 
@@ -51,20 +51,20 @@ class KDTree : public AccStruct {
     };
 
 public:
-    KDTree(const vector<TrianglePtr>& triangles);
+    KDTree(const std::vector<TrianglePtr>& triangles);
     CastData cast(Ray r, float maxDistance) override;
 
 private:
-    KDNodePtr make(int depth, const vector<TrianglePtr>& triangles, const Bounds& bounds);  
-    SplitData chooseSplit(int depth, const vector<TrianglePtr>& triangles, const Bounds& bounds);
+    KDNodePtr make(int depth, const std::vector<TrianglePtr>& triangles, const Bounds& bounds);  
+    SplitData chooseSplit(int depth, const std::vector<TrianglePtr>& triangles, const Bounds& bounds);
 
-    bool shouldBeLeaf(int depth, const vector<TrianglePtr>& triangles);
-    KDNodePtr makeLeaf(const vector<TrianglePtr>& triangles);  
+    bool shouldBeLeaf(int depth, const std::vector<TrianglePtr>& triangles);
+    KDNodePtr makeLeaf(const std::vector<TrianglePtr>& triangles);  
 
-    float objectMedian(Utils::Axis axis, const vector<TrianglePtr>& triangles);
+    float objectMedian(Utils::Axis axis, const std::vector<TrianglePtr>& triangles);
 
-    static float findBest(const vector<TrianglePtr>& triangles, float startValue, Utils::Axis axis, function<float(float, float)> comparator); 
-    static vector<TrianglePtr> splitBy(float value, const vector<TrianglePtr>& triangles, Utils::Axis axis, function<bool(float, float)> comparator);     
+    static float findBest(const std::vector<TrianglePtr>& triangles, float startValue, Utils::Axis axis, std::function<float(float, float)> comparator); 
+    static std::vector<TrianglePtr> splitBy(float value, const std::vector<TrianglePtr>& triangles, Utils::Axis axis, std::function<bool(float, float)> comparator);     
 
     CastData traverse(KDNodePtr node, Ray r, float tMin, float tMax);
 };

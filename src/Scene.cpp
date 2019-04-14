@@ -8,6 +8,8 @@
 
 #include <bitmap_image.h>
 
+using namespace std;
+
 Scene::Scene(ModelPtr sceneModel) : Actor(sceneModel)
 {
 }

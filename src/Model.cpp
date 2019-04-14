@@ -1,5 +1,7 @@
 #include "Model.h"
 
+using namespace std;
+
 ModelPtr Model::create(const string &path, bool debug) {
     return ModelPtr(new Model(path, debug));
 }
@@ -172,14 +174,13 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
     return textures;
 }
 
-unsigned int Model::textureFromFile(const char *path, const string &directory,
+unsigned int Model::textureFromFile(string path, const string &directory,
                                     bool gamma) {
     if (!debug) {
         return 0;
     }
 
-    string filename = string(path);
-    filename = directory + '/' + filename;
+    string filename = directory + '/' + path;
 
     unsigned int textureID;
     glGenTextures(1, &textureID);

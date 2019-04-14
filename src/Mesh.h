@@ -20,8 +20,6 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 struct Material {
     unsigned int id;
     Color ambient;
@@ -58,8 +56,8 @@ private:
 
 struct Texture {
     unsigned int id;
-    string type;
-    string path;
+    std::string type;
+    std::string path;
 };
 
 struct Bounds {
@@ -70,12 +68,12 @@ struct Bounds {
     glm::vec3 pMax;
 
     Bounds();
-    Bounds(const vector<glm::vec3>& poses);
+    Bounds(const std::vector<glm::vec3>& poses);
     Bounds(glm::vec3 pMin, glm::vec3 pMax) :
         pMin(pMin), pMax(pMax) {}
 
     Bounds merge(const Bounds& other) const;
-    pair<Bounds, Bounds> split(Utils::Axis axis, float value) const;
+    std::pair<Bounds, Bounds> split(Utils::Axis axis, float value) const;
 
     bool isValid() const;
     glm::vec3 diagonal() const;
@@ -96,7 +94,7 @@ struct Triangle {
 
     glm::vec3 getNormal(glm::vec2 baryPos) const;
     glm::vec3 getNormal() const;
-    vector<glm::vec3> getPositions() const;
+    std::vector<glm::vec3> getPositions() const;
     Bounds getBounds() const;
 };
 using TrianglePtr = const Triangle*;
@@ -104,20 +102,20 @@ using TrianglePtr = const Triangle*;
 class Mesh {
 public:
     /*  Mesh Data  */
-    vector<Vertex> vertices;
-    vector<unsigned int> indices;
-    vector<Texture> textures;
-    vector<Triangle> triangles;
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+    std::vector<Texture> textures;
+    std::vector<Triangle> triangles;
     Material material;
     unsigned int VAO;
     bool debug;
     /*  Functions  */
     // constructor
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, const Material& material, bool debug);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, const Material& material, bool debug);
 
     // render the mesh
     void draw(Shader& shader);
-    const vector<Triangle>& getTriangles() const;
+    const std::vector<Triangle>& getTriangles() const;
 
 private:
     /*  Render data  */

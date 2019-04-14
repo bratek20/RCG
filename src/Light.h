@@ -19,7 +19,7 @@ class Light : public Actor {
     glm::vec3 coefficients;
     
 public:
-    static void loadLights(const vector<LightConfig>& lights);
+    static void loadLights(const std::vector<LightConfig>& lights);
     static LightPtr create(float power = 50.0f, Color color = Colors::WHITE, glm::vec3 coefficients = glm::vec3(1, 0, 0));
     static void applyLights(const Shader& s);
 

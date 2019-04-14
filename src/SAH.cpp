@@ -1,5 +1,7 @@
 #include "SAH.h"
 
+using namespace std;
+
 vector<SAH::BoundEdge> SAH::edges;
 
 void SAH::init(int maxTrianglesNum){

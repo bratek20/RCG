@@ -26,10 +26,10 @@ struct CastData {
 
 class AccStruct {    
 protected:
-    const vector<TrianglePtr>& triangles;
+    const std::vector<TrianglePtr>& triangles;
 
 public:
-    AccStruct(const vector<TrianglePtr>& triangles);
+    AccStruct(const std::vector<TrianglePtr>& triangles);
     virtual CastData cast(Ray r, float maxDistance = Utils::INF) = 0;
 
     static CastData intersect(Ray r, TrianglePtr tri);

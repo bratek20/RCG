@@ -13,21 +13,19 @@
 #include "Program3D.h"
 #include "Shape.h"
 
-using namespace std;
-
 class Assets {
-    static const vector<string> POSSIBLE_PATH_PREFIXES;
+    static const std::vector<std::string> POSSIBLE_PATH_PREFIXES;
 
 public:
     static Program3D program;
     
     static void init(); 
     static void clear();
-    static string validPath(const string& path);
-    static string photoSavePath(const string& name);
+    static std::string validPath(const std::string& path);
+    static std::string photoSavePath(const std::string& name);
 
 private:
-    static bool isValidPath(const string& path);
+    static bool isValidPath(const std::string& path);
 };
 
 #endif

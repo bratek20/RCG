@@ -10,8 +10,6 @@
 #include <unordered_map>
 #include <functional>
 
-using namespace std;
-
 struct LightConfig {
     glm::vec3 position;
     Color color;

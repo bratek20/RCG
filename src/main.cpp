@@ -6,6 +6,7 @@
 #include "Assets.h"
 #include "Config.h"
 
+#include <gli/gli.hpp>
 #include <iostream>
 #include <algorithm>
 

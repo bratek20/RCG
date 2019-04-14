@@ -4,6 +4,9 @@
 #include "Utils.h"
 
 #include <iostream>
+
+using namespace std;
+
 const glm::vec3 Vertex::NORMAL_NOT_SET = glm::vec3(0);
 
 Material::Material(aiMaterial *mat, unsigned int id) : id(id) {

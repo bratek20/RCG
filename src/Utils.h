@@ -8,9 +8,7 @@
 #include <vector>
 #include <assimp/scene.h> 
 
-using namespace std;
-
-ostream& operator<<(ostream& out, const glm::vec3& v);
+std::ostream& operator<<(std::ostream& out, const glm::vec3& v);
 
 class Utils {
 public:
@@ -26,10 +24,10 @@ public:
     };
 
     static const float INF;
-    static const array<Axis, 3> AXES;
+    static const std::array<Axis, 3> AXES;
     static Axis next(Axis axis, int step = 1);
 
-    static float findBest(const vector<glm::vec3>& poses, Axis axis, CmpType cmpType); 
+    static float findBest(const std::vector<glm::vec3>& poses, Axis axis, CmpType cmpType); 
 
     static glm::vec3 toVec(const aiVector3D& vec);
     static Color toColor(const aiColor3D& col);

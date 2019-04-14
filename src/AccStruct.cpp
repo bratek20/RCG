@@ -3,6 +3,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/intersect.hpp>
 
+using namespace std;
+
 float Ray::epsilon = 1e-3;
 
 Ray::Ray(glm::vec3 origin, glm::vec3 direction, bool moveByEpsilon) : 

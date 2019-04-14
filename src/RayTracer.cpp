@@ -2,16 +2,18 @@
 
 #include <cstdio>
 
-std::pair<bool, Color> RayTracer::cast(int k, Ray r, AccStruct& accStruct,
-                                       const std::vector<LightPtr> &lights) {
+using namespace std;
+
+pair<bool, Color> RayTracer::cast(int k, Ray r, AccStruct& accStruct,
+                                       const vector<LightPtr> &lights) {
     CastData ans = accStruct.cast(r);
     if (!ans.intersects()) {
-        return std::make_pair(false, Colors::BLACK);
+        return make_pair(false, Colors::BLACK);
     }
 
     TrianglePtr ansTri = ans.triangle; 
     if (k == 0) {
-        return std::make_pair(true, ansTri->mat.diffuse);
+        return make_pair(true, ansTri->mat.diffuse);
     }
 
     glm::vec3 intersec = ans.pos;
@@ -23,13 +25,13 @@ std::pair<bool, Color> RayTracer::cast(int k, Ray r, AccStruct& accStruct,
         cast(k - 1, Ray(intersec, reflectDir, true), accStruct, lights);
     Color phongColor = phongShading(intersec, normal, r.direction,
                                     ansTri->mat, accStruct, lights);
-    return std::make_pair(true, phongColor + reflectCast.second * reflectParam);
+    return make_pair(true, phongColor + reflectCast.second * reflectParam);
 }
 
 Color RayTracer::phongShading(glm::vec3 position, glm::vec3 normal,
                               glm::vec3 rayDirection, const Material &material,
                               AccStruct& accStruct,
-                              const std::vector<LightPtr> &lights) {
+                              const vector<LightPtr> &lights) {
     Color color = Colors::BLACK;
     Color materialDiffuseColor = material.diffuse;
     Color materialAmbientColor = material.ambient * materialDiffuseColor;

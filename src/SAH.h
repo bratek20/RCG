@@ -19,7 +19,7 @@ class SAH {
         }
     };
 
-    static vector<BoundEdge> edges;
+    static std::vector<BoundEdge> edges;
 
 public:
     struct SplitData{
@@ -34,10 +34,10 @@ public:
     };
 
     static void init(int maxTrianglesNum);
-    static SplitData bestSplit(const Bounds& bounds, const vector<TrianglePtr>& triangles);
+    static SplitData bestSplit(const Bounds& bounds, const std::vector<TrianglePtr>& triangles);
 
 private:
-    static SplitData bestSplitFor(Utils::Axis axis, const Bounds& bounds, const vector<TrianglePtr>& triangles);
+    static SplitData bestSplitFor(Utils::Axis axis, const Bounds& bounds, const std::vector<TrianglePtr>& triangles);
 };
 
 #endif
