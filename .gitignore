@@ -1,3 +1,3 @@
-src/vscode/*
+src/.vscode/ipch/*
 obj/*
 bin/*.exe
