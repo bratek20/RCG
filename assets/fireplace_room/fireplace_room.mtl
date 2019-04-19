@@ -40,7 +40,7 @@ Tf 1.00 1.00 1.00
 Ni 1.0
 Ks 0.02 0.02 0.02
 Ns 10.00
-map_Kd textures\wood.png
+map_Kd textures/wood.png
 newmtl grey_and_white_room:Glass
 illum 7
 Kd 0.0 0.00 0.0
@@ -57,8 +57,8 @@ Tf 1.00 1.00 1.00
 Ni 1.00
 Ks 0.00 0.00 0.00
 Ns 0.06
-map_Kd textures\leaf.png
-#map_d textures\leaf_alpha.png
+map_Kd textures/leaf.png
+#map_d textures/leaf_alpha.png
 newmtl grey_and_white_room:MattePaint
 illum 4
 Kd 0.9 0.9 0.9
@@ -80,7 +80,7 @@ Kd 0.00 0.00 0.00
 Ka 0.40 0.40 0.40
 Tf 1.00 1.00 1.00
 Ni 1.00
-map_Kd textures\picture8.png
+map_Kd textures/picture8.png
 newmtl grey_and_white_room:PaintingBack
 illum 4
 Kd 0.26 0.25 0.14
@@ -122,7 +122,7 @@ Tf 1.00 1.00 1.00
 Ni 1.00
 Ks 0.04 0.04 0.04
 Ns 0.06
-map_Kd textures\wood5.png
+map_Kd textures/wood5.png
 newmtl grey_and_white_room:Transluscent
 illum 4
 Kd 0.30 0.30 0.30

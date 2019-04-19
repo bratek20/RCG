@@ -10,7 +10,7 @@ INCLUDES := -I include/
 GCC := g++ 
 
 $(BIN_DIR)/$(PROG_NAME):$(OBJ_FILES)
-	$(GCC) -o $@ $^ $(LDFLAGS) 
+	$(GCC) $(CPPFLAGS) -o $@ $^ $(LDFLAGS) 
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(GCC) $(CPPFLAGS) $(INCLUDES) -c -o $@ $<
