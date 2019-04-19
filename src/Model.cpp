@@ -2,11 +2,11 @@
 
 using namespace std;
 
-ModelPtr Model::create(const string &path, bool debug) {
-    return ModelPtr(new Model(path, debug));
+ModelPtr Model::create(const string &path) {
+    return ModelPtr(new Model(path));
 }
 
-Model::Model(string const &path, bool debug) : debug(debug) {
+Model::Model(string const &path) {
     if (loadModel(path)) {
         cout << "Model: " << path << " loaded!" << endl;
     } else {
@@ -111,7 +111,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     }
 
     // return a mesh object created from the extracted mesh data
-    return Mesh(vertices, indices, mat, debug);
+    return Mesh(vertices, indices, mat);
 }
 
 Material Model::getMaterial(const aiScene *scene, unsigned int idx) {

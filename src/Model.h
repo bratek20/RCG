@@ -26,17 +26,16 @@ class Model {
     std::vector<TrianglePtr> triangles;
     std::vector<LightConfig> lights;
     std::string directory;
-    bool debug;
 
   public:
-    static ModelPtr create(const std::string &path, bool debug);
+    static ModelPtr create(const std::string &path);
 
     void draw(Shader shader);
     const std::vector<TrianglePtr> &getTriangles() const;
     const std::vector<LightConfig> &getLights() const;
 
   private:
-    Model(const std::string &path, bool debug);
+    Model(const std::string &path);
     bool loadModel(const std::string &path);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);

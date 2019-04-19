@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
         return -1;
     }
 
-	Globals::init();
+	Globals::init(c);
 
 	scene = Scene::create(c);
 	

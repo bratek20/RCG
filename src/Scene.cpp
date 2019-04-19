@@ -18,7 +18,7 @@ ScenePtr Scene::create(const Config &c)
 {
     Timer::start("Creating scene");
     string fullScenePath = Assets::validPath(c.loadScenePath);
-    ScenePtr scene = ScenePtr(new Scene(Model::create(fullScenePath, c.debugMode)));
+    ScenePtr scene = ScenePtr(new Scene(Model::create(fullScenePath)));
     scene->camera = Camera::create(c.camera);
     scene->addChild(scene->camera);
     Light::loadLights(c.lights);

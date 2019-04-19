@@ -18,7 +18,7 @@ pair<bool, Color> RayTracer::cast(int k, Ray r, AccStruct &accStruct,
 
     glm::vec3 intersec = ans.pos;
     glm::vec3 normal = ansTri->getNormal(ans.baryPos);
-    glm::vec2 uv;// = ansTri->getUV(ans.baryPos);
+    glm::vec2 uv = ansTri->getUV(ans.baryPos);
     glm::vec3 reflectDir =
         glm::normalize(glm::reflect(glm::normalize(intersec), normal));
     float reflectParam = ansTri->mat.specular.getAverage();
@@ -34,7 +34,7 @@ Color RayTracer::phongShading(glm::vec3 position, glm::vec3 normal, glm::vec2 uv
                               AccStruct &accStruct,
                               const vector<LightPtr> &lights) {
     Color color = Colors::BLACK;
-    Color materialDiffuseColor = material.diffuse;// * material.getTextureColor(uv.x, uv.y);
+    Color materialDiffuseColor = material.diffuse * material.getTextureColor(uv.x, uv.y);
     Color materialAmbientColor = material.ambient * materialDiffuseColor;
     Color materialSpecularColor = material.specular;
     for (auto &light : lights) {

@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "Globals.h"
 
 #include <iostream>
 
@@ -14,7 +15,10 @@ Texture::Texture(const string &path, const string &type)
         cerr << "Texture loading failed for path: " << path << endl;
         return;
     }
-    loadTexture();
+    if(Globals::debug){
+        loadTexture();
+    }
+    
 }
 
 Texture::~Texture() { stbi_image_free(data); }
@@ -38,7 +42,6 @@ bool Texture::loadData(const std::string &fullPath) {
 }
 
 void Texture::loadTexture() {
-    id = 0;
     glGenTextures(1, &id);
 
     glBindTexture(GL_TEXTURE_2D, id);
@@ -66,6 +69,9 @@ const std::string &Texture::getType() const{
 }
 
 Color Texture::getColor(float u, float v) const{
+    u = u - floor(u);
+    v = v - floor(v);
+    
     int i = (1-v) * height;
     int j = u * width; 
     unsigned bytePerPixel = nrComponents;

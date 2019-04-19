@@ -108,10 +108,9 @@ public:
     std::vector<Triangle> triangles;
     Material material;
     unsigned int VAO;
-    bool debug;
     /*  Functions  */
     // constructor
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const Material& material, bool debug);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const Material& material);
 
     // render the mesh
     void draw(Shader& shader);

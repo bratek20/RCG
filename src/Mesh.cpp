@@ -2,6 +2,7 @@
 
 #include "Mesh.h"
 #include "Utils.h"
+#include "Globals.h"
 
 #include <iostream>
 
@@ -19,7 +20,7 @@ Material::Material(aiMaterial *mat, unsigned int id, const std::vector<TexturePt
 
 Color Material::getTextureColor(float u, float v) const {
     if(textures.empty()){
-        return Color();
+        return Colors::WHITE;
     }
     return textures[0]->getColor(u, v);
 }
@@ -201,9 +202,9 @@ Bounds Triangle::getBounds() const {
     return bounds;
 }
 
-Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, const Material &material, bool debug)
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, const Material &material)
     : vertices(vertices), indices(indices),
-      material(material), debug(debug) {
+      material(material){
     // now that we have all the required data, set the vertex buffers and its
     // attribute pointers.
     setupMesh();
@@ -227,7 +228,7 @@ void Mesh::setupMesh() {
                                vertices[indices[i + 2]], material);
     }
 
-    if(!debug){
+    if(!Globals::debug){
         return;
     }
     // create buffers/arrays
