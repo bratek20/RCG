@@ -12,9 +12,9 @@ struct Color {
 
     Color(float r, float g, float b) : r(fix(r)), g(fix(g)), b(fix(b)) {}
 
-    Color() : Color(0, 0, 0) {}
+    Color() : Color(0.0f, 0.0f, 0.0f) {}
 
-    Color(int r, int g, int b) : Color(r / 255.0f, g / 255.0f, b / 255.0f) {}
+    Color(unsigned char r, unsigned char g, unsigned char b) : Color(r / 255.0f, g / 255.0f, b / 255.0f) {}
 
     bool operator==(const Color &other) const {
         return r == other.r && g == other.g && b == other.b;

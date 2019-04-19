@@ -3,14 +3,10 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-
 #include "Mesh.h"
 #include "Shader.h"
 #include "Config.h"
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <stb_image.h>
+#include "Texture.h"
 
 #include <fstream>
 #include <iostream>
@@ -24,7 +20,7 @@ class Model;
 using ModelPtr = std::shared_ptr<Model>;
 
 class Model {
-    std::vector<Texture> textures;
+    std::vector<TexturePtr> textures;
     std::vector<Material> materials;
     std::vector<Mesh> meshes;
     std::vector<TrianglePtr> triangles;
@@ -48,10 +44,8 @@ class Model {
     void processLight(const aiLight *light);
     void createTriangles();
 
-    std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type,
+    std::vector<TexturePtr> loadMaterialTextures(aiMaterial *mat, aiTextureType type,
                                          std::string typeName);
-    unsigned int textureFromFile(std::string path, const std::string &directory,
-                                 bool gamma = false);
     Material getMaterial(const aiScene *scene, unsigned int idx);
 };
 #endif

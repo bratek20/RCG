@@ -25,7 +25,7 @@ out vec3 color;
 void main(){
 	// Material properties
 	vec3 textureColor = texture( texture_diffuse1, UV ).rgb; 
-	vec3 MaterialDiffuseColor = DiffuseColor;
+	vec3 MaterialDiffuseColor = DiffuseColor * textureColor;
 	vec3 MaterialAmbientColor = AmbientColor * MaterialDiffuseColor;
 	vec3 MaterialSpecularColor = SpecularColor;
 
@@ -59,12 +59,14 @@ void main(){
 			distance * distance * LightDistanceCoefficients[i].x +
 			distance * LightDistanceCoefficients[i].y +
 			LightDistanceCoefficients[i].z;  
+		float invDistLoss = 1 / distanceLoss;
+
 		color += 
 			// Ambient : simulates indirect lighting
 			MaterialAmbientColor
 			// Diffuse : "color" of the object  
-			+ MaterialDiffuseColor * LightColor[i] * LightPower[i] * cosTheta / distanceLoss
+			+ MaterialDiffuseColor * invDistLoss * LightColor[i] * LightPower[i] * cosTheta
 			// Specular : reflective highlight, like a mirror
-			+ MaterialSpecularColor * LightColor[i] * LightPower[i] * pow(cosAlpha, NS) / distanceLoss;
+			+ MaterialSpecularColor * invDistLoss * LightColor[i] * LightPower[i] * pow(cosAlpha, NS);
 	}
 }

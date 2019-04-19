@@ -8,12 +8,20 @@
 using namespace std;
 
 const glm::vec3 Vertex::NORMAL_NOT_SET = glm::vec3(0);
+const glm::vec2 Vertex::UV_NOT_SET = glm::vec2(-4, -2);
 
-Material::Material(aiMaterial *mat, unsigned int id) : id(id) {
+Material::Material(aiMaterial *mat, unsigned int id, const std::vector<TexturePtr>& textures) : id(id), textures(textures) {
     ambient = getColor(mat, AI_MATKEY_COLOR_AMBIENT);
     diffuse = getColor(mat, AI_MATKEY_COLOR_DIFFUSE);
     specular = getColor(mat, AI_MATKEY_COLOR_SPECULAR);
     ns = getFloat(mat, AI_MATKEY_SHININESS);
+}
+
+Color Material::getTextureColor(float u, float v) const {
+    if(textures.empty()){
+        return Color();
+    }
+    return textures[0]->getColor(u, v);
 }
 
 Color Material::getColor(aiMaterial *mat, const char *pKey, unsigned int type,
@@ -39,24 +47,41 @@ void Material::apply(Shader &shader) {
     shader.applyColor("AmbientColor", ambient);
     shader.applyColor("DiffuseColor", diffuse);
     shader.applyColor("SpecularColor", specular);
+
+    unsigned int diffuseNr = 1;
+    unsigned int specularNr = 1;
+    unsigned int normalNr = 1;
+    unsigned int heightNr = 1;
+    for (unsigned int i = 0; i < textures.size(); i++) {
+        glActiveTexture(GL_TEXTURE0 +
+                        i); // active proper texture unit before binding
+        // retrieve texture number (the N in diffuse_textureN)
+        string number;
+        string name = textures[i]->getType();
+        if (name == "texture_diffuse")
+            number = std::to_string(diffuseNr++);
+        else if (name == "texture_specular")
+            number =
+                std::to_string(specularNr++); // transfer unsigned int to stream
+        else if (name == "texture_normal")
+            number =
+                std::to_string(normalNr++); // transfer unsigned int to stream
+        else if (name == "texture_height")
+            number =
+                std::to_string(heightNr++); // transfer unsigned int to stream
+
+        // now set the sampler to the correct texture unit
+        glUniform1i(
+            glGetUniformLocation(shader.getId(), (name + number).c_str()), i);
+        // and finally bind the texture
+        glBindTexture(GL_TEXTURE_2D, textures[i]->getId());
+    }
 }
 
 Vertex::Vertex(aiMesh *mesh, int idx) {
     position = toVec3(mesh->mVertices, idx, glm::vec3(0));
     normal = toVec3(mesh->mNormals, idx, NORMAL_NOT_SET);
-
-    if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
-    {
-        glm::vec2 vec;
-        // a vertex can contain up to 8 different texture coordinates. We thus
-        // make the assumption that we won't use models where a vertex can have
-        // multiple texture coordinates so we always take the first set (0).
-        // vec.x = mesh->mTextureCoords[0][idx].x;
-        // vec.y = mesh->mTextureCoords[0][idx].y;
-        texCoords = vec;
-    } else {
-        texCoords = glm::vec2(0.0f, 0.0f);
-    }
+    uv = toVec2(mesh->mTextureCoords[0], idx, UV_NOT_SET);
 }
 
 glm::vec3 Vertex::toVec3(aiVector3D *vectors, int idx, glm::vec3 defaultVec) {
@@ -66,7 +91,15 @@ glm::vec3 Vertex::toVec3(aiVector3D *vectors, int idx, glm::vec3 defaultVec) {
     return defaultVec;
 }
 
+glm::vec2 Vertex::toVec2(aiVector3D *vectors, int idx, glm::vec2 defaultVec) {
+    if (vectors != NULL) {
+        return glm::vec2(vectors[idx].x, vectors[idx].y);
+    }
+    return defaultVec;
+}
+
 bool Vertex::hasNormal() const { return normal != NORMAL_NOT_SET; }
+bool Vertex::hasUV() const { return uv != UV_NOT_SET;}
 
 const glm::vec3 Bounds::MIN_NOT_SET = glm::vec3(Utils::INF);;
 const glm::vec3 Bounds::MAX_NOT_SET = glm::vec3(-Utils::INF);
@@ -146,6 +179,15 @@ glm::vec3 Triangle::getNormal(glm::vec2 baryPos) const {
     }
 }
 
+glm::vec2 Triangle::getUV(glm::vec2 baryPos) const {
+    if (v1.hasUV() && v2.hasUV() && v3.hasUV()) {
+        return (1 - baryPos.x - baryPos.y) * v1.uv + baryPos.x * v2.uv +
+               baryPos.y * v3.uv;
+    } else {
+        return glm::vec2(0);
+    }
+}
+
 glm::vec3 Triangle::getNormal() const {
     return glm::normalize(
         glm::cross(v2.position - v1.position, v3.position - v1.position));
@@ -159,9 +201,8 @@ Bounds Triangle::getBounds() const {
     return bounds;
 }
 
-Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices,
-           vector<Texture> textures, const Material &material, bool debug)
-    : vertices(vertices), indices(indices), textures(textures),
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, const Material &material, bool debug)
+    : vertices(vertices), indices(indices),
       material(material), debug(debug) {
     // now that we have all the required data, set the vertex buffers and its
     // attribute pointers.
@@ -170,35 +211,6 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices,
 
 void Mesh::draw(Shader &shader) {
     material.apply(shader);
-
-    unsigned int diffuseNr = 1;
-    unsigned int specularNr = 1;
-    unsigned int normalNr = 1;
-    unsigned int heightNr = 1;
-    for (unsigned int i = 0; i < textures.size(); i++) {
-        glActiveTexture(GL_TEXTURE0 +
-                        i); // active proper texture unit before binding
-        // retrieve texture number (the N in diffuse_textureN)
-        string number;
-        string name = textures[i].type;
-        if (name == "texture_diffuse")
-            number = std::to_string(diffuseNr++);
-        else if (name == "texture_specular")
-            number =
-                std::to_string(specularNr++); // transfer unsigned int to stream
-        else if (name == "texture_normal")
-            number =
-                std::to_string(normalNr++); // transfer unsigned int to stream
-        else if (name == "texture_height")
-            number =
-                std::to_string(heightNr++); // transfer unsigned int to stream
-
-        // now set the sampler to the correct texture unit
-        glUniform1i(
-            glGetUniformLocation(shader.getId(), (name + number).c_str()), i);
-        // and finally bind the texture
-        glBindTexture(GL_TEXTURE_2D, textures[i].id);
-    }
 
     // draw mesh
     glBindVertexArray(VAO);
@@ -249,7 +261,7 @@ void Mesh::setupMesh() {
     // vertex texture coords
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void *)offsetof(Vertex, texCoords));
+                          (void *)offsetof(Vertex, uv));
     // // vertex tangent
     // glEnableVertexAttribArray(3);
     // glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),

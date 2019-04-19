@@ -78,5 +78,6 @@ Color Config::readColor(std::ifstream& file)
 {
     int r, g, b;
     file >> r >> g >> b;
-    return Color(r, g, b);
+    unsigned char cr = r, cg = g, cb = b;
+    return Color(cr, cg, cb);
 }

@@ -13,6 +13,7 @@
 #include "Shader.h"
 #include "Color.h"
 #include "Utils.h"
+#include "Texture.h"
 
 #include <string>
 #include <fstream>
@@ -26,10 +27,13 @@ struct Material {
     Color diffuse;
     Color specular;
     float ns;
+    std::vector<TexturePtr> textures;
 
     Material() = default;
-    Material(aiMaterial* mat, unsigned int id);
+    Material(aiMaterial* mat, unsigned int id, const std::vector<TexturePtr>& textures);
     void apply(Shader& shader);
+
+    Color getTextureColor(float u, float v) const;
 
 private:
     Color getColor(aiMaterial* mat, const char* pKey, unsigned int type, unsigned int index, Color defaultCol = Colors::WHITE);
@@ -38,10 +42,11 @@ private:
 
 struct Vertex {
     static const glm::vec3 NORMAL_NOT_SET;
+    static const glm::vec2 UV_NOT_SET;
 
     glm::vec3 position;
     glm::vec3 normal;
-    glm::vec2 texCoords;
+    glm::vec2 uv;
     //glm::vec3 tangent;
     //glm::vec3 bitangent;
 
@@ -49,15 +54,10 @@ struct Vertex {
     Vertex(aiMesh *mesh, int idx);
 
     bool hasNormal() const;
-
+    bool hasUV() const;
 private:
     glm::vec3 toVec3(aiVector3D* vectors, int idx, glm::vec3 defaultVec);
-};
-
-struct Texture {
-    unsigned int id;
-    std::string type;
-    std::string path;
+    glm::vec2 toVec2(aiVector3D *vectors, int idx, glm::vec2 defaultVec); 
 };
 
 struct Bounds {
@@ -94,6 +94,7 @@ struct Triangle {
 
     glm::vec3 getNormal(glm::vec2 baryPos) const;
     glm::vec3 getNormal() const;
+    glm::vec2 getUV(glm::vec2 baryPos) const;
     std::vector<glm::vec3> getPositions() const;
     Bounds getBounds() const;
 };
@@ -104,14 +105,13 @@ public:
     /*  Mesh Data  */
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
     std::vector<Triangle> triangles;
     Material material;
     unsigned int VAO;
     bool debug;
     /*  Functions  */
     // constructor
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, const Material& material, bool debug);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const Material& material, bool debug);
 
     // render the mesh
     void draw(Shader& shader);
