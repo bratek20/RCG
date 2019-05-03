@@ -33,7 +33,7 @@ struct KDNode {
 
     static KDNodePtr create(Type type);
 
-    CastData leafIntersect(Ray r, float tMin, float tMax);
+    HitData leafIntersect(Ray r, float tMin, float tMax);
     PlaneData planeIntersect(Ray r);
 };
 
@@ -52,7 +52,7 @@ class KDTree : public AccStruct {
 
 public:
     KDTree(const std::vector<TrianglePtr>& triangles);
-    CastData cast(Ray r, float maxDistance) override;
+    HitData cast(Ray r, float maxDistance) override;
 
 private:
     KDNodePtr make(int depth, const std::vector<TrianglePtr>& triangles, const Bounds& bounds);  
@@ -66,6 +66,6 @@ private:
     static float findBest(const std::vector<TrianglePtr>& triangles, float startValue, Utils::Axis axis, std::function<float(float, float)> comparator); 
     static std::vector<TrianglePtr> splitBy(float value, const std::vector<TrianglePtr>& triangles, Utils::Axis axis, std::function<bool(float, float)> comparator);     
 
-    CastData traverse(KDNodePtr node, Ray r, float tMin, float tMax);
+    HitData traverse(KDNodePtr node, Ray r, float tMin, float tMax);
 };
 #endif

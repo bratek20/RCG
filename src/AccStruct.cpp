@@ -21,8 +21,8 @@ void Ray::setEpsilon(float eps){
 
 AccStruct::AccStruct(const vector<TrianglePtr>& triangles) : triangles(triangles) {}
 
-CastData AccStruct::intersect(Ray r, TrianglePtr tri){
-    CastData data;
+HitData AccStruct::intersect(Ray r, TrianglePtr tri){
+    HitData data;
     bool intersects = glm::intersectRayTriangle(
         r.origin, r.direction, tri->v1.position, tri->v2.position,
         tri->v3.position, data.baryPos, data.distance);

@@ -13,12 +13,12 @@ KDNodePtr KDNode::create(Type type) {
     return node;
 }
 
-CastData KDNode::leafIntersect(Ray r, float tMin, float tMax) {
-    CastData ans;
+HitData KDNode::leafIntersect(Ray r, float tMin, float tMax) {
+    HitData ans;
     ans.distance = Utils::INF;
 
     for (auto tri : triangles) {
-        CastData data = AccStruct::intersect(r, tri);
+        HitData data = AccStruct::intersect(r, tri);
         if (data.intersects() && data.distance < ans.distance &&
             data.distance >= tMin && data.distance < tMax) {
             ans = data;
@@ -98,7 +98,7 @@ KDTree::SplitData KDTree::chooseSplit(int depth, const vector<TrianglePtr>& tria
     return ans;
 }
 
-CastData KDTree::cast(Ray r, float maxDistance) { return traverse(root, r, 0, maxDistance); }
+HitData KDTree::cast(Ray r, float maxDistance) { return traverse(root, r, 0, maxDistance); }
 
 bool KDTree::shouldBeLeaf(int depth, const vector<TrianglePtr> &triangles) {
     return depth == stopDepth || static_cast<int>(triangles.size()) <= stopTrianglesNum;
@@ -154,9 +154,9 @@ float KDTree::findBest(const vector<TrianglePtr> &triangles, float startValue,
     return ans;
 }
 
-CastData KDTree::traverse(KDNodePtr node, Ray r, float tMin, float tMax) {
+HitData KDTree::traverse(KDNodePtr node, Ray r, float tMin, float tMax) {
     if (node == nullptr) {
-        return CastData();
+        return HitData();
     }
     if (node->type == KDNode::LEAF) {
         return node->leafIntersect(r, tMin, tMax);
@@ -170,7 +170,7 @@ CastData KDTree::traverse(KDNodePtr node, Ray r, float tMin, float tMax) {
         return traverse(data.far, r, tMin, tMax);
     }
 
-    CastData ans = traverse(data.near, r, tMin, data.t);
+    HitData ans = traverse(data.near, r, tMin, data.t);
     if (ans.intersects()) {
         return ans;
     }

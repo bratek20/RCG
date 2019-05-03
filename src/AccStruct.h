@@ -13,7 +13,7 @@ struct Ray {
     static void setEpsilon(float epsilon);
 };
 
-struct CastData {
+struct HitData {
     TrianglePtr triangle = nullptr;
     float distance;
     glm::vec3 pos;
@@ -30,8 +30,8 @@ protected:
 
 public:
     AccStruct(const std::vector<TrianglePtr>& triangles);
-    virtual CastData cast(Ray r, float maxDistance = Utils::INF) = 0;
+    virtual HitData cast(Ray r, float maxDistance = Utils::INF) = 0;
 
-    static CastData intersect(Ray r, TrianglePtr tri);
+    static HitData intersect(Ray r, TrianglePtr tri);
 };
 #endif

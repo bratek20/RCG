@@ -6,7 +6,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/../bin/raytracer.exe",
-      "args": ["${workspaceFolder}/../bin/sponza.rtc"],
+      "args": ["${workspaceFolder}/../bin/cornellBox.rtc"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],

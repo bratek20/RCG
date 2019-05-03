@@ -13,32 +13,14 @@
 #include "Shader.h"
 #include "Color.h"
 #include "Utils.h"
-#include "Texture.h"
+#include "Material.h"
+
 
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <vector>
-
-struct Material {
-    unsigned int id;
-    Color ambient;
-    Color diffuse;
-    Color specular;
-    float ns;
-    std::vector<TexturePtr> textures;
-
-    Material() = default;
-    Material(aiMaterial* mat, unsigned int id, const std::vector<TexturePtr>& textures);
-    void apply(Shader& shader);
-
-    Color getTextureColor(float u, float v) const;
-
-private:
-    Color getColor(aiMaterial* mat, const char* pKey, unsigned int type, unsigned int index, Color defaultCol = Colors::WHITE);
-    float getFloat(aiMaterial* mat, const char* pKey, unsigned int type, unsigned int index, float defaultVal = 0.0f);
-};
 
 struct Vertex {
     static const glm::vec3 NORMAL_NOT_SET;

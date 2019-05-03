@@ -6,7 +6,7 @@ using namespace std;
 
 pair<bool, Color> RayTracer::cast(int k, Ray r, AccStruct &accStruct,
                                   const vector<LightPtr> &lights) {
-    CastData ans = accStruct.cast(r);
+    HitData ans = accStruct.cast(r);
     if (!ans.intersects()) {
         return make_pair(false, Colors::BLACK);
     }
@@ -42,7 +42,7 @@ Color RayTracer::phongShading(glm::vec3 position, glm::vec3 normal, glm::vec2 uv
         glm::vec3 lightDir = light->getWorldPosition() - position;
         float distance = length(lightDir);
         lightDir = glm::normalize(lightDir);
-        CastData hit = accStruct.cast(Ray(position, lightDir, true),
+        HitData hit = accStruct.cast(Ray(position, lightDir, true),
                                       distance - Ray::epsilon);
         if (hit.intersects()) {
             continue;

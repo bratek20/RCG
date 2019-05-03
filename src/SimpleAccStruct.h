@@ -7,6 +7,6 @@ class SimpleAccStruct : public AccStruct {
 
 public:
     SimpleAccStruct(const std::vector<TrianglePtr>& triangles);
-    CastData cast(Ray r, float maxDistance) override;
+    HitData cast(Ray r, float maxDistance) override;
 };
 #endif
