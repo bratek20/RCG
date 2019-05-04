@@ -88,10 +88,10 @@ void Scene::takePhotoPathTracing(const Config &c) {
     PhotoSaver photo(c.xRes, c.yRes);
 
     glm::vec3 origin = camera->getWorldPosition();
-    cout << "Camera position: " << origin.x << ", " << origin.y << ", "
-         << origin.z << endl;
+    cout << "Camera position: " << origin << endl;
     auto &triangles = getModel()->getTriangles();
     cout << "Triangles number: " << triangles.size() << endl;
+    cout << "Samples per pixel: " << c.samplesNum << endl;
 
     Timer::start("Building accStruct");
     KDTree accStruct(triangles);
@@ -105,12 +105,25 @@ void Scene::takePhotoPathTracing(const Config &c) {
         for (int y = 0; y < c.yRes; y++) {
             float xShift = static_cast<float>(x) / c.xRes;
             float yShift = static_cast<float>(y) / c.yRes;
+            
             glm::vec3 pos = -leftTop + glm::mix(leftTop, rightTop, xShift) +
                             glm::mix(leftTop, leftBottom, yShift);
             glm::vec3 direction = glm::normalize(pos - origin);
+            Ray r(origin, direction);
+
+            glm::vec3 color = glm::vec3(0);
+            glm::vec3 emittance = glm::vec3(0);
+            for(int i=0;i<c.samplesNum;i++){
+                PathTracer::CastData data = PathTracer::cast(c.k, r, accStruct);
+                Color sampleC = data.hit ? data.color : c.background; 
+                
+                color += static_cast<glm::vec3>(sampleC);
+                emittance += data.emittance;
+            }
             
-            PathTracer::CastData data = PathTracer::cast(c.k, Ray(origin, direction), accStruct);
-            Color color = data.hit ? data.color : c.background;
+            color /= c.samplesNum;
+            emittance /= c.samplesNum;
+             
             photo.setPixel(x, y, color);
         }
 

@@ -4,12 +4,10 @@
 
 using namespace std;
 
-bool Config::load(const string& path)
-{
+bool Config::load(const string &path) {
     ifstream file(path);
-    if(!file.is_open())
-    {
-        cerr << "File: " << path << " not opened!"; 
+    if (!file.is_open()) {
+        cerr << "File: " << path << " not opened!";
         return false;
     }
 
@@ -24,58 +22,43 @@ bool Config::load(const string& path)
     file >> camera.yView;
 
     string type;
-    while(file >> type)
-    {
-        if(type == "L")
-        {
+    while (file >> type) {
+        if (type == "L") {
             LightConfig lc;
             lc.position = readVec3(file);
             lc.color = readColor(file);
             file >> lc.intensity;
             lights.push_back(lc);
-        }
-        else if(type == "LC")
-        {
+        } else if (type == "LC") {
             lightCoef = readVec3(file);
-        }
-        else if(type == "CV")
-        {
-            file >> camera.velocity; 
-        }
-        else if(type == "BG")
-        {
+        } else if (type == "CV") {
+            file >> camera.velocity;
+        } else if (type == "BG") {
             background = readColor(file);
-        }
-        else if(type == "DM")
-        {
+        } else if (type == "DM") {
             file >> debugMode;
-        }
-        else if(type == "RE")
-        {
+        } else if (type == "RE") {
             file >> rayEpsilon;
-        }
-        else
-        {
+        } else if (type == "SN") {
+            file >> samplesNum;
+        } else {
             cerr << "Type: " << type << " not supported!" << endl;
         }
-        
     }
 
-    for(auto& lc : lights){
+    for (auto &lc : lights) {
         lc.coefficients = lightCoef;
     }
     return true;
 }
 
-glm::vec3 Config::readVec3(ifstream& file)
-{
+glm::vec3 Config::readVec3(ifstream &file) {
     float x, y, z;
     file >> x >> y >> z;
     return glm::vec3(x, y, z);
 }
 
-Color Config::readColor(std::ifstream& file)
-{
+Color Config::readColor(std::ifstream &file) {
     int r, g, b;
     file >> r >> g >> b;
     unsigned char cr = r, cg = g, cb = b;

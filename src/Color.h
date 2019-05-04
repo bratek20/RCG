@@ -11,9 +11,8 @@ struct Color {
     float b;
 
     Color(float r, float g, float b) : r(fix(r)), g(fix(g)), b(fix(b)) {}
-
+    Color(glm::vec3 c) : Color(c.x, c.y, c.z) {}
     Color() : Color(0.0f, 0.0f, 0.0f) {}
-
     Color(unsigned char r, unsigned char g, unsigned char b) : Color(r / 255.0f, g / 255.0f, b / 255.0f) {}
 
     bool operator==(const Color &other) const {

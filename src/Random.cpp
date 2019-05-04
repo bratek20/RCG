@@ -8,7 +8,7 @@ float Random::uniform(float a, float b){
 }
 
 glm::vec3 Random::vectorOnHemisphere(glm::vec3 normal){
-    float nPhi = atan(normal.y/normal.x);
+    float nPhi = atan2(normal.y, normal.x);
     float nTheta = acos(normal.z);
 
     float theta = nTheta + acos(1 - uniform());

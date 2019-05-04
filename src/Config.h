@@ -40,7 +40,7 @@ struct Config {
 
     bool debugMode = false;
     float rayEpsilon = 1e-3;
-    
+    int samplesNum = 1;
     bool load(const std::string& path);
 
 private:
