@@ -18,7 +18,8 @@ public:
     void render();
 
     CameraPtr getCamera() const;
-    void takePhoto(const Config& c);
+    void takePhotoRayTracing(const Config& c);
+    void takePhotoPathTracing(const Config& c);
 
 protected:
     Scene(ModelPtr sceneModel);

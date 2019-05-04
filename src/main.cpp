@@ -13,12 +13,17 @@
 using namespace std;
 
 ScenePtr scene;
+Config c;
+
 void printCameraPosition(){
 	cout << "Camera pos: " << scene->getCamera()->getWorldPosition() << endl;
 }
 
+void takePhoto(){
+	scene->takePhotoPathTracing(c);
+}
+
 int main(int argc, char* argv[]){
-	Config c;
 	if(argc < 2 || !c.load(argv[1])){
 		cerr << "Bad config! Specify it as first argument." << endl;
 		return -1;
@@ -34,7 +39,7 @@ int main(int argc, char* argv[]){
 	if(c.debugMode){	
 		Assets::init();
 		Input::init();
-		Input::onKeyPressed(GLFW_KEY_P, bind(&Scene::takePhoto, scene, std::ref(c)));
+		Input::onKeyPressed(GLFW_KEY_P, takePhoto);
 		Input::onKeyPressed(GLFW_KEY_M, printCameraPosition);
 		while(!Window::shouldClose()){
 			Input::handle();
@@ -50,9 +55,8 @@ int main(int argc, char* argv[]){
 		Assets::clear();
 	}
 	else{
-		scene->takePhoto(c);
-	}
-	
+		takePhoto();
+	}	
 	
 	Window::close();
 	return 0;
