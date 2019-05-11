@@ -74,6 +74,11 @@ struct Triangle {
     Triangle() = default;
     Triangle(Vertex& v1, Vertex& v2, Vertex& v3, const Material& mat);
 
+    float calcArea() const;
+    bool isInside(glm::vec3 point) const;
+
+    glm::vec3 getPos12() const;
+    glm::vec3 getPos13() const;
     glm::vec3 getNormal(glm::vec2 baryPos) const;
     glm::vec3 getNormal() const;
     glm::vec2 getUV(glm::vec2 baryPos) const;

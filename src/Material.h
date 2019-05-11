@@ -28,7 +28,8 @@ struct Material {
     void apply(Shader& shader);
 
     Color getTextureColor(float u, float v) const;
-
+    bool isLightSource() const;
+    
 private:
     template<typename T>
     T getColor(aiMaterial *mat, const char *pKey, unsigned int type,

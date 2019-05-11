@@ -103,6 +103,30 @@ Triangle::Triangle(Vertex &v1, Vertex &v2, Vertex &v3, const Material &mat)
     bounds = Bounds(poses);
 }
 
+float Triangle::calcArea() const {
+    return cross(getPos12(), getPos13()).length() / 2;
+}
+
+bool Triangle::isInside(glm::vec3 point) const{
+    float area = calcArea();
+    float alpha = cross(v2.position - point, v3.position - point).length() / (2 * area);
+    float beta = cross(v3.position - point, v1.position - point).length() / (2 * area);
+    float gamma = 1 - alpha - beta;
+    
+    static auto check = [](float value){
+        return value >= 0 && value <= 1;
+    };
+    return check(alpha) && check(beta) && check(gamma); 
+}
+
+glm::vec3 Triangle::getPos12() const{
+    return v2.position - v1.position;
+}
+
+glm::vec3 Triangle::getPos13() const{
+    return v3.position - v1.position;
+}
+
 glm::vec3 Triangle::getNormal(glm::vec2 baryPos) const {
     if (v1.hasNormal() && v2.hasNormal() && v3.hasNormal()) {
         return (1 - baryPos.x - baryPos.y) * v1.normal + baryPos.x * v2.normal +

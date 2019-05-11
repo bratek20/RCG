@@ -17,6 +17,10 @@ Color Material::getTextureColor(float u, float v) const {
     return textures[0]->getColor(u, v);
 }
 
+bool Material::isLightSource() const{
+    return emissive.x > 0 || emissive.y > 0 || emissive.z > 0; 
+}
+
 float Material::getFloat(aiMaterial *mat, const char *pKey, unsigned int type,
                          unsigned int index, float defaultVal) {
     ai_real value;

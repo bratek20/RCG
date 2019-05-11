@@ -3,6 +3,7 @@
 
 #include "Color.h"
 #include "AccStruct.h"
+#include "LightSampler.h"
 
 class PathTracer{
 public:
@@ -11,7 +12,7 @@ public:
         glm::vec3 emittance = glm::vec3(0,0,0);
         Color color = Colors::BLACK;
     };
-    static CastData cast(int k, Ray r, AccStruct& accStruct);
+    static CastData cast(int k, Ray r, AccStruct& accStruct, LightSampler& lightSampler);
 };
 
 #endif

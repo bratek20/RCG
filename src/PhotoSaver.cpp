@@ -10,12 +10,12 @@ PhotoSaver::PhotoSaver(int width, int height) : width(width), height(height) {
 
 PhotoSaver::~PhotoSaver() { delete[] pixels; }
 
-void PhotoSaver::setPixel(int x, int y, Color c) {
+void PhotoSaver::setPixel(int x, int y, glm::vec3 color) {
     Rgba pixel;
     pixel.a = 1;
-    pixel.r = c.r;
-    pixel.g = c.g;
-    pixel.b = c.b;
+    pixel.r = color.x;
+    pixel.g = color.y;
+    pixel.b = color.z;
     pixels[y * width + x] = pixel;
 }
 

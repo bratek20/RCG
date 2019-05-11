@@ -7,6 +7,7 @@
 #include "SimpleAccStruct.h"
 #include "Timer.h"
 #include "PathTracer.h"
+#include "LightSampler.h"
 
 #include <bitmap_image.h>
 
@@ -93,6 +94,8 @@ void Scene::takePhotoPathTracing(const Config &c) {
     cout << "Triangles number: " << triangles.size() << endl;
     cout << "Samples per pixel: " << c.samplesNum << endl;
 
+    LightSampler lightSampler(triangles);
+    
     Timer::start("Building accStruct");
     KDTree accStruct(triangles);
     Timer::stop();

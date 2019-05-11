@@ -1,8 +1,7 @@
 #ifndef PHOTO_SAVER_H
 #define PHOTO_SAVER_H
 
-#include "Color.h"
-
+#include <glm/glm.hpp>
 #include <OpenEXR/ImfRgba.h>
 
 class PhotoSaver {
@@ -13,7 +12,7 @@ public:
     PhotoSaver(int width, int height);
     ~PhotoSaver();
 
-    void setPixel(int x, int y, Color c);
+    void setPixel(int x, int y, glm::vec3 color);
     void save(std::string path);
 };
 

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-PathTracer::CastData PathTracer::cast(int k, Ray r, AccStruct &accStruct) {
+PathTracer::CastData PathTracer::cast(int k, Ray r, AccStruct &accStruct, LightSampler& lightSampler) {
     if(k < 0){
         return CastData();
     }
@@ -14,9 +14,16 @@ PathTracer::CastData PathTracer::cast(int k, Ray r, AccStruct &accStruct) {
         return CastData();
     }
 
+    SampleData lightSample = LightSampler.sample();
+    glm::vec3 lightPoint = lightSample.point;
+    if(!accSttruct.isVisible(hit.pos, lightPoint)){
+        return CastData();
+    }
+
     glm::vec3 hitNormal = hit.triangle->getNormal(); 
     const Material& mat = hit.triangle->mat;
     
+
     glm::vec3 newDir = Random::vectorOnHemisphere(hitNormal);
     Ray newR = Ray(hit.pos, newDir, true);
     float rayP = 1 / (2*M_PI);
@@ -24,7 +31,7 @@ PathTracer::CastData PathTracer::cast(int k, Ray r, AccStruct &accStruct) {
     Color BRDF = mat.specular / M_PI;
     float cosTheta = glm::dot(newR.direction, hitNormal);
 
-    CastData incoming = cast(k-1, newR, accStruct);
+    CastData incoming = cast(k-1, newR, accStruct, lightSampler);
     CastData ans;
     ans.hit = true;
     ans.color = mat.diffuse + incoming.color * BRDF * cosTheta / rayP;
