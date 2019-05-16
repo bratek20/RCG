@@ -24,5 +24,7 @@ LightSampler::SampleData LightSampler::sample(){
     SampleData ans;
     ans.source = lightSources[idx];
     ans.point = Random::pointInTriangle(ans.source);
+    ans.probability = idx == 0 ? thresholds[0] : thresholds[idx] - thresholds[idx-1];
+    ans.probability /= thresholds.back();
     return ans;
 }

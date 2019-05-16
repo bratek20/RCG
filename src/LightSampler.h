@@ -11,6 +11,7 @@ public:
     struct SampleData{
         glm::vec3 point;
         TrianglePtr source;
+        float probability;
     };
 
     LightSampler(const std::vector<TrianglePtr>& triangles);

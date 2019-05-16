@@ -52,7 +52,7 @@ glm::vec3 PathTracer::lightPart(HitData& hit, AccStruct &accStruct, LightSampler
     float cosX = glm::dot(rayDir, hit.triangle->getNormal());
     float cosY = glm::dot(-rayDir, source->getNormal());
     float dist = glm::distance(lightPoint, hit.pos);
-    float probability = 1 / source->calcArea();
+    float probability = lightSample.probability / source->calcArea();
     float G = cosX * cosY / (dist * dist);
     return source->mat.emissive * BRDF * G / probability;
 }
