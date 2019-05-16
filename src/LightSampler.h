@@ -10,6 +10,7 @@ class LightSampler {
 public:
     struct SampleData{
         glm::vec3 point;
+        TrianglePtr source;
     };
 
     LightSampler(const std::vector<TrianglePtr>& triangles);

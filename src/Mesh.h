@@ -77,8 +77,8 @@ struct Triangle {
     float calcArea() const;
     bool isInside(glm::vec3 point) const;
 
-    glm::vec3 getPos12() const;
-    glm::vec3 getPos13() const;
+    glm::vec3 getEdge12() const;
+    glm::vec3 getEdge13() const;
     glm::vec3 getNormal(glm::vec2 baryPos) const;
     glm::vec3 getNormal() const;
     glm::vec2 getUV(glm::vec2 baryPos) const;

@@ -6,7 +6,6 @@
 #include "Color.h"
 
 #include <GL/glew.h>
-#include <stb_image.h>
 #include <memory>
 #include <string>
 

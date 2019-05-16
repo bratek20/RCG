@@ -10,9 +10,12 @@ public:
     struct CastData {
         bool hit = false;
         glm::vec3 emittance = glm::vec3(0,0,0);
-        Color color = Colors::BLACK;
     };
-    static CastData cast(int k, Ray r, AccStruct& accStruct, LightSampler& lightSampler);
+    static CastData cast(Ray r, AccStruct& accStruct, LightSampler& lightSampler);
+
+private:
+    static glm::vec3 randomPart(HitData& hit, AccStruct &accStruct, LightSampler& lightSampler);
+    static glm::vec3 lightPart(HitData& hit, AccStruct &accStruct, LightSampler& lightSampler);
 };
 
 #endif

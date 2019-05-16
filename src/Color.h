@@ -10,6 +10,8 @@ struct Color {
     float g;
     float b;
 
+    static Color random();
+
     Color(float r, float g, float b) : r(fix(r)), g(fix(g)), b(fix(b)) {}
     Color(glm::vec3 c) : Color(c.x, c.y, c.z) {}
     Color() : Color(0.0f, 0.0f, 0.0f) {}
@@ -33,13 +35,11 @@ struct Color {
     }
 
     Color operator*(float a) const { return Color(r * a, g * a, b * a); }
-
     Color operator/(float a) const { return Color(r / a, g / a, b / a); }
 
     operator glm::vec3() const { return {r, g, b}; }
-
-    static Color random();
-
+    glm::vec3 asVec3() const { return static_cast<glm::vec3>(*this); }  
+    
     float getAverage() const;
 
     friend std::ostream &operator<<(std::ostream &out, const Color &c);

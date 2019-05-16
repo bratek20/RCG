@@ -104,7 +104,7 @@ Triangle::Triangle(Vertex &v1, Vertex &v2, Vertex &v3, const Material &mat)
 }
 
 float Triangle::calcArea() const {
-    return cross(getPos12(), getPos13()).length() / 2;
+    return cross(getEdge12(), getEdge13()).length() / 2;
 }
 
 bool Triangle::isInside(glm::vec3 point) const{
@@ -119,11 +119,11 @@ bool Triangle::isInside(glm::vec3 point) const{
     return check(alpha) && check(beta) && check(gamma); 
 }
 
-glm::vec3 Triangle::getPos12() const{
+glm::vec3 Triangle::getEdge12() const{
     return v2.position - v1.position;
 }
 
-glm::vec3 Triangle::getPos13() const{
+glm::vec3 Triangle::getEdge13() const{
     return v3.position - v1.position;
 }
 

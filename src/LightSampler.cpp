@@ -8,7 +8,7 @@ LightSampler::LightSampler(const vector<TrianglePtr>& triangles){
     for(auto& tri : triangles){
         if(tri->mat.isLightSource()){
             lightSources.push_back(tri);
-            thresholds.push_back(tri->calcArea());
+            thresholds.push_back(tri->calcArea() * tri->mat.emissive.length());
         }
     }
     for(unsigned i = 1; i < thresholds.size(); i++){
@@ -19,9 +19,10 @@ LightSampler::LightSampler(const vector<TrianglePtr>& triangles){
 
 LightSampler::SampleData LightSampler::sample(){
     float randomValue = Random::uniform(0, thresholds.back());
-    int idx = upper_bound(thresholds.begin(), thresholds.end(), randomValue) - thresholds.end();
-    
+    int idx = upper_bound(thresholds.begin(), thresholds.end(), randomValue) - thresholds.begin();
+
     SampleData ans;
-    ans.point = Random::pointInTriangle(lightSources[idx]);
+    ans.source = lightSources[idx];
+    ans.point = Random::pointInTriangle(ans.source);
     return ans;
 }

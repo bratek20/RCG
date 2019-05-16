@@ -117,10 +117,10 @@ void Scene::takePhotoPathTracing(const Config &c) {
             glm::vec3 color = glm::vec3(0);
             glm::vec3 emittance = glm::vec3(0);
             for(int i=0;i<c.samplesNum;i++){
-                PathTracer::CastData data = PathTracer::cast(c.k, r, accStruct);
-                Color sampleC = data.hit ? data.color : c.background; 
+                PathTracer::CastData data = PathTracer::cast(r, accStruct, lightSampler);
+                glm::vec3 sampleC = data.hit ? data.emittance : c.background.asVec3(); 
                 
-                color += static_cast<glm::vec3>(sampleC);
+                color += sampleC;
                 emittance += data.emittance;
             }
             
