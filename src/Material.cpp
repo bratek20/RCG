@@ -64,4 +64,5 @@ void Material::apply(Shader &shader) {
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i]->getId());
     }
+    shader.applyFloat("SkipTexture", textures.empty());
 }

@@ -9,7 +9,7 @@ cornellBox.exr
 1
 L 0 1.8 0 255 255 255 1
 LC 1 0 0
-BG 220 0 0
+BG 0 0 0
 CV 1
 DM 1
 RE 0.001

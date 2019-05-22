@@ -18,6 +18,7 @@ uniform vec3 LightColor[10];
 uniform float LightPower[10];
 uniform vec3 LightDistanceCoefficients[10];
 
+uniform float SkipTexture;
 uniform sampler2D texture_diffuse1;
 
 out vec3 color;
@@ -25,6 +26,9 @@ out vec3 color;
 void main(){
 	// Material properties
 	vec3 textureColor = texture( texture_diffuse1, UV ).rgb; 
+	if(SkipTexture == 1){
+		textureColor = vec3(1, 1, 1);
+	}
 	vec3 MaterialDiffuseColor = DiffuseColor * textureColor;
 	vec3 MaterialAmbientColor = AmbientColor * MaterialDiffuseColor;
 	vec3 MaterialSpecularColor = SpecularColor;
