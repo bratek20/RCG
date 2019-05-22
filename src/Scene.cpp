@@ -128,10 +128,10 @@ void Scene::takePhotoPathTracing(const Config &c) {
             emittance /= c.samplesNum;
              
             photo.setPixel(x, y, color);
+            
+            int progress = 100 * (x*c.yRes + y) / (c.xRes * c.yRes);
+            cout << "\rProgress: " << progress << "%";
         }
-
-        int progress = 100 * x / c.xRes;
-        cout << "\rProgress: " << progress << "%";
     }
     cout << endl;
     Timer::stop();

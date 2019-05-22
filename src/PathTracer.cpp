@@ -5,7 +5,10 @@
 
 using namespace std;
 
-PathTracer::CastData PathTracer::cast(Ray r, AccStruct &accStruct, LightSampler& lightSampler) {
+PathTracer::CastData PathTracer::cast(Ray r, AccStruct &accStruct, LightSampler& lightSampler, int deep) {
+    if(deep == 3){
+        return CastData();
+    }
     HitData hit = accStruct.cast(r);
     if (!hit.intersects()) {
         return CastData();
@@ -18,25 +21,25 @@ PathTracer::CastData PathTracer::cast(Ray r, AccStruct &accStruct, LightSampler&
     CastData ans;
     ans.hit = true;
     ans.emittance = hit.triangle->mat.emissive 
-    + randomPart(hit, accStruct, lightSampler) 
-    + lightPart(hit, accStruct, lightSampler);
+    + calcDirectLight(hit, accStruct, lightSampler, deep) 
+    + calcIndirectLight(hit, accStruct, lightSampler);
     return ans;
 }
 
-glm::vec3 PathTracer::randomPart(HitData& hit, AccStruct &accStruct, LightSampler& lightSampler){
+glm::vec3 PathTracer::calcDirectLight(HitData& hit, AccStruct &accStruct, LightSampler& lightSampler, int deep){
     glm::vec3 hitNormal = hit.triangle->getNormal(); 
     const Material& hitMat = hit.triangle->mat;
 
     glm::vec3 newDir = Random::vectorOnHemisphereCos(hitNormal);
     Ray newR = Ray(hit.pos, newDir, true);
 
-    CastData incoming = cast(newR, accStruct, lightSampler);
+    CastData incoming = cast(newR, accStruct, lightSampler, deep);
     HitData incomingHit = accStruct.cast(newR);
     bool hitLight = incomingHit.intersects() && incomingHit.triangle->mat.isLightSource(); 
     return  hitLight ? glm::vec3(0) : hitMat.diffuse.asVec3() * incoming.emittance;
 }
 
-glm::vec3 PathTracer::lightPart(HitData& hit, AccStruct &accStruct, LightSampler& lightSampler){
+glm::vec3 PathTracer::calcIndirectLight(HitData& hit, AccStruct &accStruct, LightSampler& lightSampler){
     auto lightSample = lightSampler.sample();
     glm::vec3 lightPoint = lightSample.point;
     TrianglePtr source = lightSample.source;

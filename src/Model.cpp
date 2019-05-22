@@ -39,7 +39,7 @@ bool Model::loadModel(const string &path) {
 
     // process ASSIMP's root node recursively
     processNode(scene->mRootNode, scene);
-    processLights(scene);
+    //processLights(scene);
     createTriangles();
     return true;
 }

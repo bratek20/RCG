@@ -2,15 +2,15 @@
 CornellBox/CornellBox-Original.obj
 cornellBox.exr
 10
-1920 1080
+800 600
 0 1.5 3.5
 0 1 0
 0 1 0
 1
 L 0 1.8 0 255 255 255 1
 LC 1 0 0
-BG 0 0 0
+BG 220 0 0
 CV 1
-DM 0
+DM 1
 RE 0.001
-SN 32
+SN 16
