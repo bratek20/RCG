@@ -1,0 +1,16 @@
+# 30 min for rendering 400 x 300 1 sample
+stonetee/stonetee.obj
+stonetee.exr
+10
+400 300
+-77 37 -77
+-56 36 -64
+0 1 0
+1
+L -77 50 -77 255 255 255 1
+LC 0 0 1
+BG 0 0 0
+CV 50
+DM 0
+RE 0.001
+SN 1

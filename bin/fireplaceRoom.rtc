@@ -1,8 +1,8 @@
-# Test view scene: in OBJ format coords righthanded, CCW faces
+# 15 min rendering for 400x300 1 sample
 fireplace_room/fireplace_room.obj
-fireplace_room.bmp
+fireplace_room.exr
 1
-800 600
+400 300
 4.7 1.5 -2.5
 -5 0.5 0
 0 1 0
@@ -10,6 +10,6 @@ fireplace_room.bmp
 L 1.8 0.35 0.03 255 0 0 10
 L 1 1.9 -3.2 0 255 255 1
 LC 1 0 0
-BG 100 100 255
+BG 0 0 0
 CV 5
 DM 0

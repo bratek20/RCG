@@ -21,8 +21,9 @@ ScenePtr Scene::create(const Config &c) {
     ScenePtr scene = ScenePtr(new Scene(Model::create(fullScenePath)));
     scene->camera = Camera::create(c.camera);
     scene->addChild(scene->camera);
+    //scene->camera->addChild(Light::create());
     Light::loadLights(c.lights);
-    Light::loadLights(scene->getModel()->getLights());
+    //Light::loadLights(scene->getModel()->getLights());
     Timer::stop();
     return scene;
 }
@@ -92,6 +93,7 @@ void Scene::takePhotoPathTracing(const Config &c) {
     cout << "Camera position: " << origin << endl;
     auto &triangles = getModel()->getTriangles();
     cout << "Triangles number: " << triangles.size() << endl;
+    cout << "Resolution: " << c.xRes << " x " << c.yRes << endl;
     cout << "Samples per pixel: " << c.samplesNum << endl;
 
     LightSampler lightSampler(triangles);
