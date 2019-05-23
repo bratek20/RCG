@@ -1,8 +1,8 @@
-# Test view scene: in OBJ format coords righthanded, CCW faces
+# 80s for rendering 1920 x 1080 16 samples
 CornellBox/CornellBox-Original.obj
 cornellBox.exr
 10
-800 600
+1920 1080
 0 1.5 3.5
 0 1 0
 0 1 0
@@ -13,4 +13,4 @@ BG 0 0 0
 CV 1
 DM 0
 RE 0.001
-SN 16
+SN 256

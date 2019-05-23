@@ -1,4 +1,4 @@
-# 15 min rendering for 400x300 1 sample
+# 15 min rendering for 400x300 1 sample, 246 min for 16 samples
 fireplace_room/fireplace_room.obj
 fireplace_room.exr
 1
@@ -13,3 +13,4 @@ LC 1 0 0
 BG 0 0 0
 CV 5
 DM 0
+SN 16
