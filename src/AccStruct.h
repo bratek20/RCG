@@ -3,6 +3,8 @@
 
 #include "Mesh.h"
 
+#include <embree3/rtcore_ray.h>
+
 struct Ray {
     static float epsilon;
 
@@ -11,6 +13,8 @@ struct Ray {
 
     Ray(glm::vec3 origin, glm::vec3 direction, bool moveByEpsilon = false);
     static void setEpsilon(float epsilon);
+
+    RTCRay toRTCRay(float maxDistance);
 };
 
 struct HitData {

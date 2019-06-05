@@ -19,7 +19,7 @@ LightSampler::LightSampler(const vector<TrianglePtr>& triangles){
 
 LightSampler::SampleData LightSampler::sample(){
     float randomValue = Random::uniform(0, thresholds.back());
-    int idx = upper_bound(thresholds.begin(), thresholds.end(), randomValue) - thresholds.begin();
+    int idx = lower_bound(thresholds.begin(), thresholds.end(), randomValue) - thresholds.begin();
 
     SampleData ans;
     ans.source = lightSources[idx];

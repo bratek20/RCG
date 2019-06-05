@@ -19,6 +19,22 @@ void Ray::setEpsilon(float eps){
     cout << "Ray epsilon set to: " << eps << endl;
 }
 
+RTCRay Ray::toRTCRay(float maxDistance){
+    RTCRay ray;
+    ray.org_x = origin.x;
+    ray.org_y = origin.y;
+    ray.org_z = origin.z;
+    
+    ray.dir_x = direction.x;
+    ray.dir_y = direction.y;
+    ray.dir_z = direction.z;
+
+    ray.tnear = 0;
+    ray.tfar = maxDistance;
+    ray.flags = 0;
+    return ray; 
+}
+
 TrianglesAccStruct::TrianglesAccStruct(const vector<TrianglePtr>& triangles) : triangles(triangles) {}
 
 HitData TrianglesAccStruct::intersect(Ray r, TrianglePtr tri){

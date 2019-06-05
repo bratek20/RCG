@@ -12,7 +12,6 @@ class EmbreeWrapper : public AccStruct {
 
     RTCDevice device;
     RTCScene scene;
-    RTCGeometry geometry;
 
 public:
     EmbreeWrapper(const std::vector<Mesh>& meshes);
@@ -21,6 +20,7 @@ public:
     HitData cast(Ray r, float maxDistance) override;
 
 private:
+    void createMeshGeometry(const Mesh& mesh);
 };
 
 #endif

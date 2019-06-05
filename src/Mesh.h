@@ -102,6 +102,7 @@ public:
     // render the mesh
     void draw(Shader& shader);
     const std::vector<Triangle>& getTriangles() const;
+    TrianglePtr getTriangle(int idx) const;
 
 private:
     /*  Render data  */

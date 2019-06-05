@@ -232,3 +232,7 @@ void Mesh::setupMesh() {
 }
 
 const vector<Triangle> &Mesh::getTriangles() const { return triangles; }
+
+TrianglePtr Mesh::getTriangle(int idx) const{
+    return &triangles[idx];
+}
