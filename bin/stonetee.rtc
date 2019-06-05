@@ -2,7 +2,7 @@
 stonetee/stonetee.obj
 stonetee.exr
 10
-400 300
+1920 1080
 -77 37 -77
 -56 36 -64
 0 1 0
@@ -13,4 +13,4 @@ BG 0 0 0
 CV 50
 DM 0
 RE 0.01
-SN 16
+SN 256

@@ -2,7 +2,7 @@
 fireplace_room/fireplace_room.obj
 fireplace_room.exr
 1
-400 300
+1920 1080
 4.7 1.5 -2.5
 -5 0.5 0
 0 1 0
@@ -13,4 +13,4 @@ LC 1 0 0
 BG 0 0 0
 CV 5
 DM 0
-SN 16
+SN 256
