@@ -3,7 +3,7 @@
 
 using namespace std;
 
-SimpleAccStruct::SimpleAccStruct(const vector<TrianglePtr>& triangles) : AccStruct(triangles) {}
+SimpleAccStruct::SimpleAccStruct(const vector<TrianglePtr>& triangles) : TrianglesAccStruct(triangles) {}
 
 HitData SimpleAccStruct::cast(Ray r, float maxDistance){
     HitData ans;

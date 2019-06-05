@@ -33,6 +33,7 @@ class Model {
     void draw(Shader shader);
     const std::vector<TrianglePtr> &getTriangles() const;
     const std::vector<LightConfig> &getLights() const;
+    const std::vector<Mesh> &getMeshes() const;
 
   private:
     Model(const std::string &path);

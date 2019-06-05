@@ -24,13 +24,20 @@ struct HitData {
     }
 };
 
-class AccStruct {    
+class AccStruct {
+public:
+    virtual ~AccStruct(){}
+    
+    virtual HitData cast(Ray r, float maxDistance = Utils::INF) = 0;
+};
+
+class TrianglesAccStruct : public AccStruct {    
 protected:
     const std::vector<TrianglePtr>& triangles;
 
 public:
-    AccStruct(const std::vector<TrianglePtr>& triangles);
-    virtual HitData cast(Ray r, float maxDistance = Utils::INF) = 0;
+    TrianglesAccStruct(const std::vector<TrianglePtr>& triangles);
+    
     bool isVisible(glm::vec3 p1, glm::vec3 p2);
     
     static HitData intersect(Ray r, TrianglePtr tri);

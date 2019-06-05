@@ -19,9 +19,9 @@ void Ray::setEpsilon(float eps){
     cout << "Ray epsilon set to: " << eps << endl;
 }
 
-AccStruct::AccStruct(const vector<TrianglePtr>& triangles) : triangles(triangles) {}
+TrianglesAccStruct::TrianglesAccStruct(const vector<TrianglePtr>& triangles) : triangles(triangles) {}
 
-HitData AccStruct::intersect(Ray r, TrianglePtr tri){
+HitData TrianglesAccStruct::intersect(Ray r, TrianglePtr tri){
     HitData data;
     bool intersects = glm::intersectRayTriangle(
         r.origin, r.direction, tri->v1.position, tri->v2.position,

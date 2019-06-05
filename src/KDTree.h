@@ -38,7 +38,7 @@ struct KDNode {
 };
 
 
-class KDTree : public AccStruct {
+class KDTree : public TrianglesAccStruct {
     Bounds bounds;
     KDNodePtr root;
     int stopDepth;

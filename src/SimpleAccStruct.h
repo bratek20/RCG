@@ -3,7 +3,7 @@
 
 #include "AccStruct.h"
 
-class SimpleAccStruct : public AccStruct {
+class SimpleAccStruct : public TrianglesAccStruct {
 
 public:
     SimpleAccStruct(const std::vector<TrianglePtr>& triangles);

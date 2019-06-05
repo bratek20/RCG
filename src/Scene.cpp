@@ -8,8 +8,11 @@
 #include "Timer.h"
 #include "PathTracer.h"
 #include "LightSampler.h"
+#include "EmbreeWrapper.h"
 
 #include <bitmap_image.h>
+
+#define USE_EMBREE 1
 
 using namespace std;
 
@@ -92,6 +95,7 @@ void Scene::takePhotoPathTracing(const Config &c) {
     glm::vec3 origin = camera->getWorldPosition();
     cout << "Camera position: " << origin << endl;
     auto &triangles = getModel()->getTriangles();
+    auto &meshes = getModel()->getMeshes();
     cout << "Triangles number: " << triangles.size() << endl;
     cout << "Resolution: " << c.xRes << " x " << c.yRes << endl;
     cout << "Samples per pixel: " << c.samplesNum << endl;
@@ -99,7 +103,11 @@ void Scene::takePhotoPathTracing(const Config &c) {
     LightSampler lightSampler(triangles);
     
     Timer::start("Building accStruct");
+    #ifdef USE_EMBREE
+    EmbreeWrapper accStruct(meshes);
+    #else
     KDTree accStruct(triangles);
+    #endif
     Timer::stop();
 
     Timer::start("Path tracing");

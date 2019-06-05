@@ -18,7 +18,7 @@ HitData KDNode::leafIntersect(Ray r, float tMin, float tMax) {
     ans.distance = Utils::INF;
 
     for (auto tri : triangles) {
-        HitData data = AccStruct::intersect(r, tri);
+        HitData data = TrianglesAccStruct::intersect(r, tri);
         if (data.intersects() && data.distance < ans.distance &&
             data.distance >= tMin && data.distance < tMax) {
             ans = data;
@@ -44,7 +44,7 @@ KDNode::PlaneData KDNode::planeIntersect(Ray r) {
     return ans;
 }
 
-KDTree::KDTree(const vector<TrianglePtr> &triangles) : AccStruct(triangles) {
+KDTree::KDTree(const vector<TrianglePtr> &triangles) : TrianglesAccStruct(triangles) {
     stopDepth = 8 + 1.3 * log(triangles.size());
     stopTrianglesNum = 8;
 

@@ -182,4 +182,5 @@ vector<TexturePtr> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ty
 
 const vector<TrianglePtr> &Model::getTriangles() const { return triangles; }
 const vector<LightConfig> &Model::getLights() const { return lights; }
+const vector<Mesh> &Model::getMeshes() const { return meshes; }
 
