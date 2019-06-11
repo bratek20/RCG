@@ -1,4 +1,4 @@
-# 30 min for rendering 400 x 300 1 sample
+# 40 min for rendering 1920 x 1080, 1024 sample
 stonetee/stonetee.obj
 stonetee.exr
 10
@@ -13,4 +13,4 @@ BG 0 0 0
 CV 50
 DM 0
 RE 0.01
-SN 256
+SN 1024
