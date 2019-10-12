@@ -5,6 +5,7 @@
 #include "Color.h"
 #include "Shader.h"
 #include "Config.h"
+#include "Mesh.h"
 
 class Light;
 using LightPtr = std::shared_ptr<Light>;
@@ -19,8 +20,8 @@ class Light : public Actor {
     glm::vec3 coefficients;
     
 public:
-    static void loadLights(const std::vector<LightConfig>& lights);
-    static LightPtr create(float power = 50.0f, Color color = Colors::WHITE, glm::vec3 coefficients = glm::vec3(1, 0, 0));
+    static void loadLights(const std::vector<TrianglePtr>& triangles, const std::vector<LightConfig>& lights);
+    static LightPtr create(float power = 1.0f, Color color = Colors::WHITE, glm::vec3 coefficients = glm::vec3(1, 0, 0));
     static void applyLights(const Shader& s);
 
     static const std::vector<LightPtr>& getLights();

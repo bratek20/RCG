@@ -44,24 +44,6 @@ bool Model::loadModel(const string &path) {
     return true;
 }
 
-void Model::processLights(const aiScene *scene) {
-    cout << "Model lights num: " << scene->mNumLights << endl; 
-    for (unsigned i = 0; i < scene->mNumLights; i++) {
-        processLight(scene->mLights[i]);
-    }
-}
-
-void Model::processLight(const aiLight *light) {
-    LightConfig lc;
-    lc.position = Utils::toVec(light->mPosition);
-    lc.color = Utils::toColor(light->mColorAmbient);
-    lc.intensity = 1;
-    lc.coefficients =
-        glm::vec3(light->mAttenuationQuadratic, light->mAttenuationLinear,
-                  light->mAttenuationConstant);
-    lights.push_back(lc);
-}
-
 void Model::createTriangles() {
     triangles.clear();
     for (auto &mesh : meshes) {

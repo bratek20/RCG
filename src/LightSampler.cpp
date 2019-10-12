@@ -4,12 +4,16 @@
 
 using namespace std;
 
-LightSampler::LightSampler(const vector<TrianglePtr>& triangles){
+LightSampler::LightSampler(const vector<TrianglePtr>& triangles, const Config& c){
     for(auto& tri : triangles){
         if(tri->mat.isLightSource()){
             lightSources.push_back(tri);
             thresholds.push_back(tri->calcArea() * tri->mat.emissive.length());
         }
+    }
+    for(auto& lc : c.lights){
+        lightSources.push_back(&lc.triangle);
+        thresholds.push_back(lc.triangle.calcArea());
     }
     for(unsigned i = 1; i < thresholds.size(); i++){
         thresholds[i] += thresholds[i-1];

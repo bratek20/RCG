@@ -40,8 +40,6 @@ class Model {
     bool loadModel(const std::string &path);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-    void processLights(const aiScene *scene);
-    void processLight(const aiLight *light);
     void createTriangles();
 
     std::vector<TexturePtr> loadMaterialTextures(aiMaterial *mat, aiTextureType type,

@@ -2,6 +2,7 @@
 #define LIGHT_SAMPLER_H
 
 #include "Mesh.h"
+#include "Config.h"
 
 class LightSampler {
     std::vector<TrianglePtr> lightSources;
@@ -14,7 +15,8 @@ public:
         float probability;
     };
 
-    LightSampler(const std::vector<TrianglePtr>& triangles);
+    LightSampler() = default;
+    LightSampler(const std::vector<TrianglePtr>& triangles, const Config& c);
 
     SampleData sample();
 };

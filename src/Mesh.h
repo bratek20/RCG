@@ -34,6 +34,7 @@ struct Vertex {
 
     Vertex() = default;
     Vertex(aiMesh *mesh, int idx);
+    Vertex(glm::vec3 position);
 
     bool hasNormal() const;
     bool hasUV() const;
@@ -72,6 +73,7 @@ struct Triangle {
     Bounds bounds;
 
     Triangle() = default;
+    Triangle(Vertex& v1, Vertex& v2, Vertex& v3);
     Triangle(Vertex& v1, Vertex& v2, Vertex& v3, const Material& mat);
 
     float calcArea() const;
@@ -84,6 +86,7 @@ struct Triangle {
     glm::vec2 getUV(glm::vec2 baryPos) const;
     std::vector<glm::vec3> getPositions() const;
     Bounds getBounds() const;
+    glm::vec3 getCenter() const;
 };
 using TrianglePtr = const Triangle*;
 

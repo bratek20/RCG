@@ -4,14 +4,14 @@
 #include "Camera.h"
 #include "Light.h"
 #include "Config.h"
-#include "Model.h"
+#include "LightSampler.h"
 
 class Scene;
 using ScenePtr = std::shared_ptr<Scene>;
 
 class Scene : public Actor {
     CameraPtr camera;
-    std::vector<LightPtr> lights;
+    LightSampler lightSampler;
 
 public:
     static ScenePtr create(const Config& c);

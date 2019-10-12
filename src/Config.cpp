@@ -25,7 +25,10 @@ bool Config::load(const string &path) {
     while (file >> type) {
         if (type == "L") {
             LightConfig lc;
-            lc.position = readVec3(file);
+            Vertex v1 = Vertex(readVec3(file));
+            Vertex v2 = Vertex(readVec3(file));
+            Vertex v3 = Vertex(readVec3(file));
+            lc.triangle = Triangle(v1, v2, v3);
             lc.color = readColor(file);
             file >> lc.intensity;
             lights.push_back(lc);

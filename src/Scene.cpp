@@ -22,11 +22,11 @@ ScenePtr Scene::create(const Config &c) {
     Timer::start("Creating scene");
     string fullScenePath = Assets::validPath(c.loadScenePath);
     ScenePtr scene = ScenePtr(new Scene(Model::create(fullScenePath)));
+    scene->lightSampler = LightSampler(scene->getModel()->getTriangles(), c);
     scene->camera = Camera::create(c.camera);
     scene->addChild(scene->camera);
     //scene->camera->addChild(Light::create());
-    Light::loadLights(c.lights);
-    //Light::loadLights(scene->getModel()->getLights());
+    Light::loadLights(scene->getModel()->getTriangles(), c.lights);
     Timer::stop();
     return scene;
 }
@@ -99,8 +99,6 @@ void Scene::takePhotoPathTracing(const Config &c) {
     cout << "Triangles number: " << triangles.size() << endl;
     cout << "Resolution: " << c.xRes << " x " << c.yRes << endl;
     cout << "Samples per pixel: " << c.samplesNum << endl;
-
-    LightSampler lightSampler(triangles);
     
     Timer::start("Building accStruct");
     #ifdef USE_EMBREE
@@ -127,7 +125,7 @@ void Scene::takePhotoPathTracing(const Config &c) {
             glm::vec3 color = glm::vec3(0);
             glm::vec3 emittance = glm::vec3(0);
             for(int i=0;i<c.samplesNum;i++){
-                PathTracer::CastData data = PathTracer::cast(r, accStruct, lightSampler);
+                PathTracer::CastData data = PathTracer::cast(r, c.k, accStruct, lightSampler);
                 glm::vec3 sampleC = data.hit ? data.emittance : c.background.asVec3(); 
                 
                 color += sampleC;

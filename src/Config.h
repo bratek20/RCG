@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 #include "Color.h"
-
+#include "Mesh.h"
 #include <string>
 #include <glm/glm.hpp>
 #include <fstream>
@@ -11,7 +11,7 @@
 #include <functional>
 
 struct LightConfig {
-    glm::vec3 position;
+    Triangle triangle;
     Color color;
     float intensity;
     glm::vec3 coefficients;

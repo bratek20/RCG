@@ -17,6 +17,12 @@ Vertex::Vertex(aiMesh *mesh, int idx) {
     uv = toVec2(mesh->mTextureCoords[0], idx, UV_NOT_SET);
 }
 
+Vertex::Vertex(glm::vec3 position) {
+    this->position = position;
+    normal = NORMAL_NOT_SET;
+    uv = UV_NOT_SET;
+}
+
 glm::vec3 Vertex::toVec3(aiVector3D *vectors, int idx, glm::vec3 defaultVec) {
     if (vectors != NULL) {
         return glm::vec3(vectors[idx].x, vectors[idx].y, vectors[idx].z);
@@ -95,12 +101,17 @@ Utils::Axis Bounds::maximumExtent() const {
     }
 }
 
-Triangle::Triangle(Vertex &v1, Vertex &v2, Vertex &v3, const Material &mat)
-    : v1(v1), v2(v2), v3(v3), mat(mat) {
+Triangle::Triangle(Vertex& v1, Vertex& v2, Vertex& v3)    
+    : v1(v1), v2(v2), v3(v3) {
     static int nextId = 1;
     id = nextId++;
     auto poses = getPositions();
     bounds = Bounds(poses);
+}
+
+Triangle::Triangle(Vertex &v1, Vertex &v2, Vertex &v3, const Material &mat)
+    : Triangle(v1, v2, v3) {
+    this->mat = mat;
 }
 
 float Triangle::calcArea() const {
@@ -156,6 +167,10 @@ vector<glm::vec3> Triangle::getPositions() const {
 
 Bounds Triangle::getBounds() const {
     return bounds;
+}
+
+glm::vec3 Triangle::getCenter() const {
+    return (v1.position + v2.position + v3.position) / 3.0f;
 }
 
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, const Material &material)

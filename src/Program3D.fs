@@ -33,7 +33,7 @@ void main(){
 	vec3 MaterialAmbientColor = AmbientColor * MaterialDiffuseColor;
 	vec3 MaterialSpecularColor = SpecularColor;
 
-	color = vec3(0,0,0);
+	color = MaterialAmbientColor;
 	for(int i = 0; i < LightsNum; i++){
 		// Distance to the light
 		float distance = length( LightPosition_worldspace[i] - Position_worldspace );
@@ -66,8 +66,6 @@ void main(){
 		float invDistLoss = 1 / distanceLoss;
 
 		color += 
-			// Ambient : simulates indirect lighting
-			MaterialAmbientColor
 			// Diffuse : "color" of the object  
 			+ MaterialDiffuseColor * invDistLoss * LightColor[i] * LightPower[i] * cosTheta
 			// Specular : reflective highlight, like a mirror

@@ -11,11 +11,11 @@ public:
         bool hit = false;
         glm::vec3 emittance = glm::vec3(0,0,0);
     };
-    static CastData cast(Ray r, AccStruct& accStruct, LightSampler& lightSampler);
+    static CastData cast(Ray r, int k, AccStruct& accStruct, LightSampler& lightSampler);
 
 private:
     static glm::vec3 calcDirectLight(HitData& hit, AccStruct &accStruct, LightSampler& lightSampler);
-    static glm::vec3 calcIndirectLight(HitData& hit, AccStruct &accStruct, LightSampler& lightSampler);
+    static glm::vec3 calcIndirectLight(HitData& hit, int k, AccStruct &accStruct, LightSampler& lightSampler);
 };
 
 #endif
