@@ -3,6 +3,8 @@
 
 #include "Color.h"
 #include "Mesh.h"
+#include "Material.h"
+
 #include <string>
 #include <glm/glm.hpp>
 #include <fstream>
@@ -11,10 +13,11 @@
 #include <functional>
 
 struct LightConfig {
-    Triangle triangle;
+    Mesh mesh;
     Color color;
     float intensity;
     glm::vec3 coefficients;
+    static Material DEFAULT_MAT;
 };
 
 struct CameraConfig {

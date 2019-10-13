@@ -10,6 +10,10 @@ Material::Material(aiMaterial *mat, unsigned int id, const vector<TexturePtr>& t
     ns = getFloat(mat, AI_MATKEY_SHININESS);
 }
 
+Material::Material(Color ambient, Color diffuse, Color specular, glm::vec3 emissive, float ns) :
+    ambient(ambient), diffuse(diffuse), specular(specular), emissive(emissive), ns(ns)
+{}
+
 Color Material::getTextureColor(float u, float v) const {
     if(textures.empty()){
         return Colors::WHITE;

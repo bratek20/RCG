@@ -28,7 +28,7 @@ class Model {
     std::string directory;
 
   public:
-    static ModelPtr create(const std::string &path);
+    static ModelPtr create(const Config& c);
 
     void draw(Shader shader);
     const std::vector<TrianglePtr> &getTriangles() const;
@@ -36,7 +36,7 @@ class Model {
     const std::vector<Mesh> &getMeshes() const;
 
   private:
-    Model(const std::string &path);
+    Model(const Config& c);
     bool loadModel(const std::string &path);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);

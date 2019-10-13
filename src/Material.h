@@ -25,6 +25,7 @@ struct Material {
 
     Material() = default;
     Material(aiMaterial* mat, unsigned int id, const std::vector<TexturePtr>& textures);
+    Material(Color ambient, Color diffuse, Color specular, glm::vec3 emissive, float ns);
     void apply(Shader& shader);
 
     Color getTextureColor(float u, float v) const;

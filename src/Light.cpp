@@ -22,16 +22,12 @@ LightPtr Light::create(float power, Color color, glm::vec3 coefficients){
     return light;
 }
 
-void Light::loadLights(const vector<TrianglePtr>& triangles, const vector<LightConfig>& lights) {
+void Light::loadLights(const vector<TrianglePtr>& triangles) {
     for(auto& tri : triangles){
         if(tri->mat.isLightSource()){
             auto light = create();
             light->setPosition(tri->getCenter());
         }
-    }
-    for(auto& lc : lights){
-        auto light = create(lc.intensity, lc.color, lc.coefficients);
-        light->setPosition(lc.triangle.getCenter());
     }
 }
 

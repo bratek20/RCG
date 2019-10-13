@@ -1,16 +1,22 @@
 #include "Model.h"
+#include "Assets.h"
 
 using namespace std;
 
-ModelPtr Model::create(const string &path) {
-    return ModelPtr(new Model(path));
+ModelPtr Model::create(const Config& c) {
+    return ModelPtr(new Model(c));
 }
 
-Model::Model(string const &path) {
-    if (loadModel(path)) {
-        cout << "Model: " << path << " loaded!" << endl;
+Model::Model(const Config& c) {
+    string fullScenePath = Assets::validPath(c.loadScenePath);
+    if (loadModel(fullScenePath)) {
+        for(auto& lc : c.lights) {
+            meshes.push_back(lc.mesh);
+        }
+        createTriangles();
+        cout << "Scene model: " << fullScenePath << " loaded!" << endl;
     } else {
-        cerr << "Model: " << path << " loading failed!" << endl;
+        cerr << "Scene model: " << fullScenePath << " loading failed!" << endl;
     }
 }
 
@@ -39,8 +45,6 @@ bool Model::loadModel(const string &path) {
 
     // process ASSIMP's root node recursively
     processNode(scene->mRootNode, scene);
-    //processLights(scene);
-    createTriangles();
     return true;
 }
 

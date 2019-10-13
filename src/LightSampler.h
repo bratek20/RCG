@@ -16,7 +16,7 @@ public:
     };
 
     LightSampler() = default;
-    LightSampler(const std::vector<TrianglePtr>& triangles, const Config& c);
+    LightSampler(const std::vector<TrianglePtr>& triangles);
 
     SampleData sample();
 };

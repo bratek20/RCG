@@ -4,6 +4,12 @@
 
 using namespace std;
 
+Material LightConfig::DEFAULT_MAT = Material(Color(0.8f, 0.8f, 0.8f), 
+                                    Color(0.8f, 0.8f, 0.8f),
+                                    Color(0.0f, 0.0f, 0.0f),
+                                    glm::vec3(17, 12, 4),
+                                    10);
+
 bool Config::load(const string &path) {
     ifstream file(path);
     if (!file.is_open()) {
@@ -28,7 +34,7 @@ bool Config::load(const string &path) {
             Vertex v1 = Vertex(readVec3(file));
             Vertex v2 = Vertex(readVec3(file));
             Vertex v3 = Vertex(readVec3(file));
-            lc.triangle = Triangle(v1, v2, v3);
+            lc.mesh = Mesh({v1, v2, v3}, {0, 1, 2}, LightConfig::DEFAULT_MAT);
             lc.color = readColor(file);
             file >> lc.intensity;
             lights.push_back(lc);

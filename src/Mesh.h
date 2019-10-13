@@ -100,6 +100,7 @@ public:
     unsigned int VAO;
     /*  Functions  */
     // constructor
+    Mesh() = default;
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, const Material& material);
 
     // render the mesh

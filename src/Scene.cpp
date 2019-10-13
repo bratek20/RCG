@@ -20,13 +20,13 @@ Scene::Scene(ModelPtr sceneModel) : Actor(sceneModel) {}
 
 ScenePtr Scene::create(const Config &c) {
     Timer::start("Creating scene");
-    string fullScenePath = Assets::validPath(c.loadScenePath);
-    ScenePtr scene = ScenePtr(new Scene(Model::create(fullScenePath)));
-    scene->lightSampler = LightSampler(scene->getModel()->getTriangles(), c);
+    ScenePtr scene = ScenePtr(new Scene(Model::create(c)));
+
+    scene->lightSampler = LightSampler(scene->getModel()->getTriangles());
     scene->camera = Camera::create(c.camera);
     scene->addChild(scene->camera);
     //scene->camera->addChild(Light::create());
-    Light::loadLights(scene->getModel()->getTriangles(), c.lights);
+    Light::loadLights(scene->getModel()->getTriangles());
     Timer::stop();
     return scene;
 }
