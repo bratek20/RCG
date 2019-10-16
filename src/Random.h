@@ -17,8 +17,6 @@ public:
     static glm::vec3 vectorOnHemisphereCos(glm::vec3 normal = glm::vec3(0, 1, 0));
     static glm::vec3 pointInTriangle(TrianglePtr triangle);
 
-
-private:
     static glm::vec3 rotateToGlobalSpace(glm::vec3 vec, glm::vec3 globalNormal);
 };
 #endif

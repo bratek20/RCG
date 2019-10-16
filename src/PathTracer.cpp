@@ -1,12 +1,15 @@
 #include "PathTracer.h"
 #include "Random.h"
+#include "DebugActor.h"
 
 #include <cstdio>
 
 using namespace std;
 
+bool PathTracer::drawLines = false;
+
 PathTracer::CastData PathTracer::cast(Ray r, int k, AccStruct &accStruct, LightSampler& lightSampler) {
-    if (k == 0) {
+    if (k <= 0) {
         return CastData();
     }
 
@@ -16,7 +19,7 @@ PathTracer::CastData PathTracer::cast(Ray r, int k, AccStruct &accStruct, LightS
     }
     bool isBounced = Random::tossCoin(hit.triangle->mat.diffuse.getAverage());
     if(!isBounced){
-        return CastData();
+        //return CastData();
     }
 
     CastData ans;
@@ -52,7 +55,6 @@ glm::vec3 PathTracer::calcDirectLight(HitData& hit, AccStruct &accStruct, LightS
 glm::vec3 PathTracer::calcIndirectLight(HitData& hit, int k, AccStruct &accStruct, LightSampler& lightSampler){
     glm::vec3 hitNormal = hit.triangle->getNormal(); 
     const Material& hitMat = hit.triangle->mat;
-
     glm::vec3 newDir = Random::vectorOnHemisphereCos(hitNormal);
     Ray newR = Ray(hit.pos, newDir, true);
 
@@ -60,6 +62,10 @@ glm::vec3 PathTracer::calcIndirectLight(HitData& hit, int k, AccStruct &accStruc
     HitData incomingHit = accStruct.cast(newR);
     bool hitLight = incomingHit.intersects() && incomingHit.triangle->mat.isLightSource(); 
     auto ans = hitLight ? glm::vec3(0) : hitMat.diffuse.asVec3() * incoming.emittance;
+    
+    if(drawLines) {
+        DebugActor::get()->drawLine(hit.pos, incomingHit.pos);
+    }
     return ans;
 }
 

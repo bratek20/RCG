@@ -29,13 +29,18 @@ class Model {
 
   public:
     static ModelPtr create(const Config& c);
+    static ModelPtr createEmpty();
 
+    void addMesh(const Mesh& mesh, bool rebuild);
+    void clearMeshes();
+    
     void draw(Shader shader);
     const std::vector<TrianglePtr> &getTriangles() const;
     const std::vector<LightConfig> &getLights() const;
     const std::vector<Mesh> &getMeshes() const;
 
   private:
+    Model() = default;
     Model(const Config& c);
     bool loadModel(const std::string &path);
     void processNode(aiNode *node, const aiScene *scene);

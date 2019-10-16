@@ -10,6 +10,10 @@ Material LightConfig::DEFAULT_MAT = Material(Color(0.8f, 0.8f, 0.8f),
                                     glm::vec3(17, 12, 4),
                                     10);
 
+Mesh LightConfig::createMesh() const {
+    return Mesh({v1, v2, v3}, {0, 1, 2}, LightConfig::DEFAULT_MAT);
+}
+
 bool Config::load(const string &path) {
     ifstream file(path);
     if (!file.is_open()) {
@@ -31,10 +35,9 @@ bool Config::load(const string &path) {
     while (file >> type) {
         if (type == "L") {
             LightConfig lc;
-            Vertex v1 = Vertex(readVec3(file));
-            Vertex v2 = Vertex(readVec3(file));
-            Vertex v3 = Vertex(readVec3(file));
-            lc.mesh = Mesh({v1, v2, v3}, {0, 1, 2}, LightConfig::DEFAULT_MAT);
+            lc.v1 = Vertex(readVec3(file));
+            lc.v2 = Vertex(readVec3(file));
+            lc.v3 = Vertex(readVec3(file));
             lc.color = readColor(file);
             file >> lc.intensity;
             lights.push_back(lc);

@@ -9,6 +9,7 @@
 #include "PathTracer.h"
 #include "LightSampler.h"
 #include "EmbreeWrapper.h"
+#include "DebugActor.h"
 
 #include <bitmap_image.h>
 
@@ -20,7 +21,9 @@ Scene::Scene(ModelPtr sceneModel) : Actor(sceneModel) {}
 
 ScenePtr Scene::create(const Config &c) {
     Timer::start("Creating scene");
+    DebugActorPtr debugActor = DebugActor::create();
     ScenePtr scene = ScenePtr(new Scene(Model::create(c)));
+    scene->addChild(debugActor);
 
     scene->lightSampler = LightSampler(scene->getModel()->getTriangles());
     scene->camera = Camera::create(c.camera);
@@ -147,4 +150,29 @@ void Scene::takePhotoPathTracing(const Config &c) {
     string photoSavePath = Assets::photoSavePath(c.photoName);
     photo.save(photoSavePath);
     cout << "Photo taken and saved to: " << photoSavePath << endl;
+}
+
+void Scene::debugRay(const Config& c) {
+    PathTracer::drawLines = true;
+    DebugActor::get()->getModel()->clearMeshes();
+    Ray::setEpsilon(c.rayEpsilon);
+
+    auto &meshes = getModel()->getMeshes();
+    EmbreeWrapper accStruct(meshes);
+
+    glm::vec3 origin = camera->getWorldPosition();
+    glm::vec3 leftTop = camera->getLeftTop();
+    glm::vec3 leftBottom = camera->getLeftBottom();
+    glm::vec3 rightTop = camera->getRightTop();
+
+    glm::vec3 pos = -leftTop + glm::mix(leftTop, rightTop, 0.5f) +
+                    glm::mix(leftTop, leftBottom, 0.5f);
+    glm::vec3 direction = glm::normalize(pos - origin);
+    Ray r(origin, direction);
+
+    for(int i=0;i<c.samplesNum;i++){
+        PathTracer::CastData data = PathTracer::cast(r, c.k, accStruct, lightSampler);
+    }           
+
+    PathTracer::drawLines = false;
 }

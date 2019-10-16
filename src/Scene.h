@@ -20,6 +20,7 @@ public:
     CameraPtr getCamera() const;
     void takePhotoRayTracing(const Config& c);
     void takePhotoPathTracing(const Config& c);
+    void debugRay(const Config& c);
 
 protected:
     Scene(ModelPtr sceneModel);

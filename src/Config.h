@@ -13,11 +13,15 @@
 #include <functional>
 
 struct LightConfig {
-    Mesh mesh;
+    Vertex v1;
+    Vertex v2;
+    Vertex v3;
     Color color;
     float intensity;
     glm::vec3 coefficients;
+    
     static Material DEFAULT_MAT;
+    Mesh createMesh() const;
 };
 
 struct CameraConfig {

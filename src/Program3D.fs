@@ -71,4 +71,9 @@ void main(){
 			// Specular : reflective highlight, like a mirror
 			+ MaterialSpecularColor * invDistLoss * LightColor[i] * LightPower[i] * pow(cosAlpha, NS);
 	}
+
+	if (length(Normal_cameraspace) < 0.1)
+	{
+		color = vec3(1, 0.1, 0.5);
+	}
 }

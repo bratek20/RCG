@@ -7,11 +7,15 @@ ModelPtr Model::create(const Config& c) {
     return ModelPtr(new Model(c));
 }
 
+ModelPtr Model::createEmpty() {
+    return ModelPtr(new Model());
+}
+
 Model::Model(const Config& c) {
     string fullScenePath = Assets::validPath(c.loadScenePath);
     if (loadModel(fullScenePath)) {
         for(auto& lc : c.lights) {
-            meshes.push_back(lc.mesh);
+            meshes.push_back(lc.createMesh());
         }
         createTriangles();
         cout << "Scene model: " << fullScenePath << " loaded!" << endl;
@@ -20,10 +24,23 @@ Model::Model(const Config& c) {
     }
 }
 
+void Model::addMesh(const Mesh& mesh, bool rebuild) {
+    meshes.push_back(mesh);
+    if(rebuild) {
+        createTriangles();
+    }
+}
+
+void Model::clearMeshes() {
+    meshes.clear();
+}
+
+
 // draws the model, and thus all its meshes
 void Model::draw(Shader shader) {
-    for (unsigned int i = 0; i < meshes.size(); i++)
+    for (unsigned int i = 0; i < meshes.size(); i++){
         meshes[i].draw(shader);
+    }
 }
 
 bool Model::loadModel(const string &path) {

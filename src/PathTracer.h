@@ -7,6 +7,8 @@
 
 class PathTracer{
 public:
+    static bool drawLines;
+
     struct CastData {
         bool hit = false;
         glm::vec3 emittance = glm::vec3(0,0,0);

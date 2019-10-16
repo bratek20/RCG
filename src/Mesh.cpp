@@ -174,7 +174,7 @@ glm::vec3 Triangle::getCenter() const {
 }
 
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, const Material &material)
-    : vertices(vertices), indices(indices),
+    : vertices(move(vertices)), indices(move(indices)),
       material(material){
     // now that we have all the required data, set the vertex buffers and its
     // attribute pointers.
@@ -186,7 +186,12 @@ void Mesh::draw(Shader &shader) {
 
     // draw mesh
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    if(indices.size() < 3){
+        glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
+    }
+    else {
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    }
     glBindVertexArray(0);
 
     // always good practice to set everything back to defaults once configured.
@@ -194,9 +199,11 @@ void Mesh::draw(Shader &shader) {
 }
 void Mesh::setupMesh() {
     triangles.clear();
-    for (unsigned i = 0; i < indices.size(); i += 3) {
-        triangles.emplace_back(vertices[indices[i]], vertices[indices[i + 1]],
-                               vertices[indices[i + 2]], material);
+    if(indices.size() > 2) {
+        for (unsigned i = 0; i < indices.size(); i += 3) {
+            triangles.emplace_back(vertices[indices[i]], vertices[indices[i + 1]],
+                                    vertices[indices[i + 2]], material);
+        }
     }
 
     if(!Globals::debug){

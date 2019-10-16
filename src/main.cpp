@@ -10,6 +10,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include "Random.h"
+
 using namespace std;
 
 ScenePtr scene;
@@ -23,7 +25,15 @@ void takePhoto(){
 	scene->takePhotoPathTracing(c);
 }
 
+void debugRay() {
+	scene->debugRay(c);
+}
+
 int main(int argc, char* argv[]){
+	//glm::vec3 ans = Random::rotateToGlobalSpace(glm::vec3(1, 0, 1), glm::vec3(1, 0, 0));
+	//cout << ans << endl;
+	//return 0;
+
 	if(argc < 2 || !c.load(argv[1])){
 		cerr << "Bad config! Specify it as first argument." << endl;
 		return -1;
@@ -41,6 +51,7 @@ int main(int argc, char* argv[]){
 		Input::init();
 		Input::onKeyPressed(GLFW_KEY_P, takePhoto);
 		Input::onKeyPressed(GLFW_KEY_M, printCameraPosition);
+		Input::onKeyPressed(GLFW_KEY_L, debugRay);
 		while(!Window::shouldClose()){
 			Input::handle();
 
