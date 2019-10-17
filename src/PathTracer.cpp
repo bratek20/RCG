@@ -19,7 +19,7 @@ PathTracer::CastData PathTracer::cast(Ray r, int k, AccStruct &accStruct, LightS
     }
     bool isBounced = Random::tossCoin(hit.triangle->mat.diffuse.getAverage());
     if(!isBounced){
-        //return CastData();
+        return CastData();
     }
 
     CastData ans;

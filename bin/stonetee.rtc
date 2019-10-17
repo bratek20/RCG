@@ -1,16 +1,15 @@
 # 40 min for rendering 1920 x 1080, 1024 sample
 stonetee/stonetee.obj
 stonetee.exr
-10
-1920 1080
+5
+800 600
 -77 37 -77
 -56 36 -64
 0 1 0
 1
-L -77 50 -77 255 255 255 1
 LC 0 0 1
 BG 0 0 0
 CV 50
-DM 0
+DM 1
 RE 0.01
-SN 1024
+SN 256

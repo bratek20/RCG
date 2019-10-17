@@ -30,10 +30,6 @@ void debugRay() {
 }
 
 int main(int argc, char* argv[]){
-	//glm::vec3 ans = Random::rotateToGlobalSpace(glm::vec3(1, 0, 1), glm::vec3(1, 0, 0));
-	//cout << ans << endl;
-	//return 0;
-
 	if(argc < 2 || !c.load(argv[1])){
 		cerr << "Bad config! Specify it as first argument." << endl;
 		return -1;

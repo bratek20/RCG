@@ -42,34 +42,16 @@ glm::vec3 Random::pointInTriangle(TrianglePtr triangle){
     return triangle->v1.position * a + triangle->v2.position * b  + triangle->v3.position * (1-a-b); 
 }
 
-glm::mat3 rotateAxisAngle( glm::vec3 u, float angleRadians )
-{
-    const float sinA = sinf( angleRadians );
-    const float cosA = cosf( angleRadians );
-    const float invCosA = 1.0f - cosA;
-
-    return glm::mat3( (u.x * u.x * invCosA) + cosA,
-                 (u.y * u.x * invCosA) - (sinA * u.z), 
-                 (u.z * u.x * invCosA) + (sinA * u.y),
-                 (u.x * u.y * invCosA) + (sinA * u.z),  
-                 (u.y * u.y * invCosA) + cosA,      
-                 (u.z * u.y * invCosA) - (sinA * u.x),
-                 (u.x * u.z * invCosA) - (sinA * u.y),  
-                 (u.y * u.z * invCosA) + (sinA * u.x),  
-                 (u.z * u.z * invCosA) + cosA 
-                 );
-}
-
-glm::mat3 rotateAlign(glm::vec3 u1, glm::vec3 u2)
-{
-    glm::vec3 axis = normalize( cross( u1, u2 ) );
-    float dotProduct = dot( u1, u2 );
-    dotProduct = glm::clamp(dotProduct, -1.0f, 1.0f );
-    float angleRadians = acosf( dotProduct );
-    glm::mat3 result = rotateAxisAngle( axis, angleRadians );
-    return result;
-}
-
 glm::vec3 Random::rotateToGlobalSpace(glm::vec3 vec, glm::vec3 globalNormal){
-    return vec;// * rotateAlign(glm::vec3(0, 1, 0), globalNormal);
+    glm::vec3 right;
+    if(abs(globalNormal.x) < abs(globalNormal.y)){
+        right = glm::vec3(1, 0, 0);
+    }
+    else{
+        right = glm::vec3(0, 1, 0);
+    }
+
+    glm::vec3 globalZ = glm::normalize(glm::cross(globalNormal, right));
+    glm::vec3 globalX = glm::normalize(glm::cross(globalZ, globalNormal));
+    return vec.x * globalX + vec.y * globalNormal + vec.z * globalZ;
 }
