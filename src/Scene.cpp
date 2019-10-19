@@ -11,7 +11,7 @@
 #include "EmbreeWrapper.h"
 #include "DebugActor.h"
 
-#include <bitmap_image.h>
+#include "bitmap_image.h"
 
 #define USE_EMBREE 1
 
