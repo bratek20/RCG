@@ -16,7 +16,7 @@ const vector<string> Assets::POSSIBLE_PATH_PREFIXES =
 Program3D Assets::program;
 
 void Assets::init(){
-    program = Program3D("../src/Program3D.vs", "../src/Program3D.fs");
+    program = Program3D("../src/engine/Program3D.vs", "../src/engine/Program3D.fs");
 }
 
 void Assets::clear(){
